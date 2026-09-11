@@ -1253,7 +1253,7 @@ html[data-theme="light"] .theme-toggle .icon-moon { display: block; }
     <thead><tr><th style="width:36px;">#</th><th style="width:200px;">欄位</th><th>說明</th></tr></thead>
     <tbody><tr><td class="region-td">3</td><td class="dim">標題「Settle now?」</td><td class="dim">直接對應觸發的 SETTLE NOW 按鈕</td></tr><tr><td class="region-td">4</td><td class="dim">說明文字</td><td class="dim">告知玩家已達上限、結算後會放棄的剩餘 Spins Left 次數，以及即將入帳的金額（以「₱」符號顯示）；次數與金額須即時對應該FREE SPIN卡當下的實際數值</td></tr><tr><td class="region-td">5</td><td class="dim">小字說明</td><td class="dim">「Won ○○ ₱ · amount over the cap is not counted; settled at the cap」；顯示玩家實際贏得的金額與上限的差異，讓「結算金額為何比實際贏得少」保持透明。</td></tr><tr><td class="region-td">6</td><td class="dim">CONFIRM ／ CANCEL</td><td class="dim">CONFIRM（綠色實心，左側）：確認結算；FREE SPIN卡的 Current Winnings 立即入帳、剩餘 Spins Left 作廢，並顯示 COMPLETED 完成畫面。CANCEL（外框，右側）：取消，關閉彈窗返回原畫面，FREE SPIN卡狀態不受影響。<br><strong>備註：</strong>此處 CONFIRM 刻意放在左側，與畫面中其他 CONFIRM／PROCEED 一律置右的慣例相反 — 目的是打破玩家的慣性點擊習慣，避免手滑或誤觸而不小心確認這個不可逆的結算動作</td></tr><tr><td class="region-td">7</td><td class="dim">「COMPLETED」標題</td><td class="dim">結算完成後顯示的畫面標題，取代原本的「Settle now?」確認彈窗</td></tr><tr><td class="region-td">8</td><td class="dim">Card No.</td><td class="dim">同「欄位總覽」編號 9，顯示此FREE SPIN卡的卡片編號，方便對照</td></tr><tr><td class="region-td">9</td><td class="dim"><strong>Bonus Amount</strong></td><td class="dim">本次結算實際入帳的金額（等同 Max 上限），下方附「Max Cap Reached」徽章重申結算原因。不寫「Maximum Payout Amount」，理由同 <a data-goto="pg-bag-d" style="color:var(--gold-light);">§07 Ⓓ</a>：此金額通常低於上限，寫成「最高」會造成誤解</td></tr><tr><td class="region-td">10</td><td class="dim"><strong>BACK</strong></td><td class="dim">綠色實心按鈕，<strong>本畫面唯一出口</strong>：按下後關閉完成畫面、返回背包列表。不做「點擊任意處關閉」——這一步已入帳真金，需要玩家明確按下</td></tr></tbody>
   </table>
-  <div class="wip-note"><strong>本節兩張截圖（直式／橫式）仍待校正</strong><span class="tag-wip">內容未完成</span>完成畫面上的 #9 欄位圖上仍寫 <span class="mono">Maximum Payout Amount</span> 與 <span class="mono">$600.00</span>，應為 <strong>Bonus Amount</strong> 與 <strong>₱600.00</strong>；同一處另有筆誤 <span class="mono">Amout</span> 應為 <span class="mono">Amount</span>——已在 <a data-goto="art-exit-popup" style="color:var(--gold-light);">結算彈窗一節</a>的替換圖中修正過，這兩張截圖可直接沿用同一版美術重新出圖。</div>
+  <div class="body-text" style="margin-top:6px;">本節兩張截圖（直式／橫式）已換新版：#9 欄位標籤已改為 <strong>Bonus Amount</strong>，<span class="mono">Amout</span> 筆誤也已修正為 <span class="mono">Amount</span>。畫面中的幣別符號（$／₱）僅為示意，實際顯示依玩家錢包幣別與系統格式化（見 §07 i18n 備註①），美術稿不需要求與特定幣別一致，故不再視為待修正項。</div>
 
   <div class="sub-title" id="art-reward-icon">獎勵圖示 — 星級分級</div>
   <div class="body-text">五個星級以<strong>材質</strong>做主要區分，卡框與底紋隨材質同步變化；星數圖示同時顯示。</div>
@@ -1326,7 +1326,7 @@ html[data-theme="light"] .theme-toggle .icon-moon { display: block; }
 
   <div class="sub-title" id="art-exit-popup">結算彈窗</div>
   <div class="body-text">玩家用完該FREE SPIN卡的所有免費旋轉次數後，出現這個彈窗；按下 <strong>BACK</strong> 關閉並返回遊戲一般模式（本彈窗<strong>唯一出口</strong>，不做「點擊任意處關閉」）。直式與橫式共用同一張畫面。版面沿用 <span data-goto="pg-game" style="color:var(--gold-light);">§08 畫面三</span>。</div>
-<div class="shot-frame" style="max-width:380px;margin:0 auto 14px;"><img src="./images/fs_art_16_exit_popup.png" alt="Exit popup showing settlement result" onerror="this.style.display='none';this.nextElementSibling.style.display='block';"><div class="shot-ph">📷 圖片未載入：結算彈窗截圖<br><span style="font-size:10px;">請確認 images 資料夾與本 HTML 放在同一層</span></div><div class="shot-cap">結算彈窗 — 顯示本次免費旋轉的結算結果，以 BACK 關閉。編號對應下表「#」欄。</div><div class="body-text" style="margin-top:10px;">本圖已校正：標籤為 <strong>Bonus Amount</strong>、幣別為 <strong>₱600.00</strong>，文字無誤——與下表 #4 一致。</div></div>
+<div class="shot-frame" style="max-width:380px;margin:0 auto 14px;"><img src="./images/fs_art_16_exit_popup.png" alt="Exit popup showing settlement result" onerror="this.style.display='none';this.nextElementSibling.style.display='block';"><div class="shot-ph">📷 圖片未載入：結算彈窗截圖<br><span style="font-size:10px;">請確認 images 資料夾與本 HTML 放在同一層</span></div><div class="shot-cap">結算彈窗 — 顯示本次免費旋轉的結算結果，以 BACK 關閉。編號對應下表「#」欄。</div><div class="body-text" style="margin-top:10px;">本圖標籤已改為 <strong>Bonus Amount</strong>，與下表 #4 一致；<span class="mono">Amout</span> 筆誤已修正。畫面中的幣別符號僅為示意，實際依玩家錢包幣別與系統格式化顯示（見 §07 i18n 備註①），不需要求與特定幣別一致。</div></div>
 <table class="spec-table">
     <thead><tr><th style="width:36px;">#</th><th style="width:220px;">欄位</th><th>說明</th></tr></thead>
     <tbody><tr><td class="region-td">1</td><td class="dim">FREE SPINS COMPLETED</td><td class="dim">標題文字，告知玩家此FREE SPIN卡的免費旋轉已全部使用完畢</td></tr><tr><td class="region-td">2</td><td class="dim">ID</td><td class="dim">此次使用的FREE SPIN卡兌換識別碼，供玩家或客服對照查詢</td></tr><tr><td class="region-td">3</td><td class="dim">遊戲圖示與名稱</td><td class="dim">玩家選擇並完成免費旋轉的遊戲</td></tr><tr><td class="region-td">4</td><td class="dim"><strong>Bonus Amount</strong></td><td class="dim">本次免費旋轉<strong>實際派發</strong>的獎金＝<span class="mono">min(score, 上限)</span>；達到 Max 上限時額外顯示「Max Cap Reached」標籤，未達上限則不顯示。<strong>不使用「Maximum Payout Amount」</strong>——此金額通常低於上限，寫成「最高」會造成誤解（該字樣只用於<span data-goto="art-entry-popup" style="color:var(--gold-light);">進場提示彈窗</span>）</td></tr><tr><td class="region-td">5</td><td class="dim"><strong>BACK</strong></td><td class="dim">綠色實心按鈕，本畫面唯一出口：按下後 FS 標示消失、押注解鎖回玩家自選、錢包顯示已含本次獎金，停在<strong>同一款遊戲的一般模式</strong>，不自動跳回背包</td></tr></tbody>
@@ -2122,9 +2122,9 @@ html[data-theme="light"] .theme-toggle .icon-moon { display: block; }
   </table>
 
   
-  <div class="sub-title" id="pg-bag-i18n">背包前台 · 多國語系文案表（14 語系）</div>
+  <div class="sub-title" id="pg-bag-i18n">FREE SPIN 功能 · 多國語系文案表（14 語系）</div>
 
-  <div class="body-text">背包前台所有玩家可見文字 ×<strong>14 語系</strong>翻譯（依背包前台操作原型）。語系：en / zh-Hant / zh-Hans / th / ko-KR / pt / vi / id / my-MM / es-ES / tr-TR / ja-JP / bn / ru。<code>{n}</code> 為數值代入。</div>
+  <div class="body-text">FREE SPIN 功能所有玩家可見文字 ×<strong>14 語系</strong>翻譯——涵蓋背包前台、進場提示彈窗、結算彈窗與遊戲內標示，全部統一收錄在同一張表，方便查找與維護，避免同一句文案分散在不同章節、各自translate、容易兜不起來。語系：en / zh-Hant / zh-Hans / th / ko-KR / pt / vi / id / my-MM / es-ES / tr-TR / ja-JP / bn / ru。<code>{n}</code> 為數值代入。</div>
   <div style="overflow-x:auto;margin-bottom:24px;">
   <table class="spec-table" style="min-width:1800px;font-size:11px;">
     <thead><tr>
@@ -2161,10 +2161,15 @@ html[data-theme="light"] .theme-toggle .icon-moon { display: block; }
       <tr><td>bag_btn_cancel<br><span class="tag-pill tag-v2">V1.6</span></td><td>Cancel</td><td>取消</td><td>取消</td><td>ยกเลิก</td><td>취소</td><td>Cancelar</td><td>Hủy</td><td>Batal</td><td>ပယ်ဖျက်သည်</td><td>Cancelar</td><td>İptal</td><td>キャンセル</td><td>বাতিল</td><td>Отмена</td></tr>
       <tr><td>bag_fs_conflict_hint<br><span class="tag-pill tag-v2">V1.7 改</span></td><td>Please finish the Free Spins in this game first</td><td>請先完成此遊戲的免費旋轉</td><td>请先完成此游戏的免费旋转</td><td>กรุณาเล่นฟรีสปินของเกมนี้ให้จบก่อน</td><td>이 게임의 프리스핀을 먼저 완료해 주세요</td><td>Conclua primeiro os Giros Grátis deste jogo</td><td>Vui lòng hoàn thành lượt quay miễn phí của trò chơi này trước</td><td>Selesaikan dulu Putaran Gratis di game ini</td><td>ဤဂိမ်း၏ အခမဲ့လည်ပတ်မှုကို အရင်ပြီးအောင်ကစားပါ</td><td>Termina primero los Giros Gratis de este juego</td><td>Önce bu oyundaki Bedava Dönüşleri tamamlayın</td><td>先にこのゲームのフリースピンを完了してください</td><td>আগে এই গেমের ফ্রি স্পিন শেষ করুন</td><td>Сначала завершите фриспины в этой игре</td></tr>
       <tr><td>bag_activation_fail_title<br><span class="tag-pill tag-v2">V1.6</span></td><td>Activation Failed</td><td>FREE SPIN 卡使用失敗</td><td>FREE SPIN 卡使用失败</td><td>ใช้การ์ดฟรีสปินไม่สำเร็จ</td><td>프리스핀 카드 사용 실패</td><td>Falha ao ativar o Cartão de Giros Grátis</td><td>Kích hoạt Thẻ Quay Miễn Phí thất bại</td><td>Gagal mengaktifkan Kartu Putaran Gratis</td><td>အခမဲ့လည်ပတ်ကတ် အသုံးပြုမှု မအောင်မြင်ပါ</td><td>Error al activar la Tarjeta de Giros Gratis</td><td>Bedava Dönüş Kartı etkinleştirilemedi</td><td>フリースピンカードの使用に失敗しました</td><td>ফ্রি স্পিন কার্ড চালু করা যায়নি</td><td>Не удалось активировать карту фриспинов</td></tr>
+      <tr><td>fs_max_payout_label<br><span class="tag-pill tag-v2">併自 §08</span></td><td>Maximum Payout Amount</td><td>最高可獲得獎金</td><td>最高可获得奖金</td><td>จำนวนเงินรางวัลสูงสุด</td><td>최대 지급 금액</td><td>Valor Máximo de Pagamento</td><td>Số tiền thưởng tối đa</td><td>Jumlah Pembayaran Maksimum</td><td>အများဆုံးရနိုင်သည့်ဆုကြေး</td><td>Importe Máximo de Pago</td><td>Maksimum Ödeme Tutarı</td><td>最大獲得金額</td><td>সর্বোচ্চ প্রদেয় পরিমাণ</td><td>Максимальная сумма выплаты</td></tr>
+      <tr><td>fs_entry_continue_hint<br><span class="tag-pill tag-v2">併自 §08</span></td><td>Press Anywhere to Continue</td><td>點擊任意處繼續</td><td>点击任意处继续</td><td>แตะที่ใดก็ได้เพื่อดำเนินการต่อ</td><td>아무 곳이나 눌러 계속하기</td><td>Toque em qualquer lugar para continuar</td><td>Chạm vào bất kỳ đâu để tiếp tục</td><td>Ketuk di mana saja untuk melanjutkan</td><td>ဆက်လက်ရန် မည်သည့်နေရာမဆို နှိပ်ပါ</td><td>Toca en cualquier lugar para continuar</td><td>Devam etmek için herhangi bir yere dokunun</td><td>どこかをタップして続行</td><td>চালিয়ে যেতে যেকোনো জায়গায় চাপুন</td><td>Нажмите в любом месте, чтобы продолжить</td></tr>
+      <tr><td>fs_exit_title<br><span class="tag-pill tag-v2">併自 §08</span></td><td>Free Spins Completed</td><td>免費旋轉已結束</td><td>免费旋转已结束</td><td>ฟรีสปินเสร็จสิ้นแล้ว</td><td>프리스핀 종료</td><td>Giros Grátis Concluídos</td><td>Đã kết thúc lượt quay miễn phí</td><td>Putaran Gratis Selesai</td><td>အခမဲ့လည်ပတ်မှု ပြီးဆုံးပါပြီ</td><td>Giros Gratis Completados</td><td>Bedava Dönüşler Tamamlandı</td><td>フリースピン終了</td><td>ফ্রি স্পিন সম্পন্ন</td><td>Бесплатные вращения завершены</td></tr>
+      <tr><td>fs_bonus_amount_label<br><span class="tag-pill tag-v2">併自 §08</span></td><td>Bonus Amount</td><td>獲得獎金</td><td>获得奖金</td><td>จำนวนเงินโบนัส</td><td>보너스 금액</td><td>Valor do Bônus</td><td>Số tiền thưởng</td><td>Jumlah Bonus</td><td>ဘောနပ်စ်ပမာဏ</td><td>Importe del Bono</td><td>Bonus Tutarı</td><td>ボーナス金額</td><td>বোনাসের পরিমাণ</td><td>Сумма бонуса</td></tr>
+      <tr><td>fs_back_cta<br><span class="tag-pill tag-v2">併自 §08</span></td><td>BACK</td><td>返回一般模式</td><td>返回一般模式</td><td>กลับสู่โหมดปกติ</td><td>일반 모드로 돌아가기</td><td>Voltar ao Modo Normal</td><td>Quay lại chế độ thường</td><td>Kembali ke Mode Normal</td><td>ပုံမှန်မုဒ်သို့ ပြန်သွားရန်</td><td>Volver al Modo Normal</td><td>Normal Moda Dön</td><td>通常モードに戻る</td><td>সাধারণ মোডে ফিরে যান</td><td>Вернуться в обычный режим</td></tr>
     </tbody>
   </table>
   </div>
-  <div class="callout info"><strong>i18n 備註</strong>：<strong>英文欄與 zh-Hant／zh-Hans 已同步為 §04 現行文案</strong>（Bet Amount／Spins Left／Max／New／PENDING／Select Game (Required)／PROCEED／BACKPACK）；其餘 10 語系原本落後的兩條（分頁·COMING SOON、剩餘次數）已補譯為草稿，其餘欄位原意未變，未再全表重過。<br>① 數字 / 幣別 / 倒數時間為動態值，不進文案表（依玩家錢包幣別與系統格式化）。② 翻譯為初稿，上線前送各語系母語者校稿；繁中為文案基準（source）。③ 與抽寶箱規格的 i18n 語系欄位一致。④ 卡名為專名，<strong>全語系統一顯示「FREE SPIN X{n}」</strong>不翻譯；星級由獎勵圖示呈現，不進文案；發放卡名稱僅後台營運可見，玩家端不顯示。</div>
+  <div class="callout info"><strong>i18n 備註</strong>：<strong>英文欄與 zh-Hant／zh-Hans 已同步為 §04 現行文案</strong>（Bet Amount／Spins Left／Max／New／PENDING／Select Game (Required)／PROCEED／BACKPACK）；其餘 10 語系原本落後的兩條（分頁·COMING SOON、剩餘次數）已補譯為草稿，其餘欄位原意未變，未再全表重過。<br>① 數字 / 幣別 / 倒數時間為動態值，不進文案表（依玩家錢包幣別與系統格式化）。② 翻譯為初稿，上線前送各語系母語者校稿；繁中為文案基準（source）。③ 與抽寶箱規格的 i18n 語系欄位一致。④ 卡名為專名，<strong>全語系統一顯示「FREE SPIN X{n}」</strong>不翻譯；星級由獎勵圖示呈現，不進文案；發放卡名稱僅後台營運可見，玩家端不顯示。⑤ <span class="mono">fs_max_payout_label</span> / <span class="mono">fs_entry_continue_hint</span> / <span class="mono">fs_exit_title</span> / <span class="mono">fs_bonus_amount_label</span> / <span class="mono">fs_back_cta</span> 5 項原列於 §08〈遊戲內文案〉，現併入本表統一維護，ru 語系欄位已補齊；§08 該處已改為指向本表，不再重複列出。</div>
 
 </section>
 
@@ -2612,7 +2617,7 @@ html[data-theme="light"] .theme-toggle .icon-moon { display: block; }
   </table>
 
   <div class="sub-title">遊戲內文案 · 美術圖與可翻譯字串</div>
-  <div class="body-text">遊戲內文字分兩類處理：<strong>美術圖字樣不逐語系另做圖</strong>（全語系統一英文，與玩家卡名「FREE SPIN X{n}」同一原則）；<strong>純文字項</strong>走 13 語系。語系：en / zh-Hant / zh-Hans / th / ko-KR / pt / vi / id / my-MM / es-ES / tr-TR / ja-JP / bn。</div>
+  <div class="body-text">遊戲內文字分兩類處理：<strong>美術圖字樣不逐語系另做圖</strong>（全語系統一英文，與玩家卡名「FREE SPIN X{n}」同一原則）；<strong>純文字項</strong>與背包前台、進出場彈窗共用同一張全域文案表，見下方連結，本頁不再重複列出譯文。</div>
   <table class="spec-table" style="max-width:820px;margin-bottom:16px;">
     <thead><tr><th style="width:220px;">字樣</th><th style="width:130px;">處理方式</th><th>說明</th></tr></thead>
     <tbody>
@@ -2623,21 +2628,7 @@ html[data-theme="light"] .theme-toggle .icon-moon { display: block; }
       <tr><td class="mono">WIN</td><td><strong>遊戲既有</strong></td><td class="dim">沿用各遊戲原本的贏分顯示，FS 不改</td></tr>
     </tbody>
   </table>
-  <div style="overflow-x:auto;margin-bottom:24px;">
-  <table class="spec-table" style="min-width:1680px;font-size:11px;">
-    <thead><tr>
-      <th>用途 (key)</th><th>en</th><th>zh-Hant</th><th>zh-Hans</th><th>th</th><th>ko-KR</th><th>pt</th><th>vi</th><th>id</th><th>my-MM</th><th>es-ES</th><th>tr-TR</th><th>ja-JP</th><th>bn</th>
-    </tr></thead>
-    <tbody>
-      <tr><td>封頂標籤</td><td>Maximum Payout Amount</td><td>最高可獲得獎金</td><td>最高可获得奖金</td><td>จำนวนเงินรางวัลสูงสุด</td><td>최대 지급 금액</td><td>Valor Máximo de Pagamento</td><td>Số tiền thưởng tối đa</td><td>Jumlah Pembayaran Maksimum</td><td>အများဆုံးရနိုင်သည့်ဆုကြေး</td><td>Importe Máximo de Pago</td><td>Maksimum Ödeme Tutarı</td><td>最大獲得金額</td><td>সর্বোচ্চ প্রদেয় পরিমাণ</td></tr>
-      <tr><td>開始提示</td><td>Press Anywhere to Continue</td><td>點擊任意處繼續</td><td>点击任意处继续</td><td>แตะที่ใดก็ได้เพื่อดำเนินการต่อ</td><td>아무 곳이나 눌러 계속하기</td><td>Toque em qualquer lugar para continuar</td><td>Chạm vào bất kỳ đâu để tiếp tục</td><td>Ketuk di mana saja untuk melanjutkan</td><td>ဆက်လက်ရန် မည်သည့်နေရာမဆို နှိပ်ပါ</td><td>Toca en cualquier lugar para continuar</td><td>Devam etmek için herhangi bir yere dokunun</td><td>どこかをタップして続行</td><td>চালিয়ে যেতে যেকোনো জায়গায় চাপুন</td></tr>
-      <tr><td>結算標題</td><td>Free Spins Completed</td><td>免費旋轉已結束</td><td>免费旋转已结束</td><td>ฟรีสปินเสร็จสิ้นแล้ว</td><td>프리스핀 종료</td><td>Giros Grátis Concluídos</td><td>Đã kết thúc lượt quay miễn phí</td><td>Putaran Gratis Selesai</td><td>အခမဲ့လည်ပတ်မှု ပြီးဆုံးပါပြီ</td><td>Giros Gratis Completados</td><td>Bedava Dönüşler Tamamlandı</td><td>フリースピン終了</td><td>ফ্রি স্পিন সম্পন্ন</td></tr>
-      <tr><td>結算金額標籤</td><td>Bonus Amount</td><td>獲得獎金</td><td>获得奖金</td><td>จำนวนเงินโบนัส</td><td>보너스 금액</td><td>Valor do Bônus</td><td>Số tiền thưởng</td><td>Jumlah Bonus</td><td>ဘောနပ်စ်ပမာဏ</td><td>Importe del Bono</td><td>Bonus Tutarı</td><td>ボーナス金額</td><td>বোনাসের পরিমাণ</td></tr>
-      <tr><td>回一般模式 (CTA)</td><td>BACK</td><td>返回一般模式</td><td>返回一般模式</td><td>กลับสู่โหมดปกติ</td><td>일반 모드로 돌아가기</td><td>Voltar ao Modo Normal</td><td>Quay lại chế độ thường</td><td>Kembali ke Mode Normal</td><td>ပုံမှန်မုဒ်သို့ ပြန်သွားရန်</td><td>Volver al Modo Normal</td><td>Normal Moda Dön</td><td>通常モードに戻る</td><td>সাধারণ মোডে ফিরে যান</td></tr>
-    </tbody>
-  </table>
-  </div>
-  <div class="callout info"><strong>i18n 備註</strong>：① 金額、局數、幣別符號為動態值，不進文案表（依玩家錢包幣別格式化）。② 翻譯為初稿，上線前送各語系母語者校稿；繁中為文案基準。③ 與 §07 背包文案表語系欄位一致。</div>
+  <div class="callout info"><strong>純文字項的翻譯已併入統一文案表</strong>：本頁原本的「Maximum Payout Amount」「Press Anywhere to Continue」「Free Spins Completed」「Bonus Amount」「BACK」5 項純文字，連同 Key 與全部 14 語系（含 ru），已統一收錄於<a data-goto="pg-bag-i18n" style="color:var(--gold-light);"> §07 多國語系文案表</a>（Key：<span class="mono">fs_max_payout_label</span> / <span class="mono">fs_entry_continue_hint</span> / <span class="mono">fs_exit_title</span> / <span class="mono">fs_bonus_amount_label</span> / <span class="mono">fs_back_cta</span>）。翻譯更新請至該處維護，避免兩處內容不同步。</div>
 
 </section>
 
