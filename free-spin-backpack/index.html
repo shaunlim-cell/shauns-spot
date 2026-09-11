@@ -1296,7 +1296,7 @@ html[data-theme="light"] .theme-toggle .icon-moon { display: block; }
 
   <table class="spec-table">
     <thead><tr><th style="width:36px;">#</th><th style="width:200px;">欄位／行為</th><th>說明</th></tr></thead>
-    <tbody><tr><td class="region-td">1</td><td class="dim"><strong>FREE SPINS 標示</strong>（兼中途離開出口）</td><td class="dim">常駐於畫面左下角，提醒玩家目前正在使用FREE SPIN卡進行免費旋轉；<strong>從第一局開始顯示，到結算彈窗關閉後移除</strong>。<br><strong>點擊此標示＝中途離開 FS 模式</strong>：局數未用完時由此離開，<strong>不觸發結算</strong>——剩餘局數與累積 <span class="mono">score</span> 全部保留，之後可回背包續玩同一張卡（同 <span class="mono">reference_id</span>、續扣同池）或換卡內另一款遊戲。離開後回一般模式：押注恢復玩家自選、本標示消失。<strong>不得因離開而清空 score 或重置局數</strong>（規則見 <span data-goto="pg-game" style="color:var(--gold-light);">§08 Ⓘ</span>）。</td></tr><tr><td class="region-td">2</td><td class="dim">BET 注額</td><td class="dim">固定顯示為該FREE SPIN卡的 Bet Amount，免費旋轉期間玩家無法調整</td></tr><tr><td class="region-td">3</td><td class="dim"><strong>剩餘局數計數器</strong></td><td class="dim"><strong>原本的旋轉鈕位置改為顯示「FREE {n}」</strong>，n＝剩餘局數，每完成一局 −1；n 歸 0 後不可再按，直接進結算。「FREE」字樣為美術圖、數字為動態值。遊戲本身觸發的免費遊戲期間 n 停住不動（那些局不扣卡片局數）。規則見 <span data-goto="pg-game" style="color:var(--gold-light);">§08 Ⓑ</span>。</td></tr><tr><td class="region-td">4</td><td class="dim">浮動 icon 於 FS 模式常駐</td><td class="dim">吸附浮動 icon 在<strong>一般模式與 FS 模式皆顯示、皆可點擊</strong>展開 GAME CENTER 選單，並非 FS 期間限定；玩家未持任何卡時同樣可開（開啟後看到空狀態）。從 FS 模式開啟的背包<strong>與一般模式是同一頁</strong>，沒有簡化版或第二種排版（<span data-goto="pg-bag" style="color:var(--gold-light);">§07 單一版面聲明</span>）。</td></tr><tr><td class="region-td">5</td><td class="dim">按下 SPIN 當下自動關閉</td><td class="dim">玩家按下 SPIN 的當下，<strong>展開的選單與背包浮層自動關閉</strong>，讓畫面回到遊戲；<strong>icon 本體保留在畫面上</strong>，不隨之消失。關閉浮層<strong>不影響任何結算數字</strong>——局數與 score 照常計算。</td></tr><tr><td class="region-td">6</td><td class="dim">轉動中降低透明度、不可點</td><td class="dim">轉軸轉動中／開獎動畫未結束時，<strong>icon、展開選單、背包浮層一律降低透明度並完全不可點擊</strong>（點擊事件全部阻擋，此時點 icon 不會展開選單），用降低透明度來表示「這個功能現在不能用」。動畫結束後全部恢復正常。<br><span class="dim">責任邊界：浮層的開關與半透明由遊戲端／平台前端實作，遊戲需把「運行中」狀態通知浮層容器；背包本身的程式不因此變更。</span></td></tr></tbody>
+    <tbody><tr><td class="region-td">1</td><td class="dim"><strong>FREE SPINS 標示</strong></td><td class="dim">常駐於畫面左下角，提醒玩家目前正在使用FREE SPIN卡進行免費旋轉；<strong>從第一局開始顯示，到結算彈窗關閉後移除</strong>。</td></tr><tr><td class="region-td">2</td><td class="dim">BET 注額</td><td class="dim">固定顯示為該FREE SPIN卡的 Bet Amount，免費旋轉期間玩家無法調整</td></tr><tr><td class="region-td">3</td><td class="dim"><strong>剩餘局數計數器</strong></td><td class="dim"><strong>原本的旋轉鈕位置改為顯示「FREE {n}」</strong>，n＝剩餘局數，每完成一局 −1；n 歸 0 後不可再按，直接進結算。「FREE」字樣為美術圖、數字為動態值。遊戲本身觸發的免費遊戲期間 n 停住不動（那些局不扣卡片局數）。規則見 <span data-goto="pg-game" style="color:var(--gold-light);">§08 Ⓑ</span>。</td></tr><tr><td class="region-td">4</td><td class="dim">浮動 icon 於 FS 模式常駐</td><td class="dim">吸附浮動 icon 在<strong>一般模式與 FS 模式皆顯示、皆可點擊</strong>展開 GAME CENTER 選單，並非 FS 期間限定；玩家未持任何卡時同樣可開（開啟後看到空狀態）。從 FS 模式開啟的背包<strong>與一般模式是同一頁</strong>，沒有簡化版或第二種排版（<span data-goto="pg-bag" style="color:var(--gold-light);">§07 單一版面聲明</span>）。</td></tr><tr><td class="region-td">5</td><td class="dim">按下 SPIN 當下自動關閉</td><td class="dim">玩家按下 SPIN 的當下，<strong>展開的選單與背包浮層自動關閉</strong>，讓畫面回到遊戲；<strong>icon 本體保留在畫面上</strong>，不隨之消失。關閉浮層<strong>不影響任何結算數字</strong>——局數與 score 照常計算。</td></tr><tr><td class="region-td">6</td><td class="dim">轉動中降低透明度、不可點</td><td class="dim">轉軸轉動中／開獎動畫未結束時，<strong>icon、展開選單、背包浮層一律降低透明度並完全不可點擊</strong>（點擊事件全部阻擋，此時點 icon 不會展開選單），用降低透明度來表示「這個功能現在不能用」。動畫結束後全部恢復正常。<br><span class="dim">責任邊界：浮層的開關與半透明由遊戲端／平台前端實作，遊戲需把「運行中」狀態通知浮層容器；背包本身的程式不因此變更。</span></td></tr></tbody>
   </table>
 
   <div class="sub-title" id="art-fail">使用失敗態</div>
@@ -2259,7 +2259,7 @@ html[data-theme="light"] .theme-toggle .icon-moon { display: block; }
   <!-- ── 畫面二 ── -->
   <div class="sub-title">畫面二 · 遊戲中（FS 模式）</div>
   <div class="shot-map narrow">
-<div class="shot-frame"><img src="./images/fs_game_02_ingame.png" alt="FREE SPIN 模式進行中的遊戲畫面" onerror="this.style.display=&#39;none&#39;;this.nextElementSibling.style.display=&#39;block&#39;;"><div class="shot-ph">📷 截圖待補：FS 模式進行中的遊戲畫面<br><span style="font-size:10px;">將 fs_game_02_ingame.png 放入 design_assets 後自動顯示</span></div><div class="shot-cap">2026-08-25 原型實拍（FS 模式中 · WIN 顯示本局贏分）· 紅框 Ⓐ–Ⓘ 對應右表 · 點圖放大</div></div>
+<div class="shot-frame"><img src="./images/fs_game_02_ingame.png" alt="FREE SPIN 模式進行中的遊戲畫面" onerror="this.style.display=&#39;none&#39;;this.nextElementSibling.style.display=&#39;block&#39;;"><div class="shot-ph">📷 截圖待補：FS 模式進行中的遊戲畫面<br><span style="font-size:10px;">將 fs_game_02_ingame.png 放入 design_assets 後自動顯示</span></div><div class="shot-cap">2026-08-25 原型實拍（FS 模式中 · WIN 顯示本局贏分）· 紅框 Ⓐ–Ⓗ 對應右表 · 點圖放大</div></div>
 <div>
   <table class="spec-table" style="margin-bottom:8px;">
     <thead><tr><th style="width:56px;">區域</th><th>功能（點標題看詳細說明）</th></tr></thead>
@@ -2272,7 +2272,6 @@ html[data-theme="light"] .theme-toggle .icon-moon { display: block; }
       <tr><td class="region-td">Ⓕ</td><td><a data-goto="pg-game-j" style="color:var(--gold-light);text-decoration:none;border-bottom:1px dashed var(--border-bright);">AUTO / 快速 / 資訊鈕</a></td></tr>
       <tr><td class="region-td">Ⓖ</td><td><a data-goto="pg-game-k" style="color:var(--gold-light);text-decoration:none;border-bottom:1px dashed var(--border-bright);">⏳ 計時（平台既有元件 · 非 FS）</a></td></tr>
       <tr><td class="region-td">Ⓗ</td><td><a data-goto="pg-game-icon" style="color:var(--gold-light);text-decoration:none;border-bottom:1px dashed var(--border-bright);">CRM 吸附浮動 icon（常駐）</a> <span class="tag-pill tag-v2">V1.11 補標</span></td></tr>
-      <tr><td class="region-td">Ⓘ</td><td><a data-goto="pg-game-leave" style="color:var(--gold-light);text-decoration:none;border-bottom:1px dashed var(--border-bright);">中途離開 FS（點擊 FREE SPINS 標示）</a> <span class="tag-pill tag-v2">V1.11 補標</span></td></tr>
     </tbody>
   </table>
   <div class="region-index-note">▸ 點功能標題跳到下方「區域詳細說明」；點左側截圖可浮動放大檢視。</div>
@@ -2283,8 +2282,7 @@ html[data-theme="light"] .theme-toggle .icon-moon { display: block; }
 <div class="region-detail" id="pg-game-e">
   <h4><span class="region-td">Ⓐ</span>FREE SPINS 模式常駐標記<span class="rd-func">整場都掛著，代表「現在是免費局」。</span></h4>
   <div class="rd-cols">
-    <div><div class="rd-label">限制與規則</div><ul class="rd-list"><li>從第一局開始顯示，到結算彈窗關閉後移除</li>
-<li><strong>可點擊＝中途離開 FS 模式的出口</strong>（等同 Ⓘ 中途離開 FS）；點擊行為與規則見 <span data-goto="pg-game-leave" style="color:var(--gold-light);">Ⓘ</span></li></ul></div>
+    <div><div class="rd-label">限制與規則</div><ul class="rd-list"><li>從第一局開始顯示，到結算彈窗關閉後移除</li></ul></div>
     <div><div class="rd-label">防呆與錯誤</div><ul class="rd-list"><li>回一般模式後必須消失，否則玩家會以為還在免費局</li></ul></div>
   </div>
 </div>
@@ -2346,16 +2344,6 @@ html[data-theme="light"] .theme-toggle .icon-moon { display: block; }
     <div><div class="rd-label">防呆與錯誤</div><ul class="rd-list"><li>spin 轉動中半透明不可點；按下 SPIN 當下選單與背包浮層自動關閉、icon 保留</li></ul></div>
   </div>
 </div>
-<div class="region-detail" id="pg-game-leave">
-  <h4><span class="region-td">Ⓘ</span>中途離開 FS<span class="rd-func">局數未用完時離開 FS 模式的出口，<strong>由點擊 Ⓐ 的 FREE SPINS 標示觸發</strong>。<span class="tag-pill tag-v2">V1.11 補標</span></span></h4>
-  <div class="rd-cols">
-    <div><div class="rd-label">限制與規則</div><ul class="rd-list"><li><strong>觸發方式＝點擊 Ⓐ 的 FREE SPINS 標示</strong>，不另做獨立按鈕</li> <li>離開<strong>不觸發結算</strong>：剩餘局數與累積 <span class="mono">score</span> 全部保留（§03 全域規則「局數未用完離開不結算」）</li>
-<li>回背包後可續玩<strong>同一張卡</strong>（同 <span class="mono">reference_id</span>、續扣同池），或換卡內另一款遊戲</li></ul></div>
-    <div><div class="rd-label">防呆與錯誤</div><ul class="rd-list"><li>離開後回一般模式，押注恢復玩家自選、FREE SPINS 標記消失</li>
-<li>不得因離開而清空 score 或重置局數</li></ul></div>
-  </div>
-</div>
-
   <!-- ── CRM 活動頁浮層（iframe）行為 ── -->
   <div class="sub-title">CRM 入口與活動頁浮層（iframe）行為</div>
   <div class="callout info"><strong>先講清楚這是什麼</strong>：CRM 活動頁（<strong>含背包</strong>）是在<strong>遊戲內以 iframe 浮層</strong>開啟的——玩家不必離開遊戲就能開背包看卡片。本節定義兩件事：<strong>①玩家怎麼進到背包</strong>（入口路徑）<strong>②浮層與遊戲之間的互動邊界</strong>（什麼時候要讓開、什麼時候必須鎖住不給點）。</div>
