@@ -1,0 +1,2461 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Competitors CRM Report</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&display=swap" rel="stylesheet">
+<style>
+  :root{
+    /* ------------------------------------------------------------------
+       Figma "DG" (Dark Green) scale — values read directly from the palette
+       board (node 174:104). This file and that board are in sync.
+
+       Adjustments made to the system, and why:
+         1. Color/Gray (#98989D) retired from text duty — it only reached
+            4.14:1 on DG-70 panels and is a blue-grey (hue 240) in an
+            otherwise all-green system. Replaced by DG-20 / DG-30 / DG-35.
+         2. DG-20 (#B9DAC1) and DG-35 (#7CAB8D) added to the scale — the
+            board jumped straight from DG-30 (L66) to DG-40 (L40), and
+            DG-40 fails contrast at 2.43:1, leaving too few usable text
+            stops. Both new stops now exist on the board too.
+         3. Panel separation is carried by DG-50 borders, not by surface
+            brightness — adjacent surfaces sit only 1.17-1.24:1 apart.
+            Do not "fix" that by brightening the surfaces; it is deliberate.
+       Every text tier below clears 4.5:1 on the DG-70 panel (its worst case).
+       ------------------------------------------------------------------ */
+
+    /* Surfaces — 1.17:1 and 1.24:1 apart; deliberately subtle */
+    --page-bg:#042019;      /* DG-90 */
+    --card-bg:#072E27;      /* DG-80 */
+    --panel-bg:#143E34;     /* DG-70 */
+    --table-head:#143E34;   /* DG-70 */
+    --shot-bg:#143E34;      /* DG-70 */
+    --callout-bg:#072E27;   /* DG-80 */
+
+    /* Structure — these carry the layer separation */
+    --panel-border:#255B4C; /* DG-50 */
+    --shot-border:#255B4C;  /* DG-50 */
+    --line:#255B4C;         /* DG-50 */
+
+    /* Text — four tiers, all passing on DG-70 (worst-case surface) */
+    --text-main:#E0F2E2;      /* DG-10  10.16:1  titles, subheadings, item titles */
+    --text-body:#B9DAC1;      /* DG-20   7.84:1  body copy, tables, callouts */
+    --text-secondary:#96BCA3; /* DG-30   5.67:1  panel labels */
+    --text-muted:#7CAB8D;     /* DG-35   4.56:1  captions, numbers, placeholders */
+
+    /* Review status — outside the DG family on purpose, so annotations never
+       read as content. All clear 4.5:1 on every surface; each sits >=50deg
+       from the amber accent and >=63deg from each other on the hue wheel. */
+    --st-fix:#FF8DA1;         /* 需修正  5.42:1 on DG-70 */
+    --st-review:#C9A7F0;      /* 待覆核  5.81:1 on DG-70 */
+    --st-todo:#7FC4F5;        /* 待補齊  6.29:1 on DG-70 */
+
+    /* Accent — canonical value is the palette-board swatch, not the older #FFD60A */
+    --tag-bg:#D9A84A;       /* Board amber   5.46:1 on DG-70 */
+    --tag-text:#090909;     /* Color/Black   9.15:1 on the amber */
+
+    /* Summary panels invert the scheme — light card, dark green type — so the
+       closing takeaways read as conclusions rather than more body copy. */
+    --sum-bg:#F5F1E4;       /* warm off-white  13.00:1 against the card ground */
+    --sum-border:#D5CDB6;   /* soft sand edge — quieter than the amber accent */
+    --sum-label:#255B4C;    /* DG-50   6.94:1  panel labels sit back a step */
+    --sum-title:#042019;    /* DG-90  15.16:1  item titles carry the weight */
+    --sum-text:#143E34;     /* DG-70  10.51:1  body copy */
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:var(--page-bg);
+    font-family:"Noto Sans TC","PingFang TC","Microsoft JhengHei",-apple-system,BlinkMacSystemFont,sans-serif;
+    color:var(--text-main);
+  }
+  .page{
+    max-width:1180px;
+    margin:40px auto 120px;
+    background:var(--card-bg);
+    border-radius:12px;
+    padding:56px 64px;
+    box-shadow:0 1px 3px rgba(0,0,0,0.35);
+  }
+  .tag-row{ display:flex; align-items:center; gap:8px; margin-bottom:20px; }
+  .tag{ display:inline-flex; align-items:center; gap:6px; background:var(--tag-bg); color:var(--tag-text); font-weight:700; font-size:13px; padding:4px 10px; border-radius:4px; }
+  .source-note{ font-size:12px; color:var(--text-muted); }
+  .tab-bar{
+    display:flex; flex-direction:row; flex-wrap:nowrap; align-items:center;
+    border-bottom:1px solid var(--line); margin:0 -64px 28px; padding:0 64px;
+    position:sticky; top:0; z-index:20;
+    background:var(--card-bg);
+    border-top-left-radius:12px; border-top-right-radius:12px;
+  }
+  .tab-bar.is-stuck{ box-shadow:0 2px 8px rgba(0,0,0,0.4); }
+  /* Fix: sticky/fixed chrome (tab bar, side rail) can visually ghost through
+     the fixed image-zoom overlay in some browsers even though it's correctly
+     covered (z-index/hit-testing are both right) — a known compositing quirk
+     with position:sticky under a later fixed overlay. Belt-and-suspenders
+     fix: just don't paint them while the modal is open. */
+  body.modal-open .tab-bar,
+  body.modal-open .toc-rail{ visibility:hidden; }
+  .tab-btn{
+    appearance:none; background:none; border:none; font-family:inherit; font-size:13px; font-weight:700;
+    padding:8px 12px; cursor:pointer; color:var(--text-muted); border-bottom:2px solid transparent; margin-bottom:-1px;
+    flex:0 1 auto; min-width:0; max-width:280px;
+    white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+  }
+  .tab-btn:hover:not(:disabled){ color:var(--text-main); }
+  .tab-btn.active{ color:var(--text-main); border-bottom-color:var(--tag-bg); }
+  .tab-btn:disabled{ color:var(--panel-border); cursor:not-allowed; }
+  h1.title{ font-size:28px; font-weight:900; margin:0 0 6px; color:var(--text-main); letter-spacing:.2px; }
+  p.context{ font-size:14px; color:var(--text-muted); margin:0 0 28px; }
+  hr.divider{ border:none; border-top:1px solid var(--line); margin:0 0 40px; }
+  .report{ display:none; }
+  .report.active{ display:block; }
+  section.block{ margin-bottom:48px; }
+  h2.heading{ font-size:20px; font-weight:800; margin:0 0 16px; display:flex; align-items:baseline; gap:10px; color:var(--tag-bg); }
+  h2.heading .num{ color:var(--text-muted); font-weight:700; font-size:15px; letter-spacing:.5px; }
+  h3.subheading{ font-size:14px; font-weight:700; margin:0 0 12px; padding-left:10px; border-left:3px solid var(--tag-bg); color:var(--text-main); }
+  .panel{ background:var(--panel-bg); border:1px solid var(--panel-border); border-radius:8px; padding:16px 20px; margin-bottom:16px; }
+  .panel .p-title{ font-weight:700; font-size:13.5px; margin-bottom:8px; color:var(--text-secondary); letter-spacing:.2px; }
+  .panel p, .panel li{ font-size:13px; color:var(--text-body); line-height:1.7; margin:2px 0; }
+
+  /* Closing summary: the one place the palette flips, so the takeaways stand
+     apart from the 20+ description panels above them. */
+  .summary .panel{ background:var(--sum-bg); border-color:var(--sum-border); }
+  .summary .p-title{ color:var(--sum-label); }
+  .summary .item-title{ color:var(--sum-title); }
+  .summary .item-desc,
+  .summary .panel p,
+  .summary .panel li{ color:var(--sum-text); }
+  .summary .panel strong{ color:var(--sum-title); }
+
+  /* .panel-plain opts a panel back out of the summary's inverted palette —
+     used for the FA CHAI × JILI comparison, which reads better as a normal
+     dark panel than as a third "takeaway" card. */
+  .summary .panel.panel-plain{ background:var(--panel-bg); border-color:var(--panel-border); }
+  .summary .panel.panel-plain .p-title{ color:var(--text-secondary); }
+  .summary .panel.panel-plain .item-title{ color:var(--tag-bg); }
+  .summary .panel.panel-plain .item-desc,
+  .summary .panel.panel-plain p,
+  .summary .panel.panel-plain li{ color:var(--text-body); }
+  .summary .panel.panel-plain strong{ color:inherit; }
+
+  .col-grid{ display:grid; gap:16px; }
+  .col-grid.cols-2{grid-template-columns:1fr 1fr;}
+  .col-grid.cols-3{grid-template-columns:1fr 1fr 1fr;}
+  .col-grid.cols-4{grid-template-columns:1fr 1fr 1fr 1fr;}
+  .item-block{margin-bottom:14px;}
+  .item-block:last-child{margin-bottom:0;}
+  /* Numbered point titles inside panels use the amber accent, matching the
+     Figma source where these labels are yellow. 5.46:1 on DG-70 panels,
+     6.75:1 on DG-80 callouts. */
+  .item-title{font-weight:700;font-size:13px;margin-bottom:4px;color:var(--tag-bg);}
+  .item-desc{font-size:13px;color:var(--text-body);line-height:1.7;margin:0 0 2px;}
+  .callout-box{ background:var(--callout-bg); border:1px solid var(--panel-border); border-radius:6px; padding:8px 10px; margin-top:8px; font-size:13px; color:var(--text-body); line-height:1.6; }
+
+  /* ---- review annotations ---- */
+  .flag{
+    display:inline-block; font-size:10px; font-weight:700; letter-spacing:.06em;
+    padding:2px 7px; border-radius:3px; border:1px solid currentColor;
+    vertical-align:middle; margin-left:8px; white-space:nowrap; line-height:1.5;
+  }
+  .flag-fix{ color:var(--st-fix); }
+  .flag-review{ color:var(--st-review); }
+  .flag-todo{ color:var(--st-todo); }
+  h2.heading .flag{ position:relative; top:-2px; }
+
+  .needs-fix,.needs-review,.needs-todo{ padding-left:11px; border-left:2px solid; }
+  .needs-fix{ border-left-color:var(--st-fix); }
+  .needs-review{ border-left-color:var(--st-review); }
+  .needs-todo{ border-left-color:var(--st-todo); }
+
+  /* screenshot slots still waiting on a real capture — tint them as outstanding work */
+  .shot:not(.has-image){ border-color:var(--st-todo); }
+  .shot:not(.has-image) .code-name{ color:var(--st-todo); }
+
+  /* legend */
+  .legend{
+    background:var(--panel-bg); border:1px solid var(--panel-border);
+    border-radius:8px; padding:16px 20px; margin-bottom:16px;
+  }
+  .legend-title{ font-weight:700; font-size:13.5px; color:var(--text-secondary); margin-bottom:12px; letter-spacing:.2px;
+    cursor:pointer; list-style:none; user-select:none; display:flex; align-items:center; gap:7px; }
+  .legend-title::-webkit-details-marker{ display:none; }
+  .legend-title::before{ content:'▸'; display:inline-block; font-size:10px; color:var(--text-secondary); transition:transform .15s ease; }
+  .legend[open] > .legend-title{ margin-bottom:12px; }
+  .legend:not([open]) > .legend-title{ margin-bottom:0; }
+  .legend[open] > .legend-title::before{ transform:rotate(90deg); }
+  .legend-grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:14px; }
+  @media (max-width:720px){ .legend-grid{ grid-template-columns:1fr; } }
+  .legend-item{ font-size:12.5px; color:var(--text-body); line-height:1.6; padding-left:11px; border-left:2px solid; }
+  .legend-item b{ display:block; font-size:12.5px; margin-bottom:2px; }
+  .legend-item.l-fix{ border-left-color:var(--st-fix); }
+  .legend-item.l-fix b{ color:var(--st-fix); }
+  .legend-item.l-review{ border-left-color:var(--st-review); }
+  .legend-item.l-review b{ color:var(--st-review); }
+  .legend-item.l-todo{ border-left-color:var(--st-todo); }
+  .legend-item.l-todo b{ color:var(--st-todo); }
+  .legend-count{ font-family:inherit; font-weight:400; color:var(--text-muted); }
+
+  /* exclusive-section collapsible — same disclosure affordance as .legend,
+     but no boxed background/border: the panels inside are already the
+     summary's inverted-palette cards, so a second frame isn't needed */
+  .exc-toggle{ margin-bottom:18px; }
+  .exc-toggle-title{ font-weight:700; font-size:13.5px; color:var(--text-secondary); letter-spacing:.2px;
+    cursor:pointer; list-style:none; user-select:none; display:flex; align-items:center; gap:7px; margin-bottom:0; }
+  .exc-toggle-title::-webkit-details-marker{ display:none; }
+  .exc-toggle-title::before{ content:'▸'; display:inline-block; font-size:10px; color:var(--text-secondary); transition:transform .15s ease; }
+  .exc-toggle[open] > .exc-toggle-title{ margin-bottom:14px; }
+  .exc-toggle[open] > .exc-toggle-title::before{ transform:rotate(90deg); }
+
+  table.data-table{ width:100%; border-collapse:collapse; font-size:13px; margin-bottom:8px; }
+  table.data-table th{ background:var(--table-head); text-align:left; font-weight:700; padding:8px 10px; border-bottom:1px solid var(--line); color:var(--text-main); }
+  table.data-table td{ padding:8px 10px; border-bottom:1px solid var(--line); color:var(--text-body); vertical-align:top; }
+  table.data-table tr:last-child td{border-bottom:none;}
+
+  /* ---- Comparisons "At a Glance" skim matrix ----------------------------
+     One tally stroke per ✓ in that category, so the reader can size up
+     coverage breadth before reading the six detailed tables below. Only a
+     single vertical rule (after the row labels) plus row rules, to keep it
+     reading as a summary device rather than another dense data table. */
+  .skim-scroll{ overflow-x:auto; }
+  .skim-table{ width:100%; border-collapse:collapse; min-width:620px; }
+  .skim-table th, .skim-table td{ border-bottom:1px solid var(--line); }
+  /* Chinese label leads, English sits under it — same order the section
+     headings use ("任務 Mission"), just stacked to keep the columns narrow. */
+  .skim-table thead th{
+    padding:0 8px 9px; font-size:9.5px; font-weight:700; letter-spacing:.1em;
+    color:var(--text-muted); text-align:center; line-height:1.3; white-space:nowrap;
+  }
+  .skim-table thead th .sk-zh{
+    display:block; font-size:12.5px; letter-spacing:.02em; color:var(--text-main); margin-bottom:3px;
+  }
+  .skim-table tbody th{
+    padding:12px 12px 12px 0; text-align:right; white-space:nowrap; width:1%;
+    font-size:12.5px; font-weight:700; color:var(--text-main);
+    border-right:1px solid var(--line);
+  }
+  .skim-table thead th:first-child{ border-right:1px solid var(--line); }
+  .skim-table tbody td{ padding:12px 8px; text-align:center; vertical-align:middle; }
+  .skim-tally{ display:block; margin:0 auto 4px; color:var(--tag-bg); }
+  .skim-zero{ display:block; color:var(--text-muted); font-size:14px; line-height:20px; margin-bottom:4px; }
+  .skim-count{ display:block; font-size:10.5px; color:var(--text-muted); font-variant-numeric:tabular-nums; letter-spacing:.03em; }
+
+  /* ---- Preview line chart -------------------------------------------------
+     Series hues are the validated categorical trio (blue / orange / aqua),
+     deliberately outside the DG family and outside the review-flag colours:
+     inside the chart frame they read as data, and amber stays the report's
+     one chrome accent. Each line is direct-labelled, so identity is never
+     carried by colour alone. */
+  .lc-wrap{ overflow-x:auto; margin-top:26px; }
+  .lc{ display:block; width:100%; min-width:620px; height:auto; }
+  .lc-grid{ stroke:var(--line); stroke-width:1; }
+  .lc-line{ fill:none; stroke-width:2; stroke-linejoin:round; stroke-linecap:round; }
+  .lc-dot{ stroke:var(--card-bg); stroke-width:2; }
+  .lc-ytick{ fill:var(--text-muted); font-size:11px; }
+  .lc-xzh{ fill:var(--text-main); font-size:13px; font-weight:700; }
+  .lc-xen{ fill:var(--text-muted); font-size:9.5px; font-weight:700; letter-spacing:.1em; }
+  .lc-name{ font-size:12px; font-weight:800; letter-spacing:.02em; }
+  .lc-note{ font-size:11.5px; color:var(--text-muted); line-height:1.65; margin:14px 0 0; }
+  /* Comparison-table marks: ✓ has it, ✕ not observed, △ present but incomplete
+     or of concern. Reuses the existing palette — no new colours introduced. */
+  .mark-y,.mark-n,.mark-p{ font-weight:700; margin-right:6px; }
+  .mark-y{ color:var(--tag-bg); }
+  .mark-n{ color:var(--text-muted); }
+  .mark-p{ color:var(--text-secondary); }
+  .media-row{ display:flex; gap:28px; align-items:flex-start; margin-bottom:16px; }
+  .media-row > div:first-child{ flex:1; }
+
+  /* The description panel beside a screenshot carries no chrome — with ~24 of
+     them on a page, that much boxing flattened the hierarchy. Stripping the
+     border/fill leaves the bordered panels (dev notes, summary, banners) as
+     the only framed blocks, so they read as genuinely distinct.
+     The gap above is widened to 28px to replace the padding that's gone. */
+  .media-row > .panel{
+    flex:1; margin-bottom:0;
+    background:none; border:none; border-radius:0; padding:0;
+  }
+  /* A chrome-less panel sits directly on --card-bg, which is the same colour
+     as --callout-bg — so callouts inside one would vanish. Lift them to the
+     lighter panel tone instead, reading as a raised note rather than a well. */
+  .media-row > .panel .callout-box{ background:var(--panel-bg); }
+
+  /* With no box around them, these panel titles are the only marker of where
+     a description block begins — so they take the brightest tier (DG-10)
+     instead of the sage label tone. Framed panels keep sage; their border
+     already does the job. 12.57:1 on the card. */
+  .media-row > .panel .p-title{ color:var(--text-main); }
+  .shot{ position:relative; border:1px dashed var(--shot-border); border-radius:8px; background:var(--shot-bg); display:flex; align-items:center; justify-content:center; text-align:center; padding:10px; flex-shrink:0; overflow:hidden; cursor:pointer; transition:opacity .15s ease, border-color .15s ease; }
+  .shot:hover{ opacity:0.85; border-color:var(--text-muted); }
+  .shot img{ position:absolute; inset:0; width:100%; height:100%; object-fit:cover; display:block; }
+  .shot.has-image{ border-style:solid; }
+  .shot span{ position:relative; font-size:12px; color:var(--text-muted); line-height:1.6; }
+  .shot .code-name{ font-size:10px; color:var(--text-muted); margin-top:4px; }
+  .shot .zoom-hint{ position:absolute; bottom:6px; right:6px; background:rgba(0,0,0,0.55); color:#fff; font-size:10px; padding:2px 6px; border-radius:4px; opacity:0; transition:opacity .15s ease; }
+  .shot.has-image:hover .zoom-hint{ opacity:1; }
+
+  /* small inline glyph marking a "replay/play" UI control mentioned in text,
+     so readers connect the words to what it looks like without a screenshot */
+  .icon-play{ color:var(--text-main); font-size:9px; margin-right:3px; }
+  .two-shot-row{ display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-bottom:16px; }
+  .two-shot-row .shot{width:100%;}
+
+  /* Level-system EXP-threshold bar compare (report-levels tab). Fill colors
+     reuse the brand hex already established by the Exclusive-summary line
+     chart (FA CHAI #3987E5 / JILI #D95926) rather than introducing new tokens. */
+  .lvbar-row{ display:flex; align-items:center; gap:14px; margin-bottom:12px; }
+  .lvbar-row:last-of-type{ margin-bottom:0; }
+  .lvbar-name{ width:72px; flex:0 0 auto; font-size:13px; font-weight:700; color:var(--text-main); text-align:right; }
+  .lvbar-track{ flex:1; height:22px; background:var(--card-bg); border:1px solid var(--panel-border); border-radius:11px; position:relative; overflow:hidden; }
+  .lvbar-fill{ height:100%; border-radius:11px; display:flex; align-items:center; }
+  .lvbar-fill span{ font-size:12px; font-weight:700; color:#fff; padding-left:12px; white-space:nowrap; }
+  .shot-caption{ font-size:12px; color:var(--text-muted); text-align:center; margin-top:6px; }
+  .sub-block{ margin-bottom:24px; }
+  .sub-block:last-of-type{ margin-bottom:16px; }
+  footer.report-footer{ text-align:center; font-size:12px; color:var(--text-muted); margin-top:8px; }
+
+  /* ---- addressable refs (off by default; toggle in the tag row) ---- */
+  .ref-toggle{
+    margin-left:auto; appearance:none; cursor:pointer;
+    font-family:inherit; font-size:11px; font-weight:700; letter-spacing:.06em;
+    color:var(--text-muted); background:none;
+    border:1px solid var(--panel-border); border-radius:4px; padding:3px 10px;
+  }
+  .ref-toggle:hover{ color:var(--text-main); border-color:var(--text-muted); }
+  .ref-toggle[aria-pressed="true"]{ color:var(--tag-bg); border-color:var(--tag-bg); }
+
+  [data-ref]{ position:relative; }
+  [data-ref]::before{
+    content:attr(data-ref);
+    position:absolute; right:100%; top:2px; margin-right:8px;
+    font-family:ui-monospace,SFMono-Regular,Menlo,monospace;
+    font-size:9.5px; font-weight:700; letter-spacing:.02em; line-height:1.4;
+    color:var(--st-todo); background:var(--page-bg);
+    border:1px solid var(--st-todo); border-radius:3px; padding:1px 5px;
+    white-space:nowrap; opacity:0; pointer-events:none; transition:opacity .15s ease;
+  }
+  body.show-refs [data-ref]::before{ opacity:.85; }
+  /* sections get theirs above-left so it can't collide with the heading */
+  body.show-refs section.block[data-ref]::before{ top:-4px; }
+  @media (max-width:1100px){
+    /* no room in the margin — sit the label inside, above the block */
+    body.show-refs [data-ref]::before{
+      right:auto; left:0; top:-15px; margin-right:0;
+    }
+    body.show-refs [data-ref]{ margin-top:18px; }
+  }
+
+  /* ---- section rail: collapsed table of contents ---- */
+  /* ============================================================
+     Section Rail（章節軸）
+     One tick per section of the active report. Pinned to the
+     VIEWPORT's right edge, not to the report card — so it stays
+     in the same place on screen no matter the window width.
+     28px clears the scrollbar (~15px); the card's own 64px inner
+     padding means it still never overlaps text, even when the
+     card fills the window.
+     ============================================================ */
+  .toc-rail{
+    position:fixed;
+    right:28px;
+    top:50%; transform:translateY(-50%);
+    z-index:500; display:flex; flex-direction:column; gap:8px;
+    background:none; border:none; padding:10px 6px; margin:0;
+    cursor:pointer; appearance:none;
+    animation:railIn .5s ease .4s both;
+  }
+  @keyframes railIn{ from{opacity:0; transform:translate(10px,-50%);} to{opacity:1; transform:translate(0,-50%);} }
+  .toc-rail span{
+    display:block; width:18px; height:2px; border-radius:1px;
+    background:var(--text-main); opacity:.18;
+    transition:opacity .2s ease, background-color .2s ease, width .2s ease;
+  }
+  .toc-rail span.on{ background:var(--tag-bg); opacity:1; width:24px; }
+  .toc-rail:hover span{ opacity:.4; }
+  .toc-rail:hover span.on{ opacity:1; }
+  .toc-rail:focus-visible{ outline:2px solid var(--tag-bg); outline-offset:4px; border-radius:4px; }
+
+  .toc-panel{
+    position:fixed;
+    right:58px;
+    top:50%; transform:translateY(-50%);
+    z-index:501; width:min(290px, calc(100vw - 96px)); max-height:70vh; overflow-y:auto;
+    background:var(--panel-bg); border:1px solid var(--panel-border);
+    border-radius:8px; padding:10px; display:none;
+    box-shadow:0 10px 34px rgba(0,0,0,.45);
+  }
+  .toc-panel.open{ display:block; }
+  .toc-panel .toc-head{
+    font-size:10.5px; font-weight:700; letter-spacing:.12em; text-transform:uppercase;
+    color:var(--text-muted); padding:4px 8px 10px; border-bottom:1px solid var(--panel-border); margin-bottom:6px;
+  }
+  .toc-panel button{
+    display:block; width:100%; text-align:left; appearance:none; border:none;
+    background:none; font-family:inherit; font-size:13px; line-height:1.5;
+    color:var(--text-body); padding:7px 8px 7px 20px; border-radius:5px;
+    cursor:pointer; position:relative;
+  }
+  .toc-panel button:hover{ background:var(--callout-bg); color:var(--text-main); }
+  .toc-panel button.on{ color:var(--tag-bg); font-weight:700; }
+  .toc-panel button.on::before{
+    content:""; position:absolute; left:8px; top:50%; width:5px; height:5px;
+    margin-top:-2.5px; border-radius:50%; background:var(--tag-bg);
+  }
+  .toc-panel button .n{
+    font-variant-numeric:tabular-nums; color:var(--text-muted); margin-right:8px; font-weight:400;
+  }
+  .toc-panel button.on .n{ color:var(--tag-bg); }
+
+  /* Narrow screens: shrink the ticks rather than hiding the rail. */
+  @media (max-width:900px){
+    .toc-rail{ gap:7px; padding:8px 5px; }
+    .toc-rail span{ width:13px; }
+    .toc-rail span.on{ width:19px; }
+  }
+  /* Very narrow (phones): the rail would crowd the text column, so drop it.
+     Nothing is lost — every section heading is still in normal document flow. */
+  @media (max-width:600px){ .toc-rail,.toc-panel{ display:none !important; } }
+
+  @media (prefers-reduced-motion:reduce){
+    .toc-rail{ animation:none; }
+    .toc-rail span{ transition:none; }
+  }
+  .img-modal{ display:none; position:fixed; inset:0; background:rgba(20,20,20,0.85); z-index:1000; align-items:center; justify-content:center; flex-direction:column; padding:40px; }
+  .img-modal.open{ display:flex; }
+  /* Fit state (default): centered, scaled to the viewport, no scrolling. */
+  .img-modal-viewport{
+    max-width:90vw; max-height:82vh; display:flex; align-items:center; justify-content:center;
+    overflow:auto; border-radius:6px; box-shadow:0 8px 30px rgba(0,0,0,0.4);
+  }
+  .img-modal-viewport img{ max-width:90vw; max-height:82vh; object-fit:contain; display:block; cursor:zoom-in; }
+  /* Zoomed state: click toggles to literal 2x of whatever size the image
+     was rendered at while "fit" — guaranteed visible zoom on every image,
+     regardless of how that image's native resolution compares to the fit
+     box (a small source image would barely grow, or not at all, if this
+     zoomed to native pixels instead). Width/height are set inline by JS
+     since the target size is computed per-click, not a fixed CSS value.
+     The viewport scrolls (wheel, trackpad, drag-scrollbar) to pan.
+     Left-aligned rather than centered so overflow scrolls predictably. */
+  .img-modal-viewport.zoomed{ align-items:flex-start; justify-content:flex-start; }
+  .img-modal-viewport.zoomed img{ max-width:none; max-height:none; cursor:zoom-out; }
+  .img-modal-caption{ color:var(--text-main); font-size:13px; margin-top:14px; text-align:center; max-width:80vw; }
+  .img-modal-hint{ color:var(--text-muted); font-size:11px; margin-top:4px; text-align:center; }
+  .img-modal-close{ position:absolute; top:20px; right:32px; color:var(--text-main); font-size:32px; font-weight:400; line-height:1; cursor:pointer; user-select:none; }
+  .img-modal-close:hover{ color:var(--tag-bg); }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <div class="tag-row">
+    <span class="tag">分析報告 &nbsp;|&nbsp; 2026/08/10</span>
+    <span class="source-note">資料來源：Figma「企劃CRM工作區」</span>
+    <button type="button" id="ref-toggle" class="ref-toggle" aria-pressed="false">顯示編號 Refs</button>
+  </div>
+
+  <div class="tab-bar">
+    <button class="tab-btn active" data-target="report-fachai" title="FA CHAI（DJ BOOM BOOM）產品分析報告">FA CHAI（DJ BOOM BOOM）產品分析報告</button>
+    <button class="tab-btn" data-target="report-jili" title="JILI（Super Ace）產品分析報告">JILI（Super Ace）產品分析報告</button>
+    <button class="tab-btn" data-target="report-jdb" title="JDB Gaming 產品分析報告">JDB Gaming 產品分析報告</button>
+    <button class="tab-btn" data-target="report-compare" title="Comparisons — FA CHAI 與 JILI 功能對照">Comparisons</button>
+    <button class="tab-btn" data-target="report-levels" title="等級系統機制比較 — FA CHAI 與 JILI 等級流程圖解對照">等級系統比較</button>
+  </div>
+
+  <!-- ============================= FA CHAI ============================= -->
+  <div id="report-fachai" class="report active">
+
+    <h1 class="title">FA CHAI（DJ BOOM BOOM）產品分析報告</h1>
+    <p class="context">初步競品研究，主針對 DJ BOOM BOOM 的 CRM 功能。</p>
+
+    <hr class="divider">
+
+    <details class="legend">
+      <summary class="legend-title">審閱標示說明</summary>
+      <div class="legend-grid">
+        <div class="legend-item l-fix"><b>需修正 <span class="legend-count">· 本頁無</span></b>內容有誤或已過時，需要更正</div>
+        <div class="legend-item l-review"><b>待覆核 <span class="legend-count">· 本頁無</span></b>尚未實機確認，數值與描述都可能不準</div>
+        <div class="legend-item l-todo"><b>待補齊 <span class="legend-count">· 本頁無</span></b>已知缺口，尚未進行的工作（含未填入的截圖佔位框）</div>
+      </div>
+    </details>
+
+    <section class="block">
+      <div class="two-shot-row">
+        <div>
+          <div class="shot has-image" style="aspect-ratio:1600/799;" data-caption="主畫面與側邊欄圖示對照（展開／收合兩態，1-6 標示各功能圖示）"><img src="images/FC-00a-1.png" alt="主畫面與側邊欄圖示對照（展開／收合兩態，1-6 標示各功能圖示）"><span class="zoom-hint">🔍 放大檢視</span></div>
+          <div class="shot-caption">主畫面與側邊欄圖示對照</div>
+        </div>
+        <div>
+          <div class="shot has-image" style="aspect-ratio:1470/852;" data-caption="結構圖］ DJ BOOM BOOM 系統架構（側邊欄 6 模組）"><img src="images/FC-00a-2.png" alt="結構圖］ DJ BOOM BOOM 系統架構（側邊欄 6 模組）"><span class="zoom-hint">🔍 放大檢視</span></div>
+          <div class="shot-caption">DJ BOOM BOOM 系統架構（側邊欄 6 模組）</div>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="p-title">整體架構觀察</div>
+        <p>主要的 CRM 功能都放到側邊欄，包含：每日任務、背包、排行榜、推薦游戲以及等級獎勵。</p>
+        <div class="item-block">
+          <div class="item-title">覆核後補充</div>
+          <p class="item-desc">原報告的方向正確——FA CHAI 確實把 CRM 全部集中在側邊欄，這點與 JILI 不同。但實際模組數為 <strong>6 個</strong>。</p>
+          <p class="item-desc">另一個介面特徵值得記錄：側邊欄在關閉面板時為<strong>左側直向</strong>，開啟任一面板後會<strong>移到底部轉為橫向</strong>，屬動態導覽設計。</p>
+        </div>
+      </div>
+
+      <h3 class="subheading">功能模組總覽</h3>
+      <table class="data-table">
+        <thead>
+          <tr><th style="width:32px;">#</th><th style="width:22%;">功能模組</th><th style="width:14%;">位置</th><th>內容</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>1</td><td>任務 MISSION</td><td>側邊欄</td><td>分成 挑戰任務 Challenge Mission 與 指定任務 Specified Mission，兩者皆有「每周完成 3 次」的上層獎勵</td></tr>
+          <tr><td>2</td><td>玩家等級 LEVEL</td><td>側邊欄</td><td>等級進度與等級獎勵領取（本次帳號為 LV 5）</td></tr>
+          <tr><td>3</td><td>背包/道具 PROPS</td><td>側邊欄</td><td>本游戲 This Game／其他游戲 Other Games／道具記錄 Card Record</td></tr>
+          <tr><td>4</td><td>排行榜 RANKING</td><td>側邊欄</td><td>單局贏分／單局倍數排行，含歷史最高紀錄與<strong>回放</strong>；可切換本游戲／全部游戲</td></tr>
+          <tr><td>5</td><td>推薦游戲 RECOMMENDED</td><td>側邊欄</td><td>游戲推薦牆，含<strong>玩法分類標籤</strong>與 ★ 收藏鍵</td></tr>
+          <tr><td>6</td><td>收藏 FAVORITES</td><td>側邊欄</td><td>玩家收藏的游戲清單；空狀態改以「You May Like…」推薦填補</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <!-- 01 Mission -->
+    <section class="block">
+      <h2 class="heading"><span class="num">01</span> 任務 Mission</h2>
+      <div class="panel">
+        <p class="item-desc">FA CHAI 的任務分為<strong>挑戰任務 Challenge Mission</strong>與<strong>指定任務 Specified Mission</strong>兩個獨立分類；兩者<strong>各自</strong>要求玩家在當周完成 3 個該分類的任務，才能各自領取一組每週獎勵——即「挑戰／指定各一組」，等同同時存在<strong>兩條獨立的每周任務線</strong>，而非共用同一組週目標。</p>
+        <div class="callout-box">此設計讓 FA CHAI 在每日任務之外多出兩層「當周完成 3 次」的回訪誘因；JILI 目前未見對應的每周任務層。</div>
+      </div>
+
+      <div class="sub-block">
+        <h3 class="subheading">任務頁畫面説明</h3>
+        <div class="media-row">
+          <div>
+            <div class="shot has-image" style="aspect-ratio:1196/668;" data-caption="截圖合輯：新手導覽／功能詳細資訊／每日任務，共 4 格畫面"><img src="images/FC-01b.png" alt="截圖合輯：新手導覽／功能詳細資訊／每日任務，共 4 格畫面"><span class="zoom-hint">🔍 放大檢視</span></div>
+          </div>
+          <div class="panel">
+            <div class="p-title">FACHAI任務頁説明</div>
+            <div class="item-block">
+              <div class="item-title">1. 新手導覽</div>
+              <p class="item-desc">方便與新用戶快速理解產品如何運作，減少「學習時段」</p>
+            </div>
+            <div class="item-block">
+              <div class="item-title">2. 功能詳細資訊</div>
+              <p class="item-desc">按下畫面的 info icon 會打開的彈窗。主要解釋：任務期限時間、如何完成任務以及其他注意事項</p>
+            </div>
+            <div class="item-block">
+              <div class="item-title">3. 獎勵資訊</div>
+              <p class="item-desc">按下任務卡的 info icon 會打開的彈窗。獎勵以 <strong>FA CHAI CARD</strong> 呈現，卡片名稱直接對應目標游戲。</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="sub-block">
+        <h3 class="subheading">挑戰任務頁畫面説明</h3>
+        <div class="media-row">
+          <div>
+            <div class="shot has-image" style="aspect-ratio:677/650;" data-caption="截圖合輯：完成任務／新任務，共 2 格畫面"><img src="images/FC-01c.png" alt="截圖合輯：完成任務／新任務，共 2 格畫面"><span class="zoom-hint">🔍 放大檢視</span></div>
+          </div>
+          <div class="panel">
+            <div class="p-title">挑戰任務 Challenge Mission - 獲取任務獎勵</div>
+            <div class="item-block">
+              <div class="item-title">1. 每周任務</div>
+              <p class="item-desc">需在當周完成 3 個挑戰任務才能獲得獎勵；有時間期限與規則</p>
+            </div>
+            <div class="item-block">
+              <div class="item-title">2. 每日任務</div>
+              <p class="item-desc">已完成的任務卡自動往下移，玩家無需親自領取，並顯示 COMPLETE。解鎖新的任務：當第一任務已完成時，新的任務卡會被開通。</p>
+            </div>
+            <div class="item-block">
+              <div class="item-title">3. 任務刷新需手動重啟游戲</div>
+              <p class="item-desc">任務頁常駐提示，玩家需每日 12:00 後自行重開游戲才能刷新任務，並附 1 小時倒數。<strong>任務不會自動刷新</strong>。</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="sub-block">
+        <h3 class="subheading">指定游戲頁畫面説明 Specified Mission</h3>
+        <div class="media-row">
+          <div>
+            <div class="shot has-image" style="aspect-ratio:711/650;" data-caption="截圖合輯：完成任務／任務，共 2 格畫面"><img src="images/FC-01d.png" alt="截圖合輯：完成任務／任務，共 2 格畫面"><span class="zoom-hint">🔍 放大檢視</span></div>
+          </div>
+          <div class="panel">
+            <div class="p-title">指定任務 Specified Mission - 獲取任務獎勵</div>
+            <div class="item-block">
+              <div class="item-title">1. 每周任務</div>
+              <p class="item-desc">需在當周完成 3 個指定任務才能獲得獎勵；有時間期限與規則</p>
+            </div>
+            <div class="item-block">
+              <div class="item-title">2. 每日任務</div>
+              <p class="item-desc">已完成的任務卡自動往下移；解鎖新的任務。實機任務卡標明 <strong>Specified Game</strong>，獎勵卡片名稱與該游戲同名。</p>
+            </div>
+            <div class="item-block">
+              <div class="item-title">3. 覆核新增：與 JILI 的關鍵差異</div>
+              <p class="item-desc">FA CHAI 的指定任務卡<strong>只標示游戲名稱，沒有直接跳轉按鈕</strong>；JILI 的對應功能每張卡都有紅色跳轉箭頭可直接開啟該游戲。導流效率上 JILI 明顯較強。</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="p-title">開發該功能需注意事項</div>
+        <div class="col-grid cols-3">
+          <div>
+            <div class="item-title">任務不會自動刷新（不建議照抄）</div>
+            <p class="item-desc">不同時區截圖顯示的重啟時間不同（GMT+8 與 GMT-4），但<strong>指的是同一時刻</strong>——提示會依玩家時區換算顯示，非兩套規則。</p>
+            <p class="item-desc">也就是說，時間到達後任務<strong>不會自動更新</strong>，玩家必須自行關閉並重開游戲才會看到新任務。若玩家不知道這件事，就會以為任務停擺。</p>
+          </div>
+          <div>
+            <div class="item-title">任務狀態需明確可辨</div>
+            <p class="item-desc">任務 CTA 需明確顯示不同狀態：未完成、已完成、未解鎖（FA CHAI 以鎖頭圖示表示未解鎖，可參考）</p>
+            <p class="item-desc">已完成的任務卡自動下移並顯示 COMPLETE，玩家無需手動領取，減少一次操作</p>
+            <p class="item-desc">活動期限需寫清楚；倒數計時對「每周任務」這種長週期目標特別重要</p>
+          </div>
+          <div>
+            <div class="item-title">指定任務需附跳轉入口</div>
+            <p class="item-desc">FA CHAI 的指定任務卡只標示游戲名稱，玩家得自己去大廳找；JILI 每張卡都有直接開啟該游戲的按鈕</p>
+            <p class="item-desc">若導流是這個功能的目的，缺少跳轉等於白做——我方開發時應比照 JILI 附上跳轉</p>
+            <p class="item-desc">跳轉前建議加一個「請確認」的彈窗，避免玩家誤離開當前游戲</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 02 Backpack -->
+    <section class="block">
+      <h2 class="heading"><span class="num">02</span> 背包/道具 PROPS</h2>
+      <div class="panel">
+        <p class="item-desc">本節已於 2026/08/25 以實機截圖覆核，內容確認無誤：三頁籤（THIS GAME／OTHER GAMES／CARD RECORDS）、空狀態文案、篩選選項與卡片欄位皆與記錄相符。</p>
+        <div class="callout-box">補充對照：FA CHAI <strong>三個頁籤都有相同的空狀態插畫與文案</strong>。JILI 的「其他游戲」分頁則完全沒有空狀態——此處 FA CHAI 明顯較完整。</div>
+      </div>
+
+      <div class="sub-block">
+        <h3 class="subheading">背包頁畫面説明</h3>
+        <div class="media-row">
+          <div>
+            <div class="shot has-image" style="aspect-ratio:1445/599;" data-caption="截圖合輯：新手導覽／該游戲道具庫／其他游戲道具庫／卡片記錄，共 4 格畫面"><img src="images/FC-02b.png" alt="截圖合輯：新手導覽／該游戲道具庫／其他游戲道具庫／卡片記錄，共 4 格畫面"><span class="zoom-hint">🔍 放大檢視</span></div>
+          </div>
+          <div class="panel">
+            <div class="p-title">背包頁説明</div>
+            <div class="item-block">
+              <div class="item-title">1. 新手導覽</div>
+              <p class="item-desc">方便與新用戶快速理解產品如何運作，減少「學習時段」</p>
+            </div>
+            <div class="item-block">
+              <div class="item-title">2. 本游戲道具庫 (This Game)</div>
+              <p class="item-desc">記錄本游戲道具，如 Free Spin 卡</p>
+            </div>
+            <div class="item-block">
+              <div class="item-title">3. 其他游戲道具庫 (Other Games)</div>
+              <p class="item-desc">記錄其他游戲道具，如 Free Spin 卡</p>
+            </div>
+            <div class="item-block">
+              <div class="item-title">4. 卡片記錄/道具記錄</div>
+              <p class="item-desc">記錄全部道具，包括用過的、沒用過的以及已過期的</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="sub-block">
+        <h3 class="subheading">本游戲頁-使用道具</h3>
+        <div class="media-row">
+          <div>
+            <div class="shot has-image" style="aspect-ratio:1742/661;" data-caption="截圖合輯：無道具／指定游戲打開背包／獎勵資訊／Free Spin 啓用中／原本預設畫面／使用完畢，共 6 格畫面"><img src="images/FC-02c.png" alt="截圖合輯：無道具／指定游戲打開背包／獎勵資訊／Free Spin 啓用中／原本預設畫面／使用完畢，共 6 格畫面"><span class="zoom-hint">🔍 放大檢視</span></div>
+          </div>
+          <div class="panel">
+            <div class="p-title">本游戲頁-使用道具説明</div>
+            <div class="item-block">
+              <div class="item-title">1. 若有道具 (Free Spin 卡)</div>
+              <p class="item-desc">玩家可點擊卡片，並打開道具的詳細資訊(圖片顯示：獎勵資訊)。按下確認使用會回到游戲畫面，會有動畫顯示正在使用道具。</p>
+            </div>
+            <div class="item-block">
+              <div class="item-title">2. 游戲畫面-使用道具</div>
+              <p class="item-desc">在游戲畫面中，FREE SPIN 卡會出現在 SPIN 按鈕旁邊以及多了 CARD BET 的圖示；TOTAL BET 數額也會自動被更換</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="sub-block">
+        <h3 class="subheading">其他游戲頁-有道具畫面</h3>
+        <div class="media-row">
+          <div>
+            <div class="shot has-image" style="aspect-ratio:914/736;" data-caption="截圖合輯：無道具／任務獎勵(Free Spin卡)／獎勵的詳細資訊，共 3 格畫面"><img src="images/FC-02d.png" alt="截圖合輯：無道具／任務獎勵(Free Spin卡)／獎勵的詳細資訊，共 3 格畫面"><span class="zoom-hint">🔍 放大檢視</span></div>
+          </div>
+          <div class="panel">
+            <div class="p-title">其他游戲頁-有道具畫面説明</div>
+            <div class="item-block">
+              <div class="item-title">1. 若有道具 (Free Spin 卡)</div>
+              <p class="item-desc">玩家同樣可點開道具的詳細資訊，但因不在對應的游戲，無法直接使用</p>
+              <div class="callout-box">因不是在指定游戲打開，無法使用</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="sub-block">
+        <h3 class="subheading">卡片記錄頁</h3>
+        <div class="media-row">
+          <div>
+            <div class="shot has-image" style="aspect-ratio:1199/671;" data-caption="截圖合輯：無道具／篩選功能／獎勵記錄(未用)／獎勵記錄(已用)，共 4 格畫面"><img src="images/FC-02e.png" alt="截圖合輯：無道具／篩選功能／獎勵記錄(未用)／獎勵記錄(已用)，共 4 格畫面"><span class="zoom-hint">🔍 放大檢視</span></div>
+          </div>
+          <div class="panel">
+            <div class="p-title">卡片記錄頁説明</div>
+            <div class="item-block">
+              <div class="item-title">1. 若有道具 (Free Spin 卡)</div>
+              <p class="item-desc">玩家可看到道具的資訊：卡片來源(任務名稱/源頭)、獲得時間、過期時間、卡片狀態以及獲得數額</p>
+            </div>
+            <div class="item-block">
+              <div class="item-title">2. 卡片狀態</div>
+              <p class="item-desc">主要分兩種：未用、已用</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="p-title">開發該功能需注意事項</div>
+        <div class="col-grid cols-3">
+          <div>
+            <div class="item-title">空狀態設計</div>
+            <p class="item-desc">「本遊戲」「其他遊戲」道具庫皆有明確空狀態插畫與文案</p>
+            <p class="item-desc">空狀態下附引導 CTA，鼓勵完成任務以取得道具卡</p>
+          </div>
+          <div>
+            <div class="item-title">頁籤結構一致</div>
+            <p class="item-desc">本遊戲／其他遊戲／卡片記錄，三頁籤與 Mission 分頁邏輯相同</p>
+            <p class="item-desc">跨功能維持一致的資訊架構，降低學習成本</p>
+          </div>
+          <div>
+            <div class="item-title">卡片記錄篩選</div>
+            <p class="item-desc">下拉篩選：全部／未使用／已使用／已過期，狀態分類清楚</p>
+            <p class="item-desc">記錄僅保留近 60 筆，建議確認是否需要匯出或查詢更早紀錄</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 03 Player Levels -->
+    <section class="block">
+      <h2 class="heading"><span class="num">03</span> 玩家等級 LEVEL</h2>
+
+      <div class="sub-block">
+        <h3 class="subheading">玩家等級頁説明</h3>
+        <div class="media-row">
+          <div>
+            <div class="shot has-image" style="aspect-ratio:974/644;" data-caption="截圖合輯：新手導覽／玩家等級獎勵／詳細資訊，共 3 格畫面"><img src="images/FC-03a.png" alt="截圖合輯：新手導覽／玩家等級獎勵／詳細資訊，共 3 格畫面"><span class="zoom-hint">🔍 放大檢視</span></div>
+          </div>
+          <div class="panel">
+            <div class="p-title">玩家等級頁説明</div>
+            <div class="item-block">
+              <div class="item-title">1. 新手導覽</div>
+              <p class="item-desc">方便與新用戶快速理解產品如何運作，減少「學習時段」</p>
+            </div>
+            <div class="item-block">
+              <div class="item-title">2. 玩家等級獎勵</div>
+              <p class="item-desc">畫面呈現玩家當下的等級與經驗值；下方呈現每一個等級獎勵；每 5 等級會獲得一次獎勵</p>
+            </div>
+            <div class="item-block">
+              <div class="item-title">3. 詳細資訊説明</div>
+              <p class="item-desc">提供玩家有關等級獎勵的規則</p>
+              <div class="callout-box">首個檢查點門檻為 660，換算比例為 BET 1 = +1EXP。</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="sub-block">
+        <h3 class="subheading">玩家升等説明</h3>
+        <div class="media-row">
+          <div>
+            <div class="shot has-image" style="aspect-ratio:1211/634;" data-caption="截圖合輯：升等提示(Toast)／紅點提示／可領取／領取獎勵，共 4 格畫面"><img src="images/FC-03b.png" alt="截圖合輯：升等提示(Toast)／紅點提示／可領取／領取獎勵，共 4 格畫面"><span class="zoom-hint">🔍 放大檢視</span></div>
+          </div>
+          <div class="panel">
+            <div class="p-title">玩家升等流程説明</div>
+            <div class="item-block">
+              <div class="item-title">1. 升等提示 (Toast)</div>
+              <p class="item-desc">FACHAI 在玩家達成升等獎勵時，側邊欄會有 toast(輕彈窗) 彈出來提示玩家目標已達成</p>
+            </div>
+            <div class="item-block">
+              <div class="item-title">2. 玩家等級獎勵</div>
+              <p class="item-desc">若目標已達成，玩家在「玩家等級頁」可發現獎勵的「領取按鈕 (collect)」已亮起。點擊領取後，會有動畫以及彈窗的顯示</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="p-title">開發該功能需注意事項</div>
+        <div class="col-grid cols-3">
+          <div>
+            <div class="item-title">進度視覺化</div>
+            <p class="item-desc">目前等級、下一等級與 EXP 進度條並列，數值即時可見</p>
+            <p class="item-desc">獎勵列表以卡片＋Collect 按鈕呈現，未達標示鎖定狀態</p>
+          </div>
+          <div>
+            <div class="item-title">等級規則透明</div>
+            <p class="item-desc">規則涵蓋所有 FACHAI 系列老虎機遊戲，非單一遊戲限定</p>
+          </div>
+          <div>
+            <div class="item-title">Toast 規則</div>
+            <p class="item-desc">Toast 出現的條件需説明清楚，如：當獎勵目標已達成且可領取，就會彈出提示</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 04 RANKING -->
+    <section class="block">
+      <h2 class="heading"><span class="num">04</span> 排行榜 RANKING</h2>
+      <div class="media-row">
+        <div>
+          <div class="shot has-image" style="aspect-ratio:1178/616;" data-caption="截圖合輯：新手導覽／單局贏分(本游戲)／單局贏分(全部游戲)／單局倍數(本游戲)，共 4 格畫面"><img src="images/FC-04a.png" alt="截圖合輯：新手導覽／單局贏分(本游戲)／單局贏分(全部游戲)／單局倍數(本游戲)，共 4 格畫面"><span class="zoom-hint">🔍 放大檢視</span></div>
+        </div>
+        <div class="panel">
+          <div class="p-title">排行榜説明</div>
+          <div class="item-block">
+            <div class="item-title">1. 兩種排行維度</div>
+            <p class="item-desc"><strong>Single Round Win</strong>（單局贏分）與 <strong>Single Round Multiplier</strong>（單局倍數）可切換；另有 <strong>This Game／All Games</strong> 範圍切換。</p>
+          </div>
+          <div class="item-block">
+            <div class="item-title">2. 歷史最高紀錄</div>
+            <p class="item-desc">頂部常駐一張「Highest Historical Record」卡，含日期、遮蔽帳號、金額與<strong><span class="icon-play" aria-hidden="true">▶</span>回放按鈕</strong>。</p>
+          </div>
+          <div class="item-block">
+            <div class="item-title">3. TOP 3 頒獎台 + 完整清單</div>
+            <p class="item-desc">前三名以頒獎台呈現，每位皆可回放；下方為完整排名清單，含 No./帳號/WIN/回放/Game 欄位。玩家自己那列以不同底色釘在清單中，未進榜顯示「-」。</p>
+          </div>
+        </div>
+      </div>
+      <div class="panel">
+        <div class="p-title">開發該功能需注意事項</div>
+        <div class="col-grid cols-3">
+          <div>
+            <div class="item-title">「用 Buy Feature 上榜」的引導</div>
+            <p class="item-desc">新手導覽直接把排行榜與付費購買功能綁在一起</p>
+            <p class="item-desc">這是把 CRM 直接當成加購導流工具，在部分市場屬敏感設計，導入前務必確認法規</p>
+          </div>
+          <div>
+            <div class="item-title">回放的資料成本</div>
+            <p class="item-desc">FA CHAI 與 JILI 都提供單局回放，需保存每局完整結果，須評估儲存期限與容量</p>
+          </div>
+          <div>
+            <div class="item-title">免責聲明的必要性</div>
+            <p class="item-desc">新手導覽畫面附免責聲明，僅出現一次，並非常駐頁首</p>
+            <p class="item-desc">排行數值屬即時變動資料，以此方式明示「僅供參考、以即時排名為準」可降低爭議</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 05 RECOMMENDED -->
+    <section class="block">
+      <h2 class="heading"><span class="num">05</span> 推薦游戲 RECOMMENDED</h2>
+      <div class="media-row">
+        <div>
+          <div class="shot has-image" style="aspect-ratio:913/615;" data-caption="截圖合輯：新手導覽／游戲列表／近期最高贏分，共 3 格畫面"><img src="images/FC-05a.png" alt="截圖合輯：新手導覽／游戲列表／近期最高贏分，共 3 格畫面"><span class="zoom-hint">🔍 放大檢視</span></div>
+        </div>
+        <div class="panel">
+          <div class="p-title">推薦頁説明</div>
+          <div class="item-block">
+            <div class="item-title">1. 玩法分類標籤</div>
+            <p class="item-desc">每張游戲卡上方帶有<strong>玩法分類標籤</strong>：Megaways、Multiplier、Transform WILD、New… 讓玩家依機制而非只依畫面挑選游戲。</p>
+            <div class="callout-box">此為 FA CHAI 相對 JILI 的優勢：JILI 的 You May Like 只有 HOT 標籤與在線人數，沒有玩法分類。</div>
+          </div>
+          <div class="item-block">
+            <div class="item-title">2. ★ 收藏</div>
+            <p class="item-desc">每張卡右上有星號，點擊即收藏，收藏結果進入 FAVORITES 模組。</p>
+          </div>
+          <div class="item-block">
+            <div class="item-title">3. 近期最高贏分</div>
+            <p class="item-desc">頂部固定一張「Highest Recent Win」卡，標記 NOW 並附<span class="icon-play" aria-hidden="true">▶</span>回放按鈕。</p>
+          </div>
+        </div>
+      </div>
+      <div class="panel">
+        <div class="p-title">開發該功能需注意事項</div>
+        <div class="col-grid cols-2">
+          <div>
+            <div class="item-title">分類標籤需要後台維護</div>
+            <p class="item-desc">玩法分類要有價值，前提是每款游戲都被正確標記，需要一套內容管理流程</p>
+          </div>
+          <div>
+            <div class="item-title">推薦邏輯需先定義</div>
+            <p class="item-desc">目前無法判斷推薦是個人化還是固定名單，建議我方開發時先想清楚排序依據</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 06 FAVORITES -->
+    <section class="block">
+      <h2 class="heading"><span class="num">06</span> 收藏 FAVORITES</h2>
+      <div class="media-row">
+        <div>
+          <div class="shot has-image" style="aspect-ratio:674/615;" data-caption="截圖合輯：新手導覽（空狀態）／已加最愛，共 2 格畫面"><img src="images/FC-06a.png" alt="截圖合輯：新手導覽（空狀態）／已加最愛，共 2 格畫面"><span class="zoom-hint">🔍 放大檢視</span></div>
+        </div>
+        <div class="panel">
+          <div class="p-title">收藏頁説明</div>
+          <div class="item-block">
+            <div class="item-title">1. 玩家主動收藏的清單</div>
+            <p class="item-desc">由 RECOMMENDED 頁面的 ★ 收藏鍵觸發而來——<strong>★ 收藏本身</strong>才是全份報告中唯一由玩家主動操作的個人化功能，FAVORITES 頁面僅為該操作結果的彙整清單；其餘模組皆為系統推播。</p>
+          </div>
+            <div class="item-block">
+            <div class="item-title">2. 空狀態設計（值得參考）</div>
+            <p class="item-desc">空狀態顯示星形插畫與「No favorite games yet」，<strong>下方緊接「You May Like…」推薦牆</strong>，直接把空白轉為導流機會。</p>
+          </div>
+        </div>
+      </div>
+      <div class="panel">
+        <div class="p-title">開發該功能需注意事項</div>
+        <div class="col-grid cols-2">
+          <div>
+            <div class="item-title">收藏之後要有下文</div>
+            <p class="item-desc">收藏若只是清單，價值有限；需想清楚是否用於推播、排序或個人化推薦</p>
+          </div>
+          <div>
+            <div class="item-title">空狀態即導流位</div>
+            <p class="item-desc">把空狀態當成推薦版位是低成本高效益的作法</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <hr class="divider">
+    <section class="block summary" style="margin-bottom:0;">
+      <h2 class="heading">總結與建議 Summary</h2>
+      <div class="col-grid cols-2">
+        <div class="panel" style="margin-bottom:0;">
+          <div class="p-title">FACHAI 特色</div>
+          <div class="item-block">
+            <div class="item-title">每周任務 Weekly Mission</div>
+            <p class="item-desc">除了每日任務外還有周目標，多一層「消費」的理由；且挑戰／指定兩類各有一組</p>
+          </div>
+          <div class="item-block">
+            <div class="item-title">CRM 區域分配</div>
+            <p class="item-desc">與 JILI 不同，FACHAI 全部 CRM 功能都放到側邊欄（獎池除外）；側邊欄會隨面板開關在左側直向與底部橫向間切換</p>
+          </div>
+          <div class="item-block">
+            <div class="item-title">玩法分類標籤</div>
+            <p class="item-desc">推薦牆以 Megaways／Multiplier／New 等機制分類，比 JILI 的純熱度排序更利於探索</p>
+          </div>
+          <div class="item-block">
+            <div class="item-title">收藏功能</div>
+            <p class="item-desc">獨立的 FAVORITES 模組，且空狀態直接轉為推薦版位</p>
+          </div>
+        </div>
+        <div class="panel" style="margin-bottom:0;">
+          <div class="p-title">可參考 / 需注意</div>
+          <div class="item-block">
+            <div class="item-title">空狀態即導流位</div>
+            <p class="item-desc">FAVORITES 的「No favorite games yet ＋ You May Like…」是值得全站沿用的作法</p>
+          </div>
+          <div class="item-block">
+            <div class="item-title">排行榜與付費功能綁定（需注意）</div>
+            <p class="item-desc">「Use Buy Feature to go on leaderboard!」把 CRM 直接當加購導流，法規風險需先確認</p>
+          </div>
+          <div class="item-block">
+            <div class="item-title">任務刷新需手動重啟（不建議照抄）</div>
+            <p class="item-desc">要求玩家每日 12:00 後自行重開游戲才能刷新任務，屬明顯體驗缺陷</p>
+          </div>
+          <div class="item-block">
+            <div class="item-title">導流力道不如 JILI</div>
+            <p class="item-desc">指定任務只標游戲名稱、無跳轉按鈕；JILI 每張卡都可直接開啟該游戲</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </div>
+
+  <!-- ============================= JILI ============================= -->
+  <div id="report-jili" class="report">
+
+    <h1 class="title">JILI（Super Ace）產品分析報告</h1>
+    <p class="context">初步競品研究，主針對 Super Ace 的 CRM 功能。</p>
+
+    <hr class="divider">
+
+    <details class="legend">
+      <summary class="legend-title">審閱標示說明</summary>
+      <div class="legend-grid">
+        <div class="legend-item l-fix"><b>需修正 <span class="legend-count">· 本頁無</span></b>內容有誤或已過時，需要更正</div>
+        <div class="legend-item l-review"><b>待覆核 <span class="legend-count">· 本頁無</span></b>尚未實機確認，數值與描述都可能不準</div>
+        <div class="legend-item l-todo"><b>待補齊 <span class="legend-count">· 本頁無</span></b>已知缺口，尚未進行的工作（含未填入的截圖佔位框）</div>
+      </div>
+    </details>
+
+    <section class="block">
+      <div class="two-shot-row">
+        <div>
+          <div class="shot has-image" style="aspect-ratio:959/473;" data-caption="主畫面與側邊欄圖示對照（展開／收合兩態，1-7 標示各功能圖示）"><img src="images/JI-00a-1.png" alt="主畫面與側邊欄圖示對照（展開／收合兩態，1-7 標示各功能圖示）"><span class="zoom-hint">🔍 放大檢視</span></div>
+          <div class="shot-caption">主畫面與側邊欄圖示對照</div>
+        </div>
+        <div>
+          <div class="shot has-image" style="aspect-ratio:1520/914;" data-caption="結構圖］ Super Ace 系統架構（側邊欄 7 模組）"><img src="images/JI-00a-2.png" alt="結構圖］ Super Ace 系統架構（側邊欄 7 模組）"><span class="zoom-hint">🔍 放大檢視</span></div>
+          <div class="shot-caption">Super Ace 系統架構（側邊欄 7 模組）</div>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="p-title">整體架構觀察</div>
+        <p>與 FACHAI 最大的差別是 JILI 有一個「會員/玩家資訊專區」，在該專區內可查看玩家的道具以及等級獎勵。</p>
+        <div class="item-block">
+          <div class="item-title">覆核後補充</div>
+          <p class="item-desc">JILI 的 CRM 面積遠大於原先記錄。側邊欄實際有 7 個模組，其中 <strong>JILI SLOT JACKPOT、WIN MORE、競賽 Tournament、HIGHLIGHTS</strong> 四項原報告完全未涵蓋。此外「玩家等級」並非只在交易記錄內：等級獎勵的實際領取介面位於 <strong>WIN MORE → Free Gift</strong>，屬側邊欄範圍。</p>
+        </div>
+      </div>
+
+      <h3 class="subheading">功能模組總覽</h3>
+      <table class="data-table">
+        <thead>
+          <tr><th style="width:32px;">#</th><th style="width:26%;">功能模組</th><th style="width:12%;">位置</th><th>內容</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>1</td><td>背包/道具 Backpack</td><td>側邊欄</td><td>玩家查看自己道具的空間（本游戲／其他游戲／信息）</td></tr>
+          <tr><td>2</td><td>JILI SLOT JACKPOT</td><td>側邊欄</td><td>跨游戲累積獎池，分 Grand／Major／Mini 三層即時金額</td></tr>
+          <tr><td>3</td><td>任務 Mission</td><td>側邊欄</td><td>玩家獲得任務的空間（每日／指定游戲／未來任務）</td></tr>
+          <tr><td>4</td><td>WIN MORE</td><td>側邊欄</td><td>六個子分頁：Events／TOP 50／Free Gift／You May Like／Link Jackpot／Features</td></tr>
+          <tr><td>5</td><td>競賽 Tournament</td><td>側邊欄</td><td>玩家排行榜，依<strong>累積贏分</strong>計算（非下注額），含 Info／Rank／Reward／Rules</td></tr>
+          <tr><td>6</td><td>HIGHLIGHTS</td><td>側邊欄</td><td>大獎排行與<strong>回放／存圖／分享連結</strong>，具社群擴散性質</td></tr>
+          <tr><td>7</td><td>JILI 鈴鐺 (信箱) JILI Bell</td><td>側邊欄</td><td>玩家的信箱，支援全選、全部已讀與刪除</td></tr>
+          <tr><td>8</td><td>交易記錄 (道具+玩家等級) Transaction</td><td>設定</td><td>Member／Rewards／History 三頁，含 JILI LV 等級表與規則</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <!-- 01 背包 -->
+    <section class="block">
+      <h2 class="heading"><span class="num">01</span> 背包/道具 Backpack</h2>
+
+      <div class="sub-block">
+        <h3 class="subheading">預設背包畫面與功能</h3>
+        <div class="media-row">
+          <div>
+            <div class="shot has-image" style="aspect-ratio:1204/752;" data-caption="截圖合輯：此游戲道具庫／其他游戲道具庫／消息，共 3 格畫面"><img src="images/JI-01a.png" alt="截圖合輯：此游戲道具庫／其他游戲道具庫／消息，共 3 格畫面"><span class="zoom-hint">🔍 放大檢視</span></div>
+          </div>
+          <div class="panel">
+            <div class="p-title">背包頁説明</div>
+            <div class="item-block">
+              <div class="item-title">1. 本游戲道具庫 (This Game)</div>
+              <p class="item-desc">記錄本游戲道具，如 Free Spin 卡。</p>
+            </div>
+            <div class="item-block">
+              <div class="item-title">2. 其他游戲道具庫 (Other Games)</div>
+              <p class="item-desc">記錄其他游戲道具。</p>
+            </div>
+            <div class="item-block">
+              <div class="item-title">3. 信息 (Message)</div>
+              <p class="item-desc"><strong>任務完成通知</strong>（含任務條件與獎勵內容）與<strong>道具使用紀錄</strong>（含贏分與時間），以文字顏色區分。</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="sub-block">
+        <h3 class="subheading">獲得 JILI Free Spin 卡畫面</h3>
+        <div class="media-row">
+          <div>
+            <div class="shot has-image" style="aspect-ratio:1396/697;" data-caption="截圖合輯：背包出現道具／背包信件顯示／道具資訊／用完道具的畫面，共 4 格畫面"><img src="images/JI-01b.png" alt="截圖合輯：背包出現道具／背包信件顯示／道具資訊／用完道具的畫面，共 4 格畫面"><span class="zoom-hint">🔍 放大檢視</span></div>
+          </div>
+          <div class="panel">
+            <div class="p-title">背包頁説明</div>
+            <div class="item-block">
+              <div class="item-title">若有道具卡</div>
+              <p class="item-desc">1. 目前若完成任務且拿到道具後，道具會顯示本游戲的空間</p>
+              <p class="item-desc">2. 背包的信件 (Message) 也會出現提示，告知玩家道具的資訊：道具種類、道具限制、獲得道具時間</p>
+              <p class="item-desc">3. 在背包中點擊道具會打開詳細資訊的彈窗，以及最下方會有「啓用按鈕」；啓用後會直接進入 Free Spin 的畫面(但下注金額會依道具的限制設定)</p>
+              <p class="item-desc">4. 利用完畢道具後，背包的信件會出現「利用完道具」的顯示</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="p-title">開發該功能需注意事項</div>
+        <div class="col-grid cols-2">
+          <div>
+            <div class="item-title">空狀態設計</div>
+            <p class="item-desc">「本遊戲」有明確空狀態插畫與文案</p>
+            <p class="item-desc">「其他遊戲」則無空狀態設計——這是 JILI 的疏漏，我們不應照抄</p>
+            <div class="callout-box">可以考慮加上跳轉到「任務」的 CTA</div>
+          </div>
+          <div>
+            <div class="item-title">信息頁的雙重用途</div>
+            <p class="item-desc">同一個列表同時承載「任務完成通知」與「道具使用紀錄」兩種語意</p>
+            <p class="item-desc">若我們要開發，建議先想清楚這兩者是否該分流，或以標籤/篩選區分</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 02 Mission -->
+    <section class="block">
+      <h2 class="heading"><span class="num">02</span> 任務 Mission</h2>
+
+      <div class="sub-block">
+        <h3 class="subheading">預設任務頁畫面與功能</h3>
+        <div class="media-row">
+          <div>
+            <div class="shot has-image" style="aspect-ratio:1583/1224;" data-caption="截圖合輯：任務詳情／每日任務／指定游戲任務／未來任務／道具彈窗／確認彈窗"><img src="images/JI-02a.png" alt="截圖合輯：任務詳情／每日任務／指定游戲任務／未來任務／道具彈窗／確認彈窗"><span class="zoom-hint">🔍 放大檢視</span></div>
+          </div>
+          <div class="panel">
+            <div class="p-title">任務頁説明</div>
+            <div class="item-block">
+              <div class="item-title">1. 功能詳細資訊</div>
+              <p class="item-desc">詳細説明任務什麽時候過期、獎勵相關資訊以及使用規則。頁首常駐 <strong>Countdown 倒數計時</strong>。</p>
+              <div class="callout-box">關鍵對照：JILI 任務<strong>每日 08:00 自動重置</strong>；FA CHAI 則要求玩家自行重開游戲才會刷新（見 FA CHAI 分頁 01 節）。同一個機制，JILI 的作法明顯正確。</div>
+              <div class="callout-box">另一個對照：FA CHAI 有「SUGAR BANG BANG2 下注不被記錄」的疑似缺陷；JILI 則是<strong>把排除規則明寫在說明裡</strong>。同樣是排除，一個像 bug，一個是明示規則。</div>
+            </div>
+            <div class="item-block">
+              <div class="item-title">2. 每日任務 Missions</div>
+              <p class="item-desc">在期限内達成任務目標且能獲得獎勵。實機為<strong>階梯式解鎖鏈</strong>：Total bet over 1650 → 2060 → 2980，後兩張以鎖頭圖示呈現未解鎖狀態。</p>
+              <div class="callout-box">每日任務計算範圍為 <strong>「JILI Slot Games」</strong>（全部 JILI 老虎機），非單一游戲。</div>
+            </div>
+            <div class="item-block">
+              <div class="item-title">3. 指定游戲任務 Assigned Missions</div>
+              <p class="item-desc">在期限内達成任務目標且能獲得獎勵；可順便跳轉到其他游戲</p>
+            </div>
+            <div class="item-block">
+              <div class="item-title">4. 未來任務 Future Missions</div>
+              <p class="item-desc">以 <strong>2×4（共 8 格）</strong>縮圖排列預告下一輪將開放任務的游戲，頂部標示開始日期。</p>
+              
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="sub-block">
+        <h3 class="subheading">完成任務後呈現的畫面</h3>
+        <div class="media-row">
+          <div>
+            <div class="shot has-image" style="aspect-ratio:468/711;" data-caption="「若已完成任務時」的畫面"><img src="images/JI-02b.png" alt="「若已完成任務時」的畫面"><span class="zoom-hint">🔍 放大檢視</span></div>
+          </div>
+          <div class="panel">
+            <div class="p-title">任務頁説明</div>
+            <div class="item-block">
+              <div class="item-title">完成任務時</div>
+              <p class="item-desc">1. 已完成的任務卡自動往下移：在任務完成後，系統會直接把該任務卡往下移，玩家無需親自領取。此外，已完成的任務也會有 COMPLETE 的顯示</p>
+              <p class="item-desc">2. 解鎖新的任務：當第一任務已完成時，新的任務卡會被開通</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="p-title">開發該功能需注意事項</div>
+        <div class="col-grid cols-3">
+          <div>
+            <div class="item-title">詳細資訊細節</div>
+            <p class="item-desc">活動期限需寫得清楚。JILI 有附加時間倒計時，可以參考</p>
+            <p class="item-desc">任務 CTA 需明確顯示不同狀態：未完成、已完成、未解鎖</p>
+            <p class="item-desc">當玩家跳轉到其他游戲時，有彈出「請確認」的彈窗/告知是比較理想的</p>
+          </div>
+          <div>
+            <div class="item-title">任務指標需先定義清楚</div>
+            <p class="item-desc">JILI 同時使用「累積下注」與「累積贏分」兩種指標，兩者對玩家行為的引導方向不同</p>
+            <p class="item-desc">計算範圍是單一游戲或整個產品線，需在規格階段就定案</p>
+          </div>
+          <div>
+            <div class="item-title">預告機制的價值</div>
+            <p class="item-desc">Future Missions 以「即將開放」製造回訪誘因，成本低但效果值得參考</p>
+            <p class="item-desc">需搭配可靠的排程與內容管理後台</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 03 WIN MORE -->
+    <section class="block">
+      <h2 class="heading"><span class="num">03</span> WIN MORE</h2>
+
+      <div class="sub-block">
+        <h3 class="subheading">六個子分頁總覽</h3>
+        <div class="media-row">
+          <div>
+            <div class="shot has-image" style="aspect-ratio:1600/614;" data-caption="截圖合輯：Events／TOP 50／Free Gift／You May Like／Link Jackpot／Features，共 6 格畫面"><img src="images/JI-03a.png" alt="截圖合輯：Events／TOP 50／Free Gift／You May Like／Link Jackpot／Features，共 6 格畫面"><span class="zoom-hint">🔍 放大檢視</span></div>
+          </div>
+          <div class="panel">
+            <div class="p-title">WIN MORE 説明</div>
+            <div class="item-block">
+              <div class="item-title">1. TOP 50</div>
+              <p class="item-desc">排行榜，可切換 <strong>Single-Game Multiplier</strong>（欄位 Maximum Win，以倍數排序）與 <strong>Single-Game Winnings</strong>（欄位 Total Win，以絕對贏分排序），並以下拉選單切換游戲範圍，並標示統計期間。詳見下方「TOP 50 兩種排行維度」。</p>
+            </div>
+            <div class="item-block">
+              <div class="item-title">2. Free Gift（等級獎勵實際領取處）</div>
+              <p class="item-desc">以 JILI LV 1／LV 2／LV 3… 的寶箱卡片呈現，未達等級顯示鎖頭與「Need LV EXP」。</p>
+              <div class="callout-box">結構補充：等級的<strong>規則與數值</strong>在交易記錄，但<strong>獎勵領取入口在側邊欄的 WIN MORE → Free Gift</strong>，兩處並存。</div>
+            </div>
+            <div class="item-block">
+              <div class="item-title">3. You May Like</div>
+              <p class="item-desc">游戲推薦牆。每張卡含 <strong>HOT 標籤、即時在線人數、愛心收藏鍵</strong>，滑過時浮出 Recent Highest Multiplier／Recent Highest Winnings 與 GO 按鈕。</p>
+            </div>
+            <div class="item-block">
+              <div class="item-title">4. Events</div>
+              <p class="item-desc">輪播式 Banner，展示「PLAY JILI WIN DAILY」跨遊戲導流圖。<strong>Banner 本身是入口</strong>，點入後為完整的積分賽事頁——詳見下方「Events 活動賽事」。</p>
+            </div>
+            <div class="item-block">
+              <div class="item-title">5. Link Jackpot</div>
+              <p class="item-desc">頂部常駐 <strong>GRAND／MINI／MAJOR</strong> 三層即時累積獎池金額，下方為參與共享獎池的游戲清單，點擊縮圖可直接開啟該游戲。</p>
+            </div>
+            <div class="item-block">
+              <div class="item-title">6. Features（玩法説明）</div>
+              <p class="item-desc">顯示當前游戲的 <strong>Volatility 波動性評級</strong>與玩法機制圖解，並附 DEMO MODE 試玩入口。</p>
+            </div>
+            <div class="callout-box">覆核新增：2026/08/27 複查時發現，WIN MORE 內原記錄「本次未展開」的 Events／Link Jackpot／Features 三個子分頁已全數開放內容，非單純介面調整，記錄如上。</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="sub-block">
+        <h3 class="subheading">TOP 50 兩種排行維度</h3>
+        <div class="media-row">
+          <div>
+            <div class="shot has-image" style="aspect-ratio:654/645;" data-caption="截圖合輯：TOP 50 的 Single-Game Multiplier 與 Single-Game Winnings 兩種排行，共 2 格畫面"><img src="images/JI-03b.png" alt="截圖合輯：TOP 50 的 Single-Game Multiplier 與 Single-Game Winnings 兩種排行，共 2 格畫面"><span class="zoom-hint">🔍 放大檢視</span></div>
+          </div>
+          <div class="panel">
+            <div class="p-title">TOP 50 説明</div>
+            <div class="item-block">
+              <div class="item-title">1. Single-Game Multiplier（單局倍數）</div>
+              <p class="item-desc">欄位為 <strong>Maximum Win</strong>，以<strong>倍數</strong>排序；比的是單局把注金放大了幾倍，與下注金額大小無關。</p>
+            </div>
+            <div class="item-block">
+              <div class="item-title">2. Single-Game Winnings（單局贏分）</div>
+              <p class="item-desc">欄位改為 <strong>Total Win</strong>，以<strong>絕對贏分金額</strong>排序。同一個 TOP 50 內兩種維度並存，兩份榜單的玩家與日期完全不同。</p>
+            </div>
+            <div class="item-block">
+              <div class="item-title">3. 共同欄位與統計期間</div>
+              <p class="item-desc">兩者皆為名次／日期＋遮蔽帳號／游戲縮圖／數值四欄，上方可切換游戲範圍，底部標示統計期間（實測約為兩週滾動）。</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="sub-block">
+        <h3 class="subheading">You May Like 點擊行為</h3>
+        <div class="media-row">
+          <div>
+            <div class="shot has-image" style="aspect-ratio:941/613;" data-caption="截圖合輯：You May Like 點選其他游戲／點選當前游戲／系統阻擋彈窗，共 3 格畫面"><img src="images/JI-03c.png" alt="截圖合輯：You May Like 點選其他游戲／點選當前游戲／系統阻擋彈窗，共 3 格畫面"><span class="zoom-hint">🔍 放大檢視</span></div>
+          </div>
+          <div class="panel">
+            <div class="p-title">You May Like 説明</div>
+            <div class="item-block">
+              <div class="item-title">1. 滑過卡片浮出資訊與 GO</div>
+              <p class="item-desc">滑過任一張游戲卡會浮出 <strong>Recent Highest Multiplier／Recent Highest Winnings</strong> 與 <strong>GO</strong> 按鈕，點擊即跳轉該游戲。</p>
+            </div>
+            <div class="item-block">
+              <div class="item-title">2. 當前游戲未被排除（需注意）</div>
+              <p class="item-desc">推薦牆<strong>同時列出玩家當前所在的游戲</strong>，且該卡一樣可點擊、一樣浮出 GO 按鈕，點下去後才以系統彈窗擋下。</p>
+              <div class="callout-box">這是可避免的無效點擊：既然系統知道玩家在哪一款游戲，推薦牆就應該在<strong>列表階段</strong>就把當前游戲隱藏或置灰，而不是讓玩家點完才擋。我方開發時建議在資料層先行過濾。</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="sub-block">
+        <h3 class="subheading">Events 活動賽事（原記錄有誤）</h3>
+        <div class="media-row">
+          <div>
+            <div class="shot has-image" style="aspect-ratio:1378/1120;" data-caption="截圖合輯：Events 活動列表／EVENT 說明頁／RANK 獎勵與排行／HISTORY 歷史結算，共 4 格畫面"><img src="images/JI-03d.png" alt="截圖合輯：Events 活動列表／EVENT 說明頁／RANK 獎勵與排行／HISTORY 歷史結算，共 4 格畫面"><span class="zoom-hint">🔍 放大檢視</span></div>
+          </div>
+          <div class="panel">
+            <div class="p-title">Events 説明</div>
+            <div class="item-block">
+              <div class="item-title">1. Banner 是入口，不是廣告</div>
+              <p class="item-desc">「PLAY JILI WIN DAILY」輪播圖<strong>可點擊</strong>，點入後是一整套活動賽事頁，分 <strong>EVENT／RANK／HISTORY</strong> 三個分頁，頁首常駐 Round 進度、單場長度與倒數。</p>
+              
+            </div>
+            <div class="item-block">
+              <div class="item-title">2. 賽制規模（EVENT 頁）</div>
+              <p class="item-desc">實測為<strong>每日 1 場、連續 63 天</strong>的長期賽事；計分同樣是 Accumulated Winning（累積贏分），結算時<strong>前 300 名</strong>都能得獎。</p>
+            </div>
+            <div class="item-block">
+              <div class="item-title">3. 獎勵分段與排行（RANK 頁）</div>
+              <p class="item-desc">前三名為 Gold Card，其後以 6–10、11–50、51–100、101–200、201–300 分段發 Rich Card，星級與數量逐段遞減。下方為 300 名完整榜單，含遮蔽帳號、Points 與獎品。</p>
+            </div>
+            <div class="item-block">
+              <div class="item-title">4. 歷史結算查詢（HISTORY 頁）</div>
+              <p class="item-desc">可用日期籤選擇過去任一結算日，回看當日的 300 名名單與獎品。<strong>這是 Tournament 沒有的能力</strong>——同一套賽事引擎，Events 多了可回溯的歷史。</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="p-title">開發該功能需注意事項</div>
+        <div class="col-grid cols-3">
+          <div>
+            <div class="item-title">收藏機制</div>
+            <p class="item-desc">愛心收藏是全份報告中唯一的「玩家主動個人化」動作，其餘皆為系統推播</p>
+            <p class="item-desc">若要做，需想清楚收藏後如何被再利用（推播？排序？）</p>
+          </div>
+          <div>
+            <div class="item-title">社群證明的隱私處理</div>
+            <p class="item-desc">排行榜帳號一律遮蔽，但玩家自己那列不遮蔽</p>
+            <p class="item-desc">此作法可直接沿用</p>
+          </div>
+          <div>
+            <div class="item-title">等級入口的一致性</div>
+            <p class="item-desc">JILI 把等級規則與等級獎勵拆在兩個不同位置，對玩家而言並不直覺</p>
+            <p class="item-desc">我們開發時建議收斂為單一入口</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 04 Tournament -->
+    <section class="block">
+      <h2 class="heading"><span class="num">04</span> 競賽 Tournament</h2>
+      <div class="sub-block">
+        <h3 class="subheading">四個子分頁與計分方式</h3>
+        <div class="media-row">
+        <div>
+          <div class="shot has-image" style="aspect-ratio:1248/613;" data-caption="截圖合輯：Tournament 的 Info／Rank／Reward／Rules 四個子頁，共 4 格畫面"><img src="images/JI-04a.png" alt="截圖合輯：Tournament 的 Info／Rank／Reward／Rules 四個子頁，共 4 格畫面"><span class="zoom-hint">🔍 放大檢視</span></div>
+        </div>
+        <div class="panel">
+          <div class="p-title">競賽頁説明</div>
+          <div class="item-block">
+            <div class="item-title">1. 四個子分頁</div>
+            <p class="item-desc">Info／Rank／Reward／Rules。Info 顯示活動期間與 Participating Games 橫向游戲列。實測皆為 <strong>24 小時場</strong>，以每日一場的節奏滾動。</p>
+          </div>
+          <div class="item-block">
+            <div class="item-title">2. 計分方式</div>
+            <p class="item-desc">Tournament Type 為 <strong>Accumulated Winning</strong>：「point per round，Win1 + Win2…，每回合分數以贏分累加」。</p>
+            
+          </div>
+          <div class="item-block">
+            <div class="item-title">3. 排行榜 Rank</div>
+            <p class="item-desc">欄位為 Ranking／Name／Point，對手帳號遮蔽；玩家自己那列固定釘在底部，未進榜顯示 <strong>Unranked</strong>，並標示每 15 分鐘更新。</p>
+          </div>
+          <div class="item-block">
+            <div class="item-title">4. 賽事生命週期</div>
+            <p class="item-desc">底部並列 <strong>Ongoing／Ended／Upcoming</strong> 三種狀態卡，各自帶倒數（Ends in／Disappears in／開始倒數），可橫向捲動。</p>
+          </div>
+          <div class="item-block">
+            <div class="item-title">5. 獎勵結構 Reward</div>
+            <p class="item-desc">依名次<strong>分段發獎</strong>，前三名為 Gold Card，其後 6–10、11–50、51–100 分段發 Rich Card，星級與數量逐段遞減。<strong>前 100 名皆有獎</strong>，等於把中段玩家也納入誘因範圍。</p>
+          </div>
+        </div>
+        </div>
+      </div>
+
+      <div class="sub-block">
+        <h3 class="subheading">完整賽事規則 Rules</h3>
+        <div class="media-row">
+          <div>
+            <div class="shot has-image" style="aspect-ratio:316/827;" data-caption="畫面：Tournament 完整規則頁 Rules（含參賽、計分、獎勵發放與免責條款）"><img src="images/JI-04b.png" alt="畫面：Tournament 完整規則頁 Rules（含參賽、計分、獎勵發放與免責條款）"><span class="zoom-hint">🔍 放大檢視</span></div>
+          </div>
+          <div class="panel">
+            <div class="p-title">規則頁重點（原文另見截圖）</div>
+            <div class="item-block">
+              <div class="item-title">1. 參賽資格</div>
+              <p class="item-desc">活動期間內玩該場<strong>指定游戲</strong>並達成條件即<strong>自動參賽，無需報名</strong>；限 18 歲以上。</p>
+            </div>
+            <div class="item-block">
+              <div class="item-title">2. 計分與同分處理</div>
+              <p class="item-desc">排行榜每 15 分鐘更新；<strong>同分時以系統記錄較早達成者排前</strong>。贏分會依匯率換算為分數，以游戲內實際顯示為準。</p>
+            </div>
+            <div class="item-block">
+              <div class="item-title">3. 獎勵發放</div>
+              <p class="item-desc">賽事結束後 <strong>12 小時內自動發送至玩家背包</strong>，無需手動領取。Rich Card 屬隨機道具、有使用期限、不保證任何金錢收益，且不需額外儲值即可使用；實體獎品另由官方聯繫確認寄送資訊。</p>
+            </div>
+            <div class="item-block">
+              <div class="item-title">4. 免責與合規條款</div>
+              <p class="item-desc">JILI 保留因技術、法規或不可抗力而修改／暫停賽事的權利，並保留最終解釋權；爭議循客服申訴。頁尾另附<strong>責任博彩與 18+ 警語</strong>，明示「可能導致成癮與財務風險」。</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="p-title">開發該功能需注意事項</div>
+        <div class="col-grid cols-3">
+          <div>
+            <div class="item-title">計分指標的選擇</div>
+            <p class="item-desc">以「贏分」計分會偏向高波動玩法，以「下注額」計分則直接獎勵投注量</p>
+            <p class="item-desc">後者在部分司法管轄區屬敏感設計，建議先確認目標市場再定案</p>
+          </div>
+          <div>
+            <div class="item-title">生命週期完整度</div>
+            <p class="item-desc">同時呈現進行中／已結束／即將開始，讓玩家隨時知道下一場何時來</p>
+            <p class="item-desc">已結束場次保留一段時間再消失（Disappears in），值得參考</p>
+          </div>
+          <div>
+            <div class="item-title">更新頻率需明示</div>
+            <p class="item-desc">JILI 直接標示「每 15 分鐘更新」，可降低玩家對名次落後的客訴</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 05 HIGHLIGHTS -->
+    <section class="block">
+      <h2 class="heading"><span class="num">05</span> HIGHLIGHTS</h2>
+      <div class="media-row">
+        <div>
+          <div class="shot has-image" style="aspect-ratio:951/611;" data-caption="截圖合輯：Top Wins／Top Multipliers／My Top Wins 三個子頁，共 3 格畫面"><img src="images/JI-05a.png" alt="截圖合輯：Top Wins／Top Multipliers／My Top Wins 三個子頁，共 3 格畫面"><span class="zoom-hint">🔍 放大檢視</span></div>
+        </div>
+        <div class="panel">
+          <div class="p-title">HIGHLIGHTS 説明</div>
+          <div class="item-block">
+            <div class="item-title">1. 三個子分頁</div>
+            <p class="item-desc"><strong>My Top Wins</strong>／<strong>Top Wins</strong>／<strong>Top Multipliers</strong>。前三名附金銀銅桂冠圖示，帳號一律遮蔽。兩個公開榜的欄位為 Rank／ID／數值／Replay &amp; Share；<strong>My Top Wins 多一個 Date 欄位</strong>。</p>
+          </div>
+          <div class="item-block">
+            <div class="item-title">2. Replay &amp; Share（重點）</div>
+            <p class="item-desc">每一列都有三個操作鍵：<strong>回放</strong>該局、<strong>存成圖片</strong>、<strong>複製分享連結</strong>。這是全份報告中唯一具備<strong>對外擴散</strong>性質的功能——其餘模組都只作用於既有玩家。</p>
+            <div class="callout-box">策略觀察：此模組屬於「獲客／病毒傳播」而非「留存」。若我們的 CRM 規劃只想到留存，這是一個明顯的缺口。</div>
+          </div>
+          <div class="item-block">
+            <div class="item-title">3. My Top Wins 無空狀態設計（不建議照抄）</div>
+            <p class="item-desc">本次帳號在 My Top Wins 沒有任何紀錄，畫面<strong>只留下欄位標題與一片空白</strong>，沒有插畫、沒有文案、也沒有引導。與背包「其他游戲」分頁相同——JILI 在空狀態上是<strong>系統性的疏漏</strong>，而非單一頁面的遺漏。</p>
+            <div class="callout-box">對照 FA CHAI：同樣的情境（收藏頁無資料）被拿來放「You May Like…」推薦牆，把空白轉成導流位。這一格是 FA CHAI 明顯做得比較好的地方。</div>
+          </div>
+        </div>
+      </div>
+      <div class="panel">
+        <div class="p-title">開發該功能需注意事項</div>
+        <div class="col-grid cols-2">
+          <div>
+            <div class="item-title">分享內容的合規風險</div>
+            <p class="item-desc">可對外分享的贏分圖片等同於行銷素材，在多數市場受廣告法規約束</p>
+            <p class="item-desc">需確認是否要加上責任博彩標語與年齡警語</p>
+          </div>
+          <div>
+            <div class="item-title">回放的資料成本</div>
+            <p class="item-desc">要能回放單局需保存每局完整結果資料，須評估儲存期限與容量</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 06 JILI Bell -->
+    <section class="block">
+      <h2 class="heading"><span class="num">06</span> JILI 通知 JILI Bell</h2>
+
+      <div class="sub-block">
+        <h3 class="subheading">預設通知畫面與功能</h3>
+        <div class="media-row">
+          <div>
+            <div class="shot has-image" style="aspect-ratio:548/753;" data-caption="JILI 通知畫面"><img src="images/JI-06a.png" alt="JILI 通知畫面"><span class="zoom-hint">🔍 放大檢視</span></div>
+          </div>
+          <div class="panel">
+            <div class="p-title">通知頁説明</div>
+            <div class="item-block">
+              <div class="item-title">1. 信件功能</div>
+              <p class="item-desc">一個可收納系統通告或者宣傳的空間，同時也可接收對於玩家的消息，如：任務進度。</p>
+            </div>
+            <div class="item-block">
+              <div class="item-title">2. 覆核確認的介面元件</div>
+              <p class="item-desc">頁首有 <strong>Select All</strong> 核取方塊、<strong>全部已讀</strong>與<strong>刪除</strong>兩個圖示；每封信件左側有獨立核取方塊，右側顯示日期。未讀信件帶紅點。</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="sub-block">
+        <h3 class="subheading">有新通知的畫面與功能</h3>
+        <div class="media-row">
+          <div>
+            <div class="shot has-image" style="aspect-ratio:1592/753;" data-caption="截圖合輯：下注通知提醒／信箱新通知／游玩畫面輕彈窗(toast)"><img src="images/JI-06b.png" alt="截圖合輯：下注通知提醒／信箱新通知／游玩畫面輕彈窗(toast)"><span class="zoom-hint">🔍 放大檢視</span></div>
+          </div>
+          <div class="panel">
+            <div class="p-title">通知頁説明</div>
+            <div class="item-block">
+              <div class="item-title">新通知呈現方式</div>
+              <p class="item-desc">系統會在以下幾個狀況發送通知：顯示任務完成度、任務已完成、解鎖新任務。玩家可點擊該信件並跳轉到相對應的畫面。實機另見<strong>行銷型</strong>推播。</p>
+            </div>
+            <div class="item-block">
+              <div class="item-title">輕彈窗 Toast</div>
+              <p class="item-desc">每一次信箱有新的信件時，在游戲畫面都會有「輕彈窗」(toast) 出現以及有紅點的提示；toast 大概會出現 3-5 秒。</p>
+            </div>
+            <div class="item-block">
+              <div class="item-title">Toast 的種類</div>
+              <p class="item-desc">目前觀察可分 3 種：報告型（當下事件進度）、預告型（未來會發生的事件）、行銷型（推銷 JILI 的游戲或功能）。</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="p-title">開發該功能需注意事項</div>
+        <div class="col-grid cols-4">
+          <div>
+            <div class="item-title">信件不同狀態的呈現方式</div>
+            <p class="item-desc">如同 Mission 的任務卡，信件本身也需要有不同的呈現狀態，如：未讀和已讀</p>
+          </div>
+          <div>
+            <div class="item-title">系統提示</div>
+            <p class="item-desc">若有未讀的信件，除了信件本身有紅點，游戲畫面側邊欄入口也會出現紅點（已覆核確認）</p>
+          </div>
+          <div>
+            <div class="item-title">API 串聯注意</div>
+            <p class="item-desc">紅點的條件是什麽？什麽事件導致紅點出現與消失，系統要怎麽偵測這些「事件」</p>
+          </div>
+          <div>
+            <div class="item-title">全部已讀 以及 刪除信件 功能</div>
+            <p class="item-desc">JILI 有這些功能，但開發時可考慮是否真的需要，以及其真正意義</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 07 Transaction -->
+    <section class="block">
+      <h2 class="heading"><span class="num">07</span> 交易記錄(道具+會員) Transaction (Item+Member)</h2>
+
+      <div class="media-row">
+        <div>
+          <div class="shot has-image" style="aspect-ratio:1239/1206;" data-caption="截圖合輯：Member／JILI LV 等級表／History"><img src="images/JI-07a.png" alt="截圖合輯：Member／JILI LV 等級表／History"><span class="zoom-hint">🔍 放大檢視</span></div>
+        </div>
+        <div class="panel">
+          <div class="p-title">交易記錄頁説明</div>
+          <p class="item-desc">分成 3 頁：會員/玩家資訊(Member)、獎勵 (Rewards) 和 歷史 (History)，主要重點是會員/玩家資訊。</p>
+          <div class="item-block">
+            <div class="item-title">1. 會員/玩家資訊 (Member)</div>
+            <p class="item-desc">顯示 JILI ID、Nickname 與 <strong>LV 徽章</strong>，並說明等級直接連動<strong>返水</strong>。下方分頁：Item（道具）＋ JILI LV（等級）。</p>
+          </div>
+          <div class="item-block">
+            <div class="item-title">2. 獎勵 (Rewards)</div>
+            <p class="item-desc">原報告記為「暫無功能」，<strong>該說法不成立</strong>——09/08 實機覆核確認：僅有 <strong>Tournament</strong> 一個可折疊區塊，點擊展開／收合，內容為賽事宣傳橫幅，無其他獎勵項目。</p>
+          </div>
+          <div class="item-block">
+            <div class="item-title">3. 歷史 (History)</div>
+            <p class="item-desc">顯示玩家在游戲的交易記錄，可用 15 mins／30 mins／1 hour 快速篩選，另可依日期與 Round number 查詢。</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="p-title">JILI LV 等級制度（實機正確版本）</div>
+        <div class="col-grid cols-2">
+          <div>
+            <div class="item-title">等級表結構</div>
+            <p class="item-desc">表格欄位：JILI LV／LV EXP／Sign in EXP／<strong>Sign in Rewards</strong>／LV Rank／LV Mission（另有欄位需橫向捲動）。</p>
+            <p class="item-desc">門檻為等比放大：LV1 6,000／LV2 54,000／LV3 216,000／LV4 1,296,000／LV5 7,776,000。</p>
+            <p class="item-desc">LV0 各項權益皆為 X，即<strong>排行榜與任務本身也被等級鎖住</strong>。</p>
+            <div class="callout-box">補充：表中 <strong>Sign in EXP／Sign in Rewards</strong> 欄位代表 JILI 有<strong>每日簽到</strong>機制，「Reward resets weekly on Tuesday」（每週二重置）。</div>
+          </div>
+          <div>
+            <div class="item-title">JILI LV Use（實機四條規則）</div>
+            <p class="item-desc">1. Bet 1 coin = 1 point of JILI LV EXP</p>
+            <p class="item-desc">2. JILI LV 適用於<strong>老虎機與捕魚機</strong>（非只有老虎機）</p>
+            <p class="item-desc">3. 特殊情況下等級可能被重置</p>
+            <p class="item-desc">4. 等級屬額外回饋服務，JILI 保留調整權利</p>
+            <div class="item-title" style="margin-top:10px;">JILI LV Reset（兩段式衰退）</div>
+            <p class="item-desc">連續 <strong>15 天</strong>未遊玩：等級保留，但 EXP 進度歸零</p>
+            <p class="item-desc">連續 <strong>30 天</strong>未遊玩：等級與 EXP 一併歸零</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="p-title">開發該功能需注意事項</div>
+        <div class="col-grid cols-3">
+          <div>
+            <div class="item-title">等級進度視覺化</div>
+            <p class="item-desc">目前等級、下一等級與 EXP 進度條並列，數值即時可見</p>
+          </div>
+          <div>
+            <div class="item-title">兩段式衰退設計</div>
+            <p class="item-desc">15 天砍進度、30 天砍等級，是比單純「獎勵過期」更強的回訪壓力機制</p>
+            <p class="item-desc">但也可能造成流失玩家的負面觀感，需權衡</p>
+          </div>
+          <div>
+            <div class="item-title">等級與返水的連動</div>
+            <p class="item-desc">JILI 將等級直接連到返水比例，等於把 CRM 與實際成本結構綁在一起</p>
+            <p class="item-desc">導入前須先與財務／營運確認可承受範圍</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <hr class="divider">
+    <section class="block summary" style="margin-bottom:0;">
+      <h2 class="heading">總結與建議 Summary</h2>
+      <div class="col-grid cols-2">
+        <div class="panel" style="margin-bottom:0;">
+          <div class="p-title">JILI 特色</div>
+          <div class="item-block">
+            <div class="item-title">Future Mission</div>
+            <p class="item-desc">以預告牆製造回訪誘因，08/24 覆核已上線</p>
+          </div>
+          <div class="item-block">
+            <div class="item-title">JILI Bell</div>
+            <p class="item-desc">一個方便做平台行銷活動的空間</p>
+          </div>
+          <div class="item-block">
+            <div class="item-title">玩家資訊專區</div>
+            <p class="item-desc">提供玩家查看與游戲相關資訊的空間，格式可通用全部 JILI 的游戲</p>
+          </div>
+          <div class="item-block">
+            <div class="item-title">CRM 分區（修正）</div>
+            <p class="item-desc">側邊欄實為 7 個模組。等級規則在交易記錄，但等級獎勵領取在 WIN MORE，入口分散</p>
+          </div>
+          <div class="item-block">
+            <div class="item-title">跨游戲導流</div>
+            <p class="item-desc">指定任務、共用獎池、推薦牆三者都在把玩家導回 JILI 產品線</p>
+          </div>
+        </div>
+        <div class="panel" style="margin-bottom:0;">
+          <div class="p-title">可參考</div>
+          <div class="item-block">
+            <div class="item-title">信箱空間</div>
+            <p class="item-desc">方便未來宣傳：新產品上架、系統維修公告、另類獎勵派發空間等。</p>
+          </div>
+          <div class="item-block">
+            <div class="item-title">HIGHLIGHTS 的分享機制</div>
+            <p class="item-desc">全份報告中唯一的對外擴散功能，若我方 CRM 只規劃留存則為明顯缺口</p>
+          </div>
+          <div class="item-block">
+            <div class="item-title">每日簽到</div>
+            <p class="item-desc">JILI 已有簽到並綁定等級與每週二重置，屬低成本高頻回訪機制</p>
+          </div>
+          <div class="item-block">
+            <div class="item-title">尚待補齊</div>
+            <p class="item-desc">本頁截圖已全數補齊；交易記錄的 Rewards 頁內容仍待實機覆核</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </div>
+
+  <!-- ============================= JDB GAMING ============================= -->
+  <div id="report-jdb" class="report">
+
+    <h1 class="title">JDB Gaming 產品分析報告</h1>
+    <p class="context">初步競品研究，資料來源與 FA CHAI／JILI 不同——並非登入平台實測，而是使用者提供的實機截圖（游戲：Bastet）逐項記錄，內容將隨截圖增加持續擴充。</p>
+
+    <div class="panel" style="border-left:3px solid var(--tag-bg);">
+      <div class="p-title">關於本頁與資料來源</div>
+      <p class="item-desc">JDB Gaming 官網（jdbgaming.com）僅為對外行銷／招商網站（Games／About／Services／Contact／FAQ／News），未見任何 CRM 或玩家互動機制說明；官網內建的 Demo 試玩無法載入（疑似阻擋自動化瀏覽）。本頁內容改為根據使用者提供之 Bastet 實機截圖記錄，目前僅涵蓋 Member（Backpack）、Jackpot 與 Share（分享／回放）三項功能，尚不足以與 FA CHAI／JILI 做完整對照。</p>
+    </div>
+
+    <hr class="divider">
+
+    <details class="legend">
+      <summary class="legend-title">審閱標示說明</summary>
+      <div class="legend-grid">
+        <div class="legend-item l-fix"><b>需修正 <span class="legend-count">· 本頁無</span></b>內容有誤或已過時，需要更正</div>
+        <div class="legend-item l-review"><b>待覆核 <span class="legend-count">· 本頁無</span></b>尚未實機確認，數值與描述都可能不準</div>
+        <div class="legend-item l-todo"><b>待補齊 <span class="legend-count">· 本頁無</span></b>已知缺口，尚未進行的工作（含未填入的截圖佔位框）</div>
+      </div>
+    </details>
+
+    <section class="block">
+      <div class="two-shot-row">
+        <div>
+          <div class="shot has-image" style="aspect-ratio:1600/833;" data-caption="Bastet 主畫面（一般遊玩狀態）"><img src="images/JD-00a-1.png" alt="Bastet 主畫面（一般遊玩狀態）"><span class="zoom-hint">🔍 放大檢視</span></div>
+          <div class="shot-caption">Bastet 主畫面（一般遊玩狀態）</div>
+        </div>
+        <div>
+          <div class="shot has-image" style="aspect-ratio:1566/460;" data-caption="結構圖：JDB 系統架構（Bastet 遊戲頁面，2026/09/11 記錄）"><img src="images/JD-00a-2.png" alt="結構圖：JDB 系統架構（Bastet 遊戲頁面，2026/09/11 記錄）"><span class="zoom-hint">🔍 放大檢視</span></div>
+          <div class="shot-caption">JDB 系統架構（Bastet 遊戲頁面）</div>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="p-title">整體架構觀察</div>
+        <p class="item-desc">Bastet 遊戲頁面主要分為四塊：<strong>Backpack/Member 背包/會員</strong>（含 Rank／Backpack／History，即本頁 01 節的 Member 彈窗）、<strong>Settings 設定</strong>（餘額查詢／規則説明／音效）、<strong>Slots</strong>（旋轉、押注、Auto、Turbo，以及本頁 03 節提到的 <strong>Share Replay 分享回放</strong>），與獨立的 <strong>Buy Features</strong>。</p>
+      </div>
+    </section>
+
+    <section class="block">
+      <h2 class="heading"><span class="num">01</span> Backpack (Member)</h2>
+      <div class="media-row">
+        <div>
+          <div class="shot has-image" style="aspect-ratio:1600/907;" data-caption="截圖合輯：Member 彈窗 RANK／BACKPACK／HISTORY 三分頁，共 3 格畫面"><img src="images/JD-01a.png" alt="截圖合輯：Member 彈窗 RANK／BACKPACK／HISTORY 三分頁，共 3 格畫面"><span class="zoom-hint">🔍 放大檢視</span></div>
+        </div>
+        <div class="panel">
+          <div class="p-title">Member 彈窗説明</div>
+          <p class="item-desc">點擊左側 <strong>Backpack</strong> 圖示，實際開啟的是一個 <strong>Member</strong> 彈窗，內含三個分頁：RANK／BACKPACK／HISTORY。</p>
+          <div class="item-block">
+            <div class="item-title">1. RANK</div>
+            <p class="item-desc">顯示該公司旗下游戲的熱門排行，<strong>純資訊展示、不可互動</strong>，並非玩家個人排名。</p>
+          </div>
+          <div class="item-block">
+            <div class="item-title">2. BACKPACK</div>
+            <p class="item-desc">目前為空，附一顆 VIEW HISTORY 按鈕。</p>
+          </div>
+          <div class="item-block">
+            <div class="item-title">3. HISTORY</div>
+            <p class="item-desc">道具異動紀錄表，目前同樣空白。</p>
+          </div>
+          <div class="callout-box">觀察：整個 Member 彈窗內<strong>找不到任何「取得道具」的入口</strong>（無 Mission、任務或簽到等機制），BACKPACK／HISTORY 皆為空——目前看起來像是尚未串接完成的預留功能，而非玩家單純還沒收集到道具。</div>
+        </div>
+      </div>
+
+      <div class="media-row">
+        <div>
+          <div class="shot has-image" style="aspect-ratio:1148/999;" data-caption="點擊 MEMBER 旁的 ? 顯示的説明彈窗：BACKPACK／HISTORY 規則"><img src="images/JD-01b.png" alt="點擊 MEMBER 旁的 ? 顯示的説明彈窗：BACKPACK／HISTORY 規則"><span class="zoom-hint">🔍 放大檢視</span></div>
+        </div>
+        <div class="panel">
+          <div class="p-title">説明彈窗（點擊 MEMBER 旁的 ? ）</div>
+          <div class="item-block">
+            <div class="item-title">BACKPACK 規則</div>
+            <p class="item-desc">展示背包的規則，內容涵蓋道具的使用教學、使用限制、效期等細節，詳見左圖。</p>
+          </div>
+          <div class="item-block">
+            <div class="item-title">HISTORY 規則</div>
+            <p class="item-desc">僅記錄道具的取得時間、到期紀錄與銷毀紀錄（含兌換結果），其他資訊不顯示；且<strong>僅顯示近一個月</strong>的紀錄。</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="block">
+      <h2 class="heading"><span class="num">02</span> Jackpot</h2>
+      <div class="media-row">
+        <div>
+          <div class="shot has-image" style="aspect-ratio:1600/1690;" data-caption="上：一般遊玩狀態（Jackpot 收合為右上角小圖示）；下：點擊 ? 顯示的説明彈窗"><img src="images/JD-02a.png" alt="上：一般遊玩狀態（Jackpot 收合為右上角小圖示）；下：點擊 ? 顯示的説明彈窗"><span class="zoom-hint">🔍 放大檢視</span></div>
+        </div>
+        <div class="panel">
+          <div class="p-title">Jackpot 説明</div>
+          <div class="item-block">
+            <div class="item-title">1. 三層即時獎池</div>
+            <p class="item-desc">畫面頂部固定顯示 <strong>MAJOR／GRAND／MINOR</strong> 三層獎池即時金額（披索計價）。</p>
+          </div>
+          <div class="item-block">
+            <div class="item-title">2. 參與方式（點擊 ? 顯示説明）</div>
+            <p class="item-desc">每筆有效投注自動貢獻至獎池，玩家無需額外操作；每筆有效投注亦有隨機機會觸發 Grand／Major／Minor 任一獎項，中獎金額直接存入玩家游戲帳戶。</p>
+          </div>
+          <div class="callout-box">先前記錄「Jackpot 橫幅幾乎遮住主視覺人物臉部」僅為<strong>特定展示狀態</strong>（例如中獎公告／輪播動畫）；一般遊玩時 Jackpot 會<strong>收合為畫面右上角的小圖示</strong>，不影響主視覺，如左圖上半部所示。</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="block">
+      <h2 class="heading"><span class="num">03</span> Share（分享／回放）</h2>
+      <div class="media-row">
+        <div>
+          <div class="shot has-image" style="aspect-ratio:1600/820;" data-caption="贏分後畫面右上角新增 SHARE（紙飛機圖示）分享按鈕"><img src="images/JD-03a.png" alt="贏分後畫面右上角新增 SHARE（紙飛機圖示）分享按鈕"><span class="zoom-hint">🔍 放大檢視</span></div>
+        </div>
+        <div class="panel">
+          <div class="p-title">SHARE 按鈕説明</div>
+          <p class="item-desc">大贏分結算後，畫面右上角會新增一顆紅色 SHARE 分享按鈕（紙飛機圖示），用途為將該局回放／戰績分享出去。</p>
+          <div class="item-block">
+            <div class="item-title">觸發條件</div>
+            <p class="item-desc">目前僅觀察到<strong>贏分結算畫面</strong>會出現此按鈕，一般遊玩狀態未見；玩家<strong>至少達到 Big Win 等級</strong>的贏分才會出現此按鈕。</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="media-row">
+        <div>
+          <div class="shot has-image" style="aspect-ratio:1600/1640;" data-caption="上：點擊 SHARE 後顯示「Replay production in progress...」；下：隨後跳出「Replay recording failed, please try again」"><img src="images/JD-03b.png" alt="上：點擊 SHARE 後顯示「Replay production in progress...」；下：隨後跳出「Replay recording failed, please try again」"><span class="zoom-hint">🔍 放大檢視</span></div>
+        </div>
+        <div class="panel">
+          <div class="p-title">尚未完成</div>
+          <div class="item-block">
+            <div class="item-title">1. Replay production in progress...</div>
+            <p class="item-desc">點擊 SHARE 後彈出讀取彈窗，顯示正在產生回放（Replay）。</p>
+          </div>
+          <div class="item-block">
+            <div class="item-title">2. Replay recording failed</div>
+            <p class="item-desc">讀取結束後彈出「Replay recording failed, please try again」，附 Try again／Close 兩顆按鈕；多次點擊 Try again 皆未成功產生回放。</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </div>
+
+  <!-- ============================= COMPARISONS ============================= -->
+  <div id="report-compare" class="report">
+
+    <h1 class="title">Comparisons</h1>
+    <p class="context">FA CHAI（DJ BOOM BOOM）、JILI（Super Ace）與 JDB Gaming（Bastet）CRM 功能逐項對照，內容整理自本報告各頁的實機記錄。</p>
+
+    <div class="panel" style="border-left:3px solid var(--tag-bg);">
+      <div class="p-title">對照表圖例</div>
+      <p class="item-desc"><span class="mark-y">✓</span>有此功能　<span class="mark-n">✕</span>未觀察到此功能　<span class="mark-p">△</span>有但不完整、或存在疑慮</p>
+      <div class="callout-box">標示 <span class="mark-p">△</span> 與部分 <span class="mark-n">✕</span> 屬<strong>未能確認</strong>而非確定不存在：FA CHAI 的交易記錄因平台阻擋未能覆核、FC JACKPOT 內頁尚未拍攝；JILI 的 Rewards 頁仍待覆核。<strong>JDB Gaming 目前僅涵蓋 Backpack(Member) 與 Jackpot 兩項功能</strong>（見 JDB 分頁），目前一律標示 <span class="mark-n">✕</span>；此為依現有實機畫面判定，並非窮盡測試的最終結論，後續補測若有出入將再更新。</div>
+    </div>
+
+    <hr class="divider">
+
+    <section class="block">
+      <h2 class="heading">預覽 Preview</h2>
+      <div class="skim-scroll">
+        <table class="skim-table">
+          <thead>
+            <tr><th></th><th><span class="sk-zh">任務</span>MISSIONS</th><th><span class="sk-zh">背包</span>BACKPACK</th><th><span class="sk-zh">等級</span>LEVELS</th><th><span class="sk-zh">排行榜</span>LEADERBOARD</th><th><span class="sk-zh">探索</span>DISCOVERY</th><th><span class="sk-zh">溝通</span>COMMUNICATION</th></tr>
+          </thead>
+          <tbody>
+            <tr><th>FA CHAI</th><td><svg class="skim-tally" width="22" height="20" viewBox="0 0 22 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><line x1="2" y1="3" x2="2" y2="17"/><line x1="7" y1="3" x2="7" y2="17"/><line x1="12" y1="3" x2="12" y2="17"/><line x1="17" y1="3" x2="17" y2="17"/><line x1="0" y1="17.5" x2="19" y2="2.5"/></svg><span class="skim-count">5/8</span></td><td><svg class="skim-tally" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><line x1="2" y1="3" x2="2" y2="17"/><line x1="7" y1="3" x2="7" y2="17"/><line x1="12" y1="3" x2="12" y2="17"/><line x1="17" y1="3" x2="17" y2="17"/></svg><span class="skim-count">4/4</span></td><td><svg class="skim-tally" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><line x1="2" y1="3" x2="2" y2="17"/><line x1="7" y1="3" x2="7" y2="17"/><line x1="12" y1="3" x2="12" y2="17"/><line x1="17" y1="3" x2="17" y2="17"/></svg><span class="skim-count">4/8</span></td><td><svg class="skim-tally" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><line x1="2" y1="3" x2="2" y2="17"/><line x1="7" y1="3" x2="7" y2="17"/><line x1="12" y1="3" x2="12" y2="17"/><line x1="17" y1="3" x2="17" y2="17"/></svg><span class="skim-count">4/7</span></td><td><svg class="skim-tally" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><line x1="2" y1="3" x2="2" y2="17"/><line x1="7" y1="3" x2="7" y2="17"/><line x1="12" y1="3" x2="12" y2="17"/><line x1="17" y1="3" x2="17" y2="17"/></svg><span class="skim-count">4/7</span></td><td><svg class="skim-tally" width="15" height="20" viewBox="0 0 15 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><line x1="2" y1="3" x2="2" y2="17"/><line x1="7" y1="3" x2="7" y2="17"/><line x1="12" y1="3" x2="12" y2="17"/></svg><span class="skim-count">3/6</span></td></tr><tr><th>JILI</th><td><svg class="skim-tally" width="39" height="20" viewBox="0 0 39 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><line x1="2" y1="3" x2="2" y2="17"/><line x1="7" y1="3" x2="7" y2="17"/><line x1="12" y1="3" x2="12" y2="17"/><line x1="17" y1="3" x2="17" y2="17"/><line x1="0" y1="17.5" x2="19" y2="2.5"/><line x1="31" y1="3" x2="31" y2="17"/><line x1="36" y1="3" x2="36" y2="17"/></svg><span class="skim-count">7/8</span></td><td><svg class="skim-tally" width="10" height="20" viewBox="0 0 10 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><line x1="2" y1="3" x2="2" y2="17"/><line x1="7" y1="3" x2="7" y2="17"/></svg><span class="skim-count">2/4</span></td><td><svg class="skim-tally" width="34" height="20" viewBox="0 0 34 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><line x1="2" y1="3" x2="2" y2="17"/><line x1="7" y1="3" x2="7" y2="17"/><line x1="12" y1="3" x2="12" y2="17"/><line x1="17" y1="3" x2="17" y2="17"/><line x1="0" y1="17.5" x2="19" y2="2.5"/><line x1="31" y1="3" x2="31" y2="17"/></svg><span class="skim-count">6/8</span></td><td><svg class="skim-tally" width="34" height="20" viewBox="0 0 34 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><line x1="2" y1="3" x2="2" y2="17"/><line x1="7" y1="3" x2="7" y2="17"/><line x1="12" y1="3" x2="12" y2="17"/><line x1="17" y1="3" x2="17" y2="17"/><line x1="0" y1="17.5" x2="19" y2="2.5"/><line x1="31" y1="3" x2="31" y2="17"/></svg><span class="skim-count">6/7</span></td><td><svg class="skim-tally" width="22" height="20" viewBox="0 0 22 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><line x1="2" y1="3" x2="2" y2="17"/><line x1="7" y1="3" x2="7" y2="17"/><line x1="12" y1="3" x2="12" y2="17"/><line x1="17" y1="3" x2="17" y2="17"/><line x1="0" y1="17.5" x2="19" y2="2.5"/></svg><span class="skim-count">5/7</span></td><td><svg class="skim-tally" width="22" height="20" viewBox="0 0 22 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><line x1="2" y1="3" x2="2" y2="17"/><line x1="7" y1="3" x2="7" y2="17"/><line x1="12" y1="3" x2="12" y2="17"/><line x1="17" y1="3" x2="17" y2="17"/><line x1="0" y1="17.5" x2="19" y2="2.5"/></svg><span class="skim-count">5/6</span></td></tr><tr><th>JDB</th><td><span class="skim-zero" aria-hidden="true">&ndash;</span><span class="skim-count">0/8</span></td><td><span class="skim-zero" aria-hidden="true">&ndash;</span><span class="skim-count">0/4</span></td><td><span class="skim-zero" aria-hidden="true">&ndash;</span><span class="skim-count">0/8</span></td><td><span class="skim-zero" aria-hidden="true">&ndash;</span><span class="skim-count">0/7</span></td><td><span class="skim-zero" aria-hidden="true">&ndash;</span><span class="skim-count">0/7</span></td><td><svg class="skim-tally" width="5" height="20" viewBox="0 0 5 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><line x1="2" y1="3" x2="2" y2="17"/></svg><span class="skim-count">1/6</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="block">
+      <h2 class="heading"><span class="num">01</span> 任務 Mission</h2>
+      <table class="data-table">
+        <thead>
+          <tr><th style="width:22%;">功能</th><th style="width:30%;">FA CHAI（DJ BOOM BOOM）</th><th style="width:30%;">JILI（Super Ace）</th><th>JDB Gaming（Bastet）</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>每日任務</td><td><span class="mark-y">✓</span></td><td><span class="mark-y">✓</span></td><td><span class="mark-n">✕</span>目前唯一入口 Member 彈窗內未見任務功能</td></tr>
+          <tr><td>每周任務層（當周完成 3 次）</td><td><span class="mark-y">✓</span>挑戰／指定各一組</td><td><span class="mark-n">✕</span></td><td><span class="mark-n">✕</span></td></tr>
+          <tr><td>任務自動刷新</td><td><span class="mark-n">✕</span>需玩家自行重開游戲（12:00 GMT+8）</td><td><span class="mark-y">✓</span>每日 08:00 自動重置，頁首附倒數</td><td><span class="mark-n">✕</span></td></tr>
+          <tr><td>指定游戲任務</td><td><span class="mark-y">✓</span>僅標示游戲名稱，無跳轉</td><td><span class="mark-y">✓</span>每張卡可直接跳轉該游戲</td><td><span class="mark-n">✕</span></td></tr>
+          <tr><td>未來任務預告</td><td><span class="mark-n">✕</span></td><td><span class="mark-y">✓</span>2×4 縮圖預告牆，標示開始日期</td><td><span class="mark-n">✕</span></td></tr>
+          <tr><td>排除規則明示</td><td><span class="mark-p">△</span>SUGAR BANG BANG 2 疑似不計，未見說明</td><td><span class="mark-y">✓</span>排除規則寫入說明文字</td><td><span class="mark-n">✕</span></td></tr>
+          <tr><td>完成後自動下移、免手動領取</td><td><span class="mark-y">✓</span></td><td><span class="mark-y">✓</span></td><td><span class="mark-n">✕</span></td></tr>
+          <tr><td>未解鎖狀態顯示</td><td><span class="mark-y">✓</span>鎖頭圖示</td><td><span class="mark-y">✓</span>鎖頭圖示，階梯式解鎖鏈</td><td><span class="mark-n">✕</span></td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section class="block">
+      <h2 class="heading"><span class="num">02</span> 背包／道具 Items</h2>
+      <table class="data-table">
+        <thead>
+          <tr><th style="width:22%;">功能</th><th style="width:30%;">FA CHAI（DJ BOOM BOOM）</th><th style="width:30%;">JILI（Super Ace）</th><th>JDB Gaming（Bastet）</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>本游戲／其他游戲分頁</td><td><span class="mark-y">✓</span></td><td><span class="mark-y">✓</span></td><td><span class="mark-n">✕</span>單一清單，無分頁設計</td></tr>
+          <tr><td>各分頁皆有空狀態</td><td><span class="mark-y">✓</span>三頁皆有插畫與引導 CTA</td><td><span class="mark-p">△</span>僅「本游戲」有，「其他游戲」完全沒有</td><td><span class="mark-p">△</span>僅純文字「Oops... No items yet!」＋按鈕，無插畫</td></tr>
+          <tr><td>道具記錄與狀態篩選</td><td><span class="mark-y">✓</span>全部／未使用／已使用／已過期，上限 60 筆</td><td><span class="mark-p">△</span>僅信息列表，且混合任務通知與使用紀錄</td><td><span class="mark-p">△</span>HISTORY 頁有下拉篩選欄位，但目前無資料可驗證</td></tr>
+          <tr><td>由背包直接使用道具</td><td><span class="mark-y">✓</span></td><td><span class="mark-y">✓</span></td><td><span class="mark-n">✕</span>背包目前為空，無可用道具</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section class="block">
+      <h2 class="heading"><span class="num">03</span> 等級與忠誠 Level &amp; Loyalty</h2>
+      <table class="data-table">
+        <thead>
+          <tr><th style="width:22%;">功能</th><th style="width:30%;">FA CHAI（DJ BOOM BOOM）</th><th style="width:30%;">JILI（Super Ace）</th><th>JDB Gaming（Bastet）</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>首個獎勵門檻</td><td><span class="mark-y">✓</span>660 EXP（BET 1 = 1 EXP）</td><td><span class="mark-y">✓</span>6,000 EXP（LV1，Bet 1 coin = 1 EXP）</td><td><span class="mark-n">✕</span>未見對應的等級／經驗值機制</td></tr>
+          <tr><td>等級與 EXP 進度條</td><td><span class="mark-y">✓</span>每 5 級一次獎勵</td><td><span class="mark-y">✓</span>JILI LV，門檻等比放大</td><td><span class="mark-n">✕</span></td></tr>
+          <tr><td>單一入口（查看與領取同處）</td><td><span class="mark-y">✓</span></td><td><span class="mark-n">✕</span>規則在交易記錄、領取在 WIN MORE</td><td><span class="mark-n">✕</span></td></tr>
+          <tr><td>等級連動返水</td><td><span class="mark-n">✕</span></td><td><span class="mark-y">✓</span>等級越高返水越好</td><td><span class="mark-n">✕</span></td></tr>
+          <tr><td>未遊玩衰退機制</td><td><span class="mark-n">✕</span></td><td><span class="mark-y">✓</span>15 天歸零進度、30 天歸零等級</td><td><span class="mark-n">✕</span></td></tr>
+          <tr><td>每日簽到</td><td><span class="mark-n">✕</span></td><td><span class="mark-y">✓</span>綁定等級，每週二重置</td><td><span class="mark-n">✕</span></td></tr>
+          <tr><td>等級鎖住其他功能</td><td><span class="mark-n">✕</span></td><td><span class="mark-p">△</span>LV0 連排行榜與任務都被鎖</td><td><span class="mark-n">✕</span></td></tr>
+          <tr><td>升等提示 Toast</td><td><span class="mark-y">✓</span></td><td><span class="mark-y">✓</span></td><td><span class="mark-n">✕</span></td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section class="block">
+      <h2 class="heading"><span class="num">04</span> 排行榜與競賽 Leaderboard &amp; Competition</h2>
+      <table class="data-table">
+        <thead>
+          <tr><th style="width:22%;">功能</th><th style="width:30%;">FA CHAI（DJ BOOM BOOM）</th><th style="width:30%;">JILI（Super Ace）</th><th>JDB Gaming（Bastet）</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>贏分／倍數排行榜</td><td><span class="mark-y">✓</span>可切換本游戲／全部游戲</td><td><span class="mark-y">✓</span>TOP 50，可切換游戲範圍</td><td><span class="mark-n">✕</span>RANK 分頁僅為公司熱門游戲排行，非分數榜</td></tr>
+          <tr><td>單局回放</td><td><span class="mark-y">✓</span></td><td><span class="mark-y">✓</span></td><td><span class="mark-n">✕</span></td></tr>
+          <tr><td>玩家自己那列固定顯示</td><td><span class="mark-y">✓</span>未進榜顯示「-」</td><td><span class="mark-y">✓</span>未進榜顯示 Unranked（500+）</td><td><span class="mark-n">✕</span>RANK 為純資訊展示，無玩家個人排名可言</td></tr>
+          <tr><td>限時競賽與賽事生命週期</td><td><span class="mark-n">✕</span></td><td><span class="mark-y">✓</span>進行中／已結束／即將開始，每 15 分鐘更新</td><td><span class="mark-n">✕</span></td></tr>
+          <tr><td>對外分享（存圖／複製連結）</td><td><span class="mark-n">✕</span></td><td><span class="mark-y">✓</span>HIGHLIGHTS，全份報告唯一對外擴散功能</td><td><span class="mark-n">✕</span></td></tr>
+          <tr><td>與付費功能綁定</td><td><span class="mark-p">△</span>導覽明寫「Use Buy Feature to go on leaderboard!」</td><td><span class="mark-n">✕</span></td><td><span class="mark-n">✕</span></td></tr>
+          <tr><td>帳號遮蔽</td><td><span class="mark-y">✓</span></td><td><span class="mark-y">✓</span>玩家自己那列不遮蔽</td><td><span class="mark-n">✕</span></td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section class="block">
+      <h2 class="heading"><span class="num">05</span> 探索與推薦 Discovery</h2>
+      <table class="data-table">
+        <thead>
+          <tr><th style="width:22%;">功能</th><th style="width:30%;">FA CHAI（DJ BOOM BOOM）</th><th style="width:30%;">JILI（Super Ace）</th><th>JDB Gaming（Bastet）</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>推薦牆</td><td><span class="mark-y">✓</span>RECOMMENDED</td><td><span class="mark-y">✓</span>WIN MORE → You May Like</td><td><span class="mark-p">△</span>RANK 分頁可視為變體，但為公司熱門榜而非個人化推薦</td></tr>
+          <tr><td>玩法分類標籤</td><td><span class="mark-y">✓</span>Megaways／Multiplier／Transform WILD 等</td><td><span class="mark-n">✕</span>僅 HOT 標籤與在線人數</td><td><span class="mark-n">✕</span></td></tr>
+          <tr><td>即時在線人數</td><td><span class="mark-n">✕</span></td><td><span class="mark-y">✓</span></td><td><span class="mark-n">✕</span></td></tr>
+          <tr><td>收藏鍵</td><td><span class="mark-y">✓</span>★</td><td><span class="mark-y">✓</span>♥</td><td><span class="mark-n">✕</span></td></tr>
+          <tr><td>獨立收藏模組</td><td><span class="mark-y">✓</span>FAVORITES，空狀態直接轉為推薦版位</td><td><span class="mark-n">✕</span>有收藏鍵但無獨立模組</td><td><span class="mark-n">✕</span></td></tr>
+          <tr><td>玩法說明／波動性／試玩</td><td><span class="mark-n">✕</span></td><td><span class="mark-y">✓</span>WIN MORE → Features，附 DEMO MODE</td><td><span class="mark-n">✕</span></td></tr>
+          <tr><td>行銷輪播 Banner</td><td><span class="mark-n">✕</span></td><td><span class="mark-y">✓</span>WIN MORE → Events</td><td><span class="mark-n">✕</span></td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section class="block">
+      <h2 class="heading"><span class="num">06</span> 溝通與其他 Communication</h2>
+      <table class="data-table">
+        <thead>
+          <tr><th style="width:22%;">功能</th><th style="width:30%;">FA CHAI（DJ BOOM BOOM）</th><th style="width:30%;">JILI（Super Ace）</th><th>JDB Gaming（Bastet）</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>通知信箱</td><td><span class="mark-n">✕</span></td><td><span class="mark-y">✓</span>JILI Bell，全選／全部已讀／刪除</td><td><span class="mark-n">✕</span></td></tr>
+          <tr><td>Toast 提示</td><td><span class="mark-y">✓</span>僅升等提示</td><td><span class="mark-y">✓</span>報告型／預告型／行銷型三種</td><td><span class="mark-n">✕</span></td></tr>
+          <tr><td>玩家資訊專區</td><td><span class="mark-n">✕</span></td><td><span class="mark-y">✓</span>JILI ID／暱稱／LV 徽章</td><td><span class="mark-n">✕</span></td></tr>
+          <tr><td>交易記錄查詢</td><td><span class="mark-p">△</span>平台阻擋存取，本次未能覆核</td><td><span class="mark-y">✓</span>15 分／30 分／1 小時＋日期＋局號</td><td><span class="mark-p">△</span>HISTORY 分頁僅記錄道具，非交易／局號紀錄</td></tr>
+          <tr><td>跨游戲累積獎池</td><td><span class="mark-y">✓</span>FC JACKPOT（內頁尚未拍攝）</td><td><span class="mark-y">✓</span>Slot Jackpot＋Link Jackpot 三層</td><td><span class="mark-y">✓</span>MAJOR／GRAND／MINOR 三層即時獎池</td></tr>
+          <tr><td>CRM 集中度</td><td><span class="mark-y">✓</span>6 個模組全在側邊欄</td><td><span class="mark-n">✕</span>側邊欄 7 模組＋交易記錄在設定內</td><td><span class="mark-n">✕</span></td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <hr class="divider">
+    <section class="block summary" style="margin-bottom:0;">
+      <h2 class="heading">各自獨有 Exclusive</h2>
+
+      <details class="exc-toggle">
+        <summary class="exc-toggle-title">三家獨有功能清單</summary>
+        <div class="col-grid cols-3">
+        <div class="panel" style="margin-bottom:0;">
+          <div class="p-title">僅 FA CHAI 有</div>
+          <div class="item-block">
+            <div class="item-title">每周任務層</div>
+            <p class="item-desc">挑戰與指定任務各有一組「當周完成 3 次」的上層獎勵，在每日循環之外多一層回訪理由。</p>
+          </div>
+          <div class="item-block">
+            <div class="item-title">玩法分類標籤</div>
+            <p class="item-desc">推薦牆依機制分類，玩家可依玩法而非畫面挑選游戲。</p>
+          </div>
+          <div class="item-block">
+            <div class="item-title">獨立 FAVORITES 模組</div>
+            <p class="item-desc">由 RECOMMENDED 的 ★ 收藏彙整而成，屬唯一由玩家主動操作的個人化功能，且空狀態直接轉為推薦版位。</p>
+          </div>
+          <div class="item-block">
+            <div class="item-title">完整的空狀態設計</div>
+            <p class="item-desc">背包三個分頁皆有插畫、文案與引導 CTA，JILI 的「其他游戲」則完全沒有。</p>
+          </div>
+          <div class="item-block">
+            <div class="item-title">道具記錄狀態篩選</div>
+            <p class="item-desc">全部／未使用／已使用／已過期四種狀態可篩選，來源與到期時間皆可追溯。</p>
+          </div>
+        </div>
+        <div class="panel" style="margin-bottom:0;">
+          <div class="p-title">僅 JILI 有</div>
+          <div class="item-block">
+            <div class="item-title">每日簽到</div>
+            <p class="item-desc">綁定等級並於每週二重置，屬低成本、高頻率的回訪機制。</p>
+          </div>
+          <div class="item-block">
+            <div class="item-title">通知信箱 JILI Bell</div>
+            <p class="item-desc">可承載新品上架、維修公告與行銷推播的平台級溝通版位。</p>
+          </div>
+          <div class="item-block">
+            <div class="item-title">限時競賽 Tournament</div>
+            <p class="item-desc">具完整賽事生命週期（進行中／已結束／即將開始）與明示更新頻率。</p>
+          </div>
+          <div class="item-block">
+            <div class="item-title">對外分享 HIGHLIGHTS</div>
+            <p class="item-desc">回放、存圖與複製連結；屬獲客／擴散而非留存，若我方只規劃留存即為缺口。</p>
+          </div>
+          <div class="item-block">
+            <div class="item-title">未來任務預告</div>
+            <p class="item-desc">以 2×4 縮圖排列預告下一輪任務游戲，成本低但能製造回訪誘因。</p>
+          </div>
+          <div class="item-block">
+            <div class="item-title">返水連動等級與衰退機制</div>
+            <p class="item-desc">等級直接連動返水比例，並以 15／30 天兩段式衰退施加回訪壓力。</p>
+          </div>
+          <div class="item-block">
+            <div class="item-title">玩法說明與試玩入口</div>
+            <p class="item-desc">波動性評級與機制圖解，並附 DEMO MODE 試玩。</p>
+          </div>
+          <div class="item-block">
+            <div class="item-title">玩家資訊專區與行銷版位</div>
+            <p class="item-desc">Member 頁集中呈現玩家身分與等級；Events 提供輪播式行銷 Banner。</p>
+          </div>
+        </div>
+        <div class="panel" style="margin-bottom:0;">
+          <div class="p-title">JDB Gaming（Bastet）</div>
+          <p class="item-desc" style="margin-bottom:12px;">目前僅實測到 Backpack(Member) 與 Jackpot 兩項功能，尚不足以判斷 JDB 是否有真正意義上的「獨有」強項；以下僅為初步觀察，需待更多畫面才能確認究竟是缺口還是特色。</p>
+          <div class="item-block">
+            <div class="item-title">三層即時獎池視覺化</div>
+            <p class="item-desc">MAJOR／GRAND／MINOR 三個數字同時跑動疊加在主畫面上方，视觉存在感高於 FA CHAI／JILI 的獎池呈現方式，但尚未實測是否有專屬領獎頁面。</p>
+          </div>
+          <div class="item-block">
+            <div class="item-title">道具＋規則彈窗綁定</div>
+            <p class="item-desc">Backpack／History 的規則説明直接以「？」彈窗掛在對應分頁旁，不須跳轉其他頁面，但整體背包功能仍處於「尚無實際道具可用」的空狀態。</p>
+          </div>
+        </div>
+        </div>
+      </details>
+
+      <div class="lc-wrap">
+    <svg class="lc" viewBox="0 0 980 306" role="img" aria-label="三家在六個分類的功能覆蓋率折線輪廓圖">
+      <line class="lc-grid" x1="46" y1="248.0" x2="884.0" y2="248.0"/>
+      <text class="lc-ytick" x="36" y="252.0" text-anchor="end">0</text>
+      <line class="lc-grid" x1="46" y1="190.0" x2="884.0" y2="190.0"/>
+      <text class="lc-ytick" x="36" y="194.0" text-anchor="end">25</text>
+      <line class="lc-grid" x1="46" y1="132.0" x2="884.0" y2="132.0"/>
+      <text class="lc-ytick" x="36" y="136.0" text-anchor="end">50</text>
+      <line class="lc-grid" x1="46" y1="74.0" x2="884.0" y2="74.0"/>
+      <text class="lc-ytick" x="36" y="78.0" text-anchor="end">75</text>
+      <line class="lc-grid" x1="46" y1="16.0" x2="884.0" y2="16.0"/>
+      <text class="lc-ytick" x="36" y="20.0" text-anchor="end">100%</text>
+      <text class="lc-xzh" x="76.0" y="274" text-anchor="middle">任務</text>
+      <text class="lc-xen" x="76.0" y="288" text-anchor="middle">MISSIONS</text>
+      <text class="lc-xzh" x="231.6" y="274" text-anchor="middle">背包</text>
+      <text class="lc-xen" x="231.6" y="288" text-anchor="middle">BACKPACK</text>
+      <text class="lc-xzh" x="387.2" y="274" text-anchor="middle">等級</text>
+      <text class="lc-xen" x="387.2" y="288" text-anchor="middle">LEVELS</text>
+      <text class="lc-xzh" x="542.8" y="274" text-anchor="middle">排行榜</text>
+      <text class="lc-xen" x="542.8" y="288" text-anchor="middle">LEADERBOARD</text>
+      <text class="lc-xzh" x="698.4" y="274" text-anchor="middle">探索</text>
+      <text class="lc-xen" x="698.4" y="288" text-anchor="middle">DISCOVERY</text>
+      <text class="lc-xzh" x="854.0" y="274" text-anchor="middle">溝通</text>
+      <text class="lc-xen" x="854.0" y="288" text-anchor="middle">COMM.</text>
+      <path class="lc-line" d="M76.0,103.0 L231.6,16.0 L387.2,132.0 L542.8,115.4 L698.4,115.4 L854.0,132.0" stroke="#3987E5"/>
+      <circle class="lc-dot" cx="76.0" cy="103.0" r="4.5" fill="#3987E5"/>
+      <circle class="lc-dot" cx="231.6" cy="16.0" r="4.5" fill="#3987E5"/>
+      <circle class="lc-dot" cx="387.2" cy="132.0" r="4.5" fill="#3987E5"/>
+      <circle class="lc-dot" cx="542.8" cy="115.4" r="4.5" fill="#3987E5"/>
+      <circle class="lc-dot" cx="698.4" cy="115.4" r="4.5" fill="#3987E5"/>
+      <circle class="lc-dot" cx="854.0" cy="132.0" r="4.5" fill="#3987E5"/>
+      <text class="lc-name" x="867.0" y="136.0" fill="#3987E5">FA CHAI</text>
+      <path class="lc-line" d="M76.0,45.0 L231.6,132.0 L387.2,74.0 L542.8,49.1 L698.4,82.3 L854.0,54.7" stroke="#D95926"/>
+      <circle class="lc-dot" cx="76.0" cy="45.0" r="4.5" fill="#D95926"/>
+      <circle class="lc-dot" cx="231.6" cy="132.0" r="4.5" fill="#D95926"/>
+      <circle class="lc-dot" cx="387.2" cy="74.0" r="4.5" fill="#D95926"/>
+      <circle class="lc-dot" cx="542.8" cy="49.1" r="4.5" fill="#D95926"/>
+      <circle class="lc-dot" cx="698.4" cy="82.3" r="4.5" fill="#D95926"/>
+      <circle class="lc-dot" cx="854.0" cy="54.7" r="4.5" fill="#D95926"/>
+      <text class="lc-name" x="867.0" y="58.7" fill="#D95926">JILI</text>
+      <path class="lc-line" d="M76.0,248.0 L231.6,248.0 L387.2,248.0 L542.8,248.0 L698.4,248.0 L854.0,209.3" stroke="#199E70"/>
+      <circle class="lc-dot" cx="76.0" cy="248.0" r="4.5" fill="#199E70"/>
+      <circle class="lc-dot" cx="231.6" cy="248.0" r="4.5" fill="#199E70"/>
+      <circle class="lc-dot" cx="387.2" cy="248.0" r="4.5" fill="#199E70"/>
+      <circle class="lc-dot" cx="542.8" cy="248.0" r="4.5" fill="#199E70"/>
+      <circle class="lc-dot" cx="698.4" cy="248.0" r="4.5" fill="#199E70"/>
+      <circle class="lc-dot" cx="854.0" cy="209.3" r="4.5" fill="#199E70"/>
+      <text class="lc-name" x="867.0" y="213.3" fill="#199E70">JDB</text>
+    </svg>
+      </div>
+      <p class="lc-note">縱軸為各分類的覆蓋率（該分類中 ✓ 的項目數 ÷ 該分類項目總數）。橫軸為分類而非時間，折線僅用於比較三家的<strong>輪廓</strong>，線段斜率本身沒有意義。</p>
+
+      <div class="panel panel-plain" style="margin-bottom:0;">
+      <div class="p-title">FA CHAI × JILI 整體觀察</div>
+      <div class="item-block">
+        <div class="item-title">架構 Structure</div>
+        <p class="item-desc">FA CHAI 把所有 CRM 模組集中在同一個側邊欄——任務、背包、等級、排行榜、推薦、收藏各只有一個入口，不需要在選單間跳轉。JILI 則把 CRM 拆成三個獨立區塊：側邊欄（含 Jackpot、Win More、Tournament、Highlights 等 7 個模組）、另一個 Member／交易記錄專區用來查等級規則，再加上要到 WIN MORE → Free Gift 才能真正領取等級獎勵。</p>
+        <div class="callout-box">FA CHAI 一目了然、路徑短；JILI 功能更深，但也更分散——回頭玩的玩家得先學會東西放在哪裡，而不是打開一個面板就能找到全部。</div>
+      </div>
+      <div class="item-block">
+        <div class="item-title">重心 Focus</div>
+        <p class="item-desc">FA CHAI 的重心在用重複建立習慣：兩條各自獨立的每周任務線疊在每日任務之上、收藏清單、推薦牆的玩法分類標籤，這些機制的共通點是常常給玩家一個小小的回訪理由，並不直接綁定金流壓力。JILI 則更偏向與營收綁定的留存設計：等級直接連動返水比例、15／30 天兩段式衰退機制主動懲罰不活躍、每日簽到綁定等級，再加上 FA CHAI 沒有對應功能的對外分享 HIGHLIGHTS。</p>
+        <div class="callout-box">簡言之：FA CHAI 較簡單好找、偏行為習慣；JILI 較深但分散、偏營收槓桿——JILI 明顯在打造一套更具侵略性、和成本結構綁在一起的忠誠度系統。</div>
+      </div>
+      </div>
+    </section>
+
+  </div>
+
+<div id="report-levels" class="report">
+
+  <h1 class="title">等級系統機制比較 Level System Comparison</h1>
+  <p class="context">FA CHAI（DJ BOOM BOOM）與 JILI（Super Ace）等級系統的流程圖解對照，聚焦兩者機制設計上最關鍵的差異：獎勵是否會用完。逐項功能對照請見 Comparisons 分頁「03 等級與忠誠」。</p>
+
+  <section class="block">
+    <h2 class="heading"><span class="num">01</span> 流程比較 Process Flow</h2>
+    <div class="two-shot-row">
+      <div>
+        <div class="shot has-image" style="aspect-ratio:565/561;" data-caption="FA CHAI 等級機制流程圖：玩家下注 → FACHAI-EXP 累積（Lv1／Lv2／Lv5／Lv10）→ 領取獎勵 → 若玩家領取全部獎勵，獎勵會領完"><img src="images/LV-01a-1.png" alt="FA CHAI 等級機制流程圖：玩家下注 → FACHAI-EXP 累積 → 領取獎勵 → 若玩家領取全部獎勵，獎勵會領完"><span class="zoom-hint">🔍 放大檢視</span></div>
+        <div class="shot-caption">FA CHAI 等級機制流程圖</div>
+      </div>
+      <div>
+        <div class="shot has-image" style="aspect-ratio:554/675;" data-caption="JILI 等級機制流程圖：玩家下注 → JILI-EXP 累積（Lv1–Lv4，含 15/30 天衰退標註）→ 到 WIN MORE 獲取獎勵；到交易記錄查看等級為另一路徑；每週二重置獎勵旁標註待確認假設"><img src="images/LV-01a-2.png" alt="JILI 等級機制流程圖：玩家下注 → JILI-EXP 累積 → 到 WIN MORE 獲取獎勵；到交易記錄查看等級為另一路徑"><span class="zoom-hint">🔍 放大檢視</span></div>
+        <div class="shot-caption">JILI 等級機制流程圖</div>
+      </div>
+    </div>
+    <div class="panel">
+      <div class="p-title">整體觀察</div>
+      <div class="item-block">
+        <p class="item-desc">兩家的「等級」都由下注累積 EXP 驅動，但驅動之後接的是完全不同的機制。FA CHAI 比較像遊戲裡的「里程碑存檔點」：等距門檻、同頁查看與領取、沒有任何隨時間衰退的機制。JILI 比較像一項要持續維護的「KPI 指標」：門檻逐級放大、查看規則與領取獎勵分處兩地（交易記錄／WIN MORE），並有 15／30 天兩段式衰退機制。</p>
+        <div class="callout-box">關鍵差異在終局：FA CHAI 的存檔點不會重置，等級一旦封頂就沒有新獎勵可拿；JILI 的等級／進度會定期歸零，讓玩家能重新爬一次已經領過的獎勵階梯。</div>
+      </div>
+    </div>
+  </section>
+
+  <section class="block">
+    <h2 class="heading"><span class="num">02</span> 首個獎勵門檻 First Reward Threshold</h2>
+    <div class="panel">
+      <div class="p-title">累積 EXP 拿第一次獎勵</div>
+      <div class="lvbar-row">
+        <div class="lvbar-name">FA CHAI</div>
+        <div class="lvbar-track"><div class="lvbar-fill" style="width:11%; background:#3987E5;"><span>660 EXP</span></div></div>
+      </div>
+      <div class="lvbar-row">
+        <div class="lvbar-name">JILI</div>
+        <div class="lvbar-track"><div class="lvbar-fill" style="width:100%; background:#D95926;"><span>6,000 EXP</span></div></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="block">
+    <h2 class="heading"><span class="num">03</span> 獎勵是否會用完 Reward Exhaustion</h2>
+    <div class="panel">
+      <div class="item-block">
+        <div class="item-title">FA CHAI — <span class="mark-y">✓</span> 觸頂即用完</div>
+        <p class="item-desc">沒有衰退機制，進度永久保留；好處是不會平白丟失，代價是等級一旦封頂，就再也沒有新的等級獎勵可拿。</p>
+      </div>
+      <div class="item-block">
+        <div class="item-title">JILI — <span class="mark-n">✕</span> 進度會衰退</div>
+        <p class="item-desc">15 天無遊玩重置進度、30 天無遊玩重置等級；已領過的 Free Gift 寶箱會在重新爬升後再次可解鎖領取，獎勵池不會像 FA CHAI 一樣觸頂用完。</p>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+</div>
+<footer class="report-footer">Competitors CRM Report · 內部使用 · Last updated: 14/09/2026</footer>
+
+<div id="img-modal" class="img-modal">
+  <span class="img-modal-close" id="img-modal-close">&times;</span>
+  <div id="img-modal-viewport" class="img-modal-viewport">
+    <img id="img-modal-content" src="" alt="">
+  </div>
+  <div id="img-modal-caption" class="img-modal-caption"></div>
+  <div class="img-modal-hint">點擊圖片可放大 ／ 縮小</div>
+</div>
+
+<script>
+  // ---- Sticky tab bar shadow once pinned to top ----
+  const tabBar = document.querySelector('.tab-bar');
+  if (tabBar){
+    const sentinel = document.createElement('div');
+    sentinel.style.position = 'relative';
+    sentinel.style.height = '0';
+    tabBar.parentNode.insertBefore(sentinel, tabBar);
+    // guarded: if IntersectionObserver is unavailable, the sticky shadow is
+    // simply skipped rather than throwing and taking the rest of the script
+    // (section rail, lightbox, tabs) down with it
+    try {
+      const observer = new IntersectionObserver(
+        ([e]) => tabBar.classList.toggle('is-stuck', !e.isIntersecting),
+        { threshold: [0] }
+      );
+      observer.observe(sentinel);
+    } catch (err) { /* no sticky shadow — everything else still works */ }
+  }
+
+  document.querySelectorAll('.tab-btn[data-target]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+      document.querySelectorAll('.report').forEach(r => r.classList.remove('active'));
+      btn.classList.add('active');
+      document.getElementById(btn.dataset.target).classList.add('active');
+      window.scrollTo({top: 0, behavior: 'smooth'});
+      buildRail();                      // sections differ per tab
+    });
+  });
+
+  /* ============================================================
+     Addressable refs
+     Every editable block gets a stable, readable address so it can
+     be pointed at precisely in conversation.
+
+       FC-01        section 01 of the FA CHAI tab   (JI- = JILI)
+       FC-01a       the first block inside it (sub-block, panel,
+                    table or image row — lettered in document order)
+       FC-01a-2     the 2nd numbered point inside that block
+       FC-01a-2.c   a callout attached to that point
+
+     Section codes: 00 = overview, 01…08 = numbered sections,
+     SUM = the closing summary.
+     Toggle the labels with the "顯示編號 Refs" button.
+     ============================================================ */
+  function assignRefs(){
+    document.querySelectorAll('.report').forEach(report => {
+      const tab = report.id === 'report-fachai' ? 'FC'
+                : report.id === 'report-compare' ? 'CP'
+                : report.id === 'report-jdb' ? 'JD'
+                : report.id === 'report-levels' ? 'LV' : 'JI';
+      let seenNumbered = false;
+      report.querySelectorAll('section.block').forEach(sec => {
+        const h2  = sec.querySelector('h2.heading');
+        const num = h2 && h2.querySelector('.num');
+        let code;
+        if (num){ code = num.textContent.trim(); seenNumbered = true; }
+        else code = seenNumbered ? 'SUM' : '00';
+        const secRef = tab + '-' + code;
+        sec.setAttribute('data-ref', secRef);
+
+        // direct children that count as addressable blocks, in document order.
+        // A .col-grid is a bare wrapper (the summary's two panels) and a
+        // .skim-scroll is a bare overflow wrapper (the At-a-Glance table), so
+        // both are flattened to their contents rather than taking a letter of
+        // their own — the panel/table inside is what a reader would cite.
+        const blocks = [];
+        [...sec.children].forEach(el => {
+          // a DETAILS wrapper (e.g. the Exclusive section's collapsible)
+          // is transparent for ref purposes — unwrap to its non-SUMMARY
+          // content and address that, exactly as if it sat directly in sec.
+          const eff = (el.tagName === 'DETAILS')
+            ? [...el.children].find(c => c.tagName !== 'SUMMARY') || el
+            : el;
+          if (eff.classList.contains('col-grid') || eff.classList.contains('skim-scroll')){
+            [...eff.children].forEach(child => blocks.push(child));
+          } else if (
+            eff.classList.contains('sub-block')     ||
+            eff.classList.contains('media-row')     ||
+            eff.classList.contains('panel')         ||
+            eff.classList.contains('two-shot-row')  ||
+            eff.classList.contains('lc-wrap')       ||
+            eff.tagName === 'TABLE'){
+            blocks.push(eff);
+          }
+        });
+
+        blocks.forEach((blk, bi) => {
+          const blkRef = secRef + String.fromCharCode(97 + bi);   // a, b, c…
+          blk.setAttribute('data-ref', blkRef);
+
+          blk.querySelectorAll('.item-block').forEach((item, ii) => {
+            const itemRef = blkRef + '-' + (ii + 1);
+            item.setAttribute('data-ref', itemRef);
+            item.querySelectorAll('.callout-box').forEach((co, ci) => {
+              co.setAttribute('data-ref', itemRef + '.c' + (ci ? ci + 1 : ''));
+            });
+          });
+          // callouts that hang directly off the block, or off the block's
+          // panel when the block is a media-row (shot + panel pair) — not
+          // off a numbered point, which already claimed its own callouts above.
+          let looseCalloutN = 0;
+          blk.querySelectorAll('.callout-box').forEach(co => {
+            if (co.hasAttribute('data-ref')) return;
+            co.setAttribute('data-ref', blkRef + '.c' + (looseCalloutN ? looseCalloutN + 1 : ''));
+            looseCalloutN++;
+          });
+          // dev-note columns have no .item-block wrapper
+          blk.querySelectorAll(':scope > .col-grid > div').forEach((col, ci) => {
+            if (!col.hasAttribute('data-ref')) col.setAttribute('data-ref', blkRef + '-' + (ci + 1));
+          });
+        });
+      });
+    });
+  }
+  assignRefs();
+
+  const refToggle = document.getElementById('ref-toggle');
+  if (refToggle){
+    refToggle.addEventListener('click', () => {
+      const on = document.body.classList.toggle('show-refs');
+      refToggle.setAttribute('aria-pressed', on ? 'true' : 'false');
+      refToggle.textContent = on ? '隱藏編號 Refs' : '顯示編號 Refs';
+    });
+  }
+
+  // ---- Section Rail（章節軸）: one tick per section, sub-headings excluded ----
+  const rail  = document.createElement('button');
+  rail.className = 'toc-rail';
+  rail.type = 'button';
+  rail.setAttribute('aria-label', '章節軸 Section Rail — 滑過或點擊展開章節清單');
+  rail.title = '章節軸 Section Rail · 滑過展開，點擊固定';
+  rail.setAttribute('aria-haspopup', 'true');
+  rail.setAttribute('aria-expanded', 'false');
+  rail.setAttribute('aria-controls', 'toc-panel');
+
+  const panel = document.createElement('div');
+  panel.className = 'toc-panel';
+  panel.id = 'toc-panel';
+  panel.setAttribute('role', 'menu');
+
+  document.body.appendChild(rail);
+  document.body.appendChild(panel);
+
+  let sections = [];
+
+  function labelFor(sec){
+    const h2 = sec.querySelector('h2.heading');
+    if (h2){
+      const num = h2.querySelector('.num');
+      const n = num ? num.textContent.trim() : '';
+      // heading text without the number and without any status chip
+      const clone = h2.cloneNode(true);
+      clone.querySelectorAll('.num, .flag, .tag-new').forEach(x => x.remove());
+      return { n, t: clone.textContent.replace(/\s+/g,' ').trim() };
+    }
+    const h3 = sec.querySelector('h3.subheading');
+    return { n:'', t: h3 ? h3.textContent.replace(/\s+/g,' ').trim() : '總覽' };
+  }
+
+  function buildRail(){
+    const report = document.querySelector('.report.active');
+    rail.innerHTML = ''; panel.innerHTML = '';
+    sections = [];
+    if (!report) return;
+
+    panel.insertAdjacentHTML('beforeend', '<div class="toc-head">章節軸 Section Rail</div>');
+
+    report.querySelectorAll('section.block').forEach(sec => {
+      const { n, t } = labelFor(sec);
+      const tick = document.createElement('span');
+      rail.appendChild(tick);
+
+      const item = document.createElement('button');
+      item.type = 'button';
+      item.setAttribute('role', 'menuitem');
+      item.innerHTML = (n ? '<span class="n">' + n + '</span>' : '') + t;
+      item.addEventListener('click', e => {
+        e.stopPropagation();
+        const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+        const y = sec.getBoundingClientRect().top + scrollY - 70;   // clear the sticky tab bar
+        scrollTo({ top:y, behavior: reduce ? 'auto' : 'smooth' });
+        closePanel();
+      });
+      panel.appendChild(item);
+
+      sections.push({ sec, tick, item });
+    });
+    markActive();
+  }
+
+  function markActive(){
+    if (!sections.length) return;
+    const line = innerHeight * 0.35;          // "you are here" line
+    let idx = 0;
+    sections.forEach((s, i) => {
+      if (s.sec.getBoundingClientRect().top <= line) idx = i;
+    });
+    sections.forEach((s, i) => {
+      s.tick.classList.toggle('on', i === idx);
+      s.item.classList.toggle('on', i === idx);
+    });
+  }
+
+  /* Open on hover as well as click.
+     - hover opens after a short delay, so a cursor merely passing the right
+       edge of the screen doesn't fling the panel open
+     - closing is delayed too: rail and panel are separate elements with a
+       ~12px gap between them, and without the delay the mouseleave from the
+       rail would close the panel before the cursor could reach it
+     - a click PINS the panel open, so it survives the mouse moving away;
+       clicking again (or Escape / clicking elsewhere) unpins and closes
+     - hover is only wired up on devices that actually have a hovering
+       pointer, so tap-to-open still behaves correctly on touch          */
+  const OPEN_DELAY = 120, CLOSE_DELAY = 260;
+  let openTimer = null, closeTimer = null, pinned = false;
+  const canHover = matchMedia('(hover: hover) and (pointer: fine)').matches;
+
+  function openPanel(){
+    clearTimeout(closeTimer);
+    panel.classList.add('open');
+    rail.setAttribute('aria-expanded','true');
+  }
+  function closePanel(){
+    clearTimeout(openTimer); clearTimeout(closeTimer);
+    pinned = false;
+    panel.classList.remove('open');
+    rail.setAttribute('aria-expanded','false');
+  }
+  function scheduleOpen(){
+    clearTimeout(closeTimer);
+    if (panel.classList.contains('open')) return;
+    openTimer = setTimeout(openPanel, OPEN_DELAY);
+  }
+  function scheduleClose(){
+    clearTimeout(openTimer);
+    if (pinned) return;                       // pinned panels ignore mouse-out
+    closeTimer = setTimeout(() => {
+      panel.classList.remove('open');
+      rail.setAttribute('aria-expanded','false');
+    }, CLOSE_DELAY);
+  }
+
+  if (canHover){
+    [rail, panel].forEach(el => {
+      el.addEventListener('mouseenter', scheduleOpen);
+      el.addEventListener('mouseleave', scheduleClose);
+    });
+  }
+
+  // keyboard parity: focusing the rail or anything inside the panel opens it
+  [rail, panel].forEach(el => {
+    el.addEventListener('focusin', openPanel);
+    el.addEventListener('focusout', () => setTimeout(() => {
+      if (pinned) return;
+      if (!rail.contains(document.activeElement) && !panel.contains(document.activeElement)) closePanel();
+    }, 0));
+  });
+
+  rail.addEventListener('click', e => {
+    e.stopPropagation();
+    if (pinned){ closePanel(); }               // second click unpins
+    else { pinned = true; openPanel(); }
+  });
+  panel.addEventListener('click', e => e.stopPropagation());
+  document.addEventListener('click', closePanel);
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') closePanel(); });
+
+  let ticking = false;
+  addEventListener('scroll', () => {
+    if (ticking) return;
+    ticking = true;
+    requestAnimationFrame(() => { markActive(); ticking = false; });
+  }, { passive:true });
+  addEventListener('resize', markActive, { passive:true });
+
+  buildRail();
+
+  const modal = document.getElementById('img-modal');
+  const modalViewport = document.getElementById('img-modal-viewport');
+  const modalImg = document.getElementById('img-modal-content');
+  const modalCaption = document.getElementById('img-modal-caption');
+  const modalClose = document.getElementById('img-modal-close');
+
+  function openModal(src, caption){
+    modalImg.src = src;
+    modalCaption.textContent = caption || '';
+    modalViewport.classList.remove('zoomed');  // always open at "fit", not wherever a previous image left off
+    modalImg.style.width = '';
+    modalImg.style.height = '';
+    modal.classList.add('open');
+    document.body.classList.add('modal-open');
+  }
+  function closeModal(){
+    modal.classList.remove('open');
+    modalViewport.classList.remove('zoomed');
+    modalImg.style.width = '';
+    modalImg.style.height = '';
+    modalImg.src = '';
+    document.body.classList.remove('modal-open');
+  }
+
+  document.querySelectorAll('.shot').forEach(shot => {
+    shot.addEventListener('click', () => {
+      const img = shot.querySelector('img');
+      if (!img) return;
+      const caption = shot.dataset.caption || img.alt || '';
+      openModal(img.src, caption);
+    });
+  });
+
+  // Click-to-toggle zoom: "fit" <-> literal 2x of the size the image was
+  // just rendered at (not 2x its native pixels) — panned by the browser's
+  // own scrolling (wheel / trackpad / drag-scrollbar), no custom drag or
+  // wheel-zoom math needed. Zooming in scrolls to roughly where the click
+  // landed, rather than always dropping you at the corner.
+  const ZOOM_FACTOR = 2;
+  modalImg.addEventListener('click', (e) => {
+    e.stopPropagation();
+    if (modalViewport.classList.contains('zoomed')){
+      modalViewport.classList.remove('zoomed');
+      modalImg.style.width = '';
+      modalImg.style.height = '';
+      modalViewport.scrollTop = 0;
+      modalViewport.scrollLeft = 0;
+    } else {
+      const rect = modalImg.getBoundingClientRect();  // fit-rendered size, read before zooming
+      const ratioX = (e.clientX - rect.left) / rect.width;
+      const ratioY = (e.clientY - rect.top) / rect.height;
+      const zoomW = rect.width * ZOOM_FACTOR;
+      const zoomH = rect.height * ZOOM_FACTOR;
+      modalViewport.classList.add('zoomed');
+      modalImg.style.width = zoomW + 'px';
+      modalImg.style.height = zoomH + 'px';
+      modalViewport.scrollLeft = Math.max(0, zoomW * ratioX - modalViewport.clientWidth / 2);
+      modalViewport.scrollTop = Math.max(0, zoomH * ratioY - modalViewport.clientHeight / 2);
+    }
+  });
+
+  modalClose.addEventListener('click', closeModal);
+  modal.addEventListener('click', (e) => { if (e.target === modal || e.target === modalViewport) closeModal(); });
+  document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeModal(); });
+</script>
+</body>
+</html>
