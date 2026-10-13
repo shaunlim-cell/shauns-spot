@@ -269,9 +269,9 @@
       <div class="rule"><div class="k">播</div><div class="v">玩家還沒拖過CRM按鈕，而且畫面是閒置狀態（沒有在轉輪、沒有中獎動畫、沒有開彈窗）。</div></div>
       <div class="rule"><div class="k">暫停</div><div class="v">玩家開始轉輪、中獎動畫、進免費遊戲、開彈窗時先不播；回到閒置畫面再重新開始播。</div></div>
       <div class="rule"><div class="k">馬上消失</div><div class="v">玩家一碰到CRM按鈕，手指、效果、提示全部立刻消失，CRM按鈕照原本的方式反應。</div></div>
-      <div class="rule"><div class="k">播放次數</div><div class="v">不限次數：每次回到閒置畫面都會播，一直重複，直到玩家拖動過一次CRM按鈕為止。</div></div>
-      <div class="rule"><div class="k">只點一下、沒拖</div><div class="v">CRM按鈕照原本的方式反應；之後回到閒置畫面，動畫照常繼續播，直到玩家真的拖動CRM按鈕為止。</div></div>
-      <div class="rule"><div class="k">永遠不再出現</div><div class="v">玩家第一次成功拖動CRM按鈕之後，動畫再也不會出現，系統需要知道玩家是否有拖移過 CTA。</div></div>
+      <div class="rule"><div class="k">播放次數</div><div class="v">每次回到閒置畫面都會播，直到玩家拖動過一次CRM按鈕，或動畫已播滿 3 次為止。</div></div>
+      <div class="rule"><div class="k">只點一下、沒拖</div><div class="v">CRM按鈕照原本的方式反應；之後回到閒置畫面，動畫照常繼續播（仍計入 3 次上限）。</div></div>
+      <div class="rule"><div class="k">永遠不再出現</div><div class="v">玩家第一次成功拖動CRM按鈕之後，動畫再也不會出現，系統需要知道玩家是否有拖移過 CTA。<br>當該動畫已經播放了 3 次後，玩家依然沒拖移，系統也不會再播放動畫。</div></div>
       <div class="rule"><div class="k">不擋操作</div><div class="v">手指和效果點不到，點在上面就等於點在底下的東西。</div></div>
     </div>
   </section>
