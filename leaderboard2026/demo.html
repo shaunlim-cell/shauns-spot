@@ -80,6 +80,13 @@ button{font:inherit;color:inherit;background:none;border:none;cursor:pointer}
 .ptitle{color:#777;font-weight:800;font-size:15.5px;display:flex;align-items:center;gap:6px;white-space:nowrap;letter-spacing:.01em}
 .ptitle .ic{display:flex;align-items:flex-end;gap:1.6px;height:13px}
 .ptitle .ic i{width:3.6px;background:#777;border-radius:.6px}
+.phead{position:relative}
+.pinfo{width:26px;height:26px;display:grid;place-items:center;margin-left:-2px;padding:0}
+.pinfo svg{width:13px;height:13px}
+/* rule tip: anchored under the title, dismissed by tapping anywhere or after a few seconds */
+.rtip{position:absolute;left:28px;top:34px;z-index:6;background:#fff;border:1px solid #d6d6d6;border-radius:6px;box-shadow:0 3px 10px rgba(0,0,0,.18);padding:4px 10px;font-size:10px;font-weight:700;color:#333;line-height:1.35;text-align:center;max-width:270px;animation:tipin .15s ease-out}
+.dev.land .rtip{max-width:420px;white-space:nowrap}
+@keyframes tipin{from{opacity:0;transform:translateY(-3px)}}
 .px{width:38px;height:38px;display:grid;place-items:center;flex-shrink:0;margin-right:-4px}
 .px svg{width:19px;height:19px}
 
@@ -111,16 +118,16 @@ button{font:inherit;color:inherit;background:none;border:none;cursor:pointer}
 .ptab .pnd{font-size:8.5px}
 
 /* scroll areas */
-.list{flex:1;min-height:0;overflow-y:auto;overflow-x:hidden;padding:0 12px;scrollbar-width:none;-webkit-overflow-scrolling:touch;position:relative}
+.list{flex:1;min-height:0;overflow-y:auto;overflow-x:hidden;padding:12px 12px 0;scrollbar-width:none;-webkit-overflow-scrolling:touch;position:relative}
 .list::-webkit-scrollbar{display:none}
-.prule{font-size:10px;font-weight:700;color:#3b3b3b;text-align:center;padding:8px 0 6px;line-height:1.3}
+.prule{display:none}
 .spacer{height:66px}
 
 /* landscape columns */
 .rail{width:81px;flex-shrink:0;background:#fff;display:flex;flex-direction:column;gap:8px;padding:8px 4px}
 .rail button{height:20px;border-radius:999px;font-size:11px;font-weight:800;color:#BEBEBE;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;padding:0 2px;flex-shrink:0}
 .rail button.on{background:#000;color:#fff}
-.mid{width:268px;flex-shrink:0;padding:0 8px 0 12px;display:flex;flex-direction:column}
+.mid{width:268px;flex-shrink:0;padding:12px 8px 0 12px;display:flex;flex-direction:column}
 .mid .prule{text-align:left;padding:9px 0 5px}
 .rcol{flex:1;min-width:0;overflow-y:auto;overflow-x:hidden;padding:12px 13px 0 0;scrollbar-width:none;position:relative}
 .rcol::-webkit-scrollbar{display:none}
@@ -415,14 +422,15 @@ body.focus .ver{right:6px;bottom:6px;font-size:9.5px;padding:3px 8px;background:
   <div class="stage" id="stage">
     <div class="stage-note">Click the purple CRM icon on the game screen to start · the list scrolls (mouse wheel or drag) · press F for full screen</div>
     <button class="fsbtn" id="fsbtn">⛶ Full screen</button>
-    <div class="ver" title="Demo version and build date">Demo v4.1 · 2026-10-13</div>
+    <div class="ver" title="Demo version and build date">Demo v4.2 · 2026-10-14</div>
     <div class="devwrap" id="devwrap"><div class="dev" id="dev"></div></div>
   </div>
 
   <div class="side">
     <details class="box vbox">
-      <summary>VERSION <span class="vnow">v4.1 · 2026-10-13</span> ▾</summary>
+      <summary>VERSION <span class="vnow">v4.2 · 2026-10-14</span> ▾</summary>
       <ul>
+        <li><b>v4.2</b> 2026-10-14 · Threshold rule moved from the board into an ⓘ next to the title; tapping it shows a tip under the title (closes on any tap or after 4 s).</li>
         <li><b>v4.1</b> 2026-10-13 · Replay: top-right ✕ closes at any time; landscape replay layout matched to Figma (REPLAYING centred, balance “-”).</li>
         <li><b>v4.0</b> 2026-10-12 · Full-screen replay mode (no CRM header, disabled controls, REPLAYING mark); “already in this game” popup with CLOSE; long amounts scroll as a marquee.</li>
         <li><b>v3.0</b> 2026-10-08 · Matched to Figma: new CRM menu, switch-game popup, empty / error / only-2 states; row images tappable.</li>
@@ -555,7 +563,7 @@ function board(){
 
 /* ───────── state ───────── */
 const S={dev:'360x640',lang:'en',cur:'PHP',enabled:true,data:'normal',lbfail:'ok',rpmode:'ok',
-  edge:false,pending:null,menu:false,l2:false,period:'daily',status:'last',metric:'win',loading:false,loadGroup:null,error:false,
+  tip:false,edge:false,pending:null,menu:false,l2:false,period:'daily',status:'last',metric:'win',loading:false,loadGroup:null,error:false,
   game:'Golden Wish',rp:null,current:[]};
 let timers=[];
 const later=(fn,ms)=>{const id=setTimeout(fn,ms);timers.push(id);return id};
@@ -652,7 +660,7 @@ function panelHTML(){
     '<button class="parr" data-act="status" data-v="last" '+(onL?'disabled':'')+' aria-label="Last period">'+IC.prev(onL?'rgba(255,255,255,.22)':'#fff')+'</button>'+
     '<div class="pnc"><div class="pnt">'+esc(t(S.status))+'</div><div class="pnd">'+esc(t('period',{s:fmtTime(P[0]),e:fmtTime(P[1])}))+'</div></div>'+
     '<button class="parr" data-act="status" data-v="live" '+(onR?'disabled':'')+' aria-label="This period">'+IC.next(onR?'rgba(255,255,255,.22)':'#fff')+'</button>';
-  const head='<div class="phead"><div class="ptitle"><span class="ic"><i style="height:8px"></i><i style="height:13px"></i><i style="height:10px"></i></span>'+esc(t('title'))+'</div><button class="px" data-act="l2-close" aria-label="Close">'+IC.close+'</button></div>';
+  const head='<div class="phead"><div class="ptitle"><span class="ic"><i style="height:8px"></i><i style="height:13px"></i><i style="height:10px"></i></span>'+esc(t('title'))+'<button class="pinfo" data-act="rule-tip" aria-label="Rules"><svg viewBox="0 0 14 14"><circle cx="7" cy="7" r="6" fill="none" stroke="#777" stroke-width="1.3"/><circle cx="7" cy="4.2" r=".9" fill="#777"/><path d="M7 6.3v4.2" stroke="#777" stroke-width="1.4" stroke-linecap="round"/></svg></button></div><button class="px" data-act="l2-close" aria-label="Close">'+IC.close+'</button>'+(S.tip?'<div class="rtip" id="rtip">*'+esc(t('rule',{t:THRESHOLD}))+'</div>':'')+'</div>';
   if(land){
     /* fixed: title, tabs, period tab, rail, rule + top 3 · scrolls: rows column only */
     return '<div class="panel">'+head+'<div class="hrow"><div class="hl">'+tabs+'</div><div class="pnav ptab">'+nav+'</div></div>'+
@@ -679,18 +687,18 @@ function stateEl(){
 const emptyEl=()=>'<div class="state">'+ILLO.trophy+'<p>'+esc(t('empty'))+'</p>'+(S.status==='live'?'<p class="sub">'+esc(t('emptySub'))+'</p>':'')+'</div>';
 function getBoard(){const b=board(); S.current=b; return b;}
 function portraitBody(){
-  const st=stateEl(); if(st) return ruleEl()+st;
-  const b=getBoard(); if(!b.length) return ruleEl()+emptyEl();
+  const st=stateEl(); if(st) return st;
+  const b=getBoard(); if(!b.length) return emptyEl();
   const rest=b.slice(3);
-  return ruleEl()+top3El(b)+(rest.length?'<div class="rows">'+rest.map(row).join('')+'</div>':'')+'<div class="spacer"></div>';
+  return top3El(b)+(rest.length?'<div class="rows">'+rest.map(row).join('')+'</div>':'')+'<div class="spacer"></div>';
 }
 function landBody(){
-  const st=stateEl(); if(st) return '<div class="wide">'+ruleEl()+st+'</div>';
-  const b=getBoard(); if(!b.length) return '<div class="wide">'+ruleEl()+emptyEl()+'</div>';
+  const st=stateEl(); if(st) return '<div class="wide">'+st+'</div>';
+  const b=getBoard(); if(!b.length) return '<div class="wide">'+emptyEl()+'</div>';
   const rest=b.slice(3);
   /* fewer than 4 entries: the rows column is simply left empty */
   const rows=rest.length?'<div class="rows">'+rest.map(row).join('')+'</div><div class="spacer"></div>':'';
-  return '<div class="mid">'+ruleEl()+top3El(b)+'</div><div class="rcol list" id="list">'+rows+'</div>'+(rest.length?'<div class="rfade"></div>':'');
+  return '<div class="mid">'+top3El(b)+'</div><div class="rcol list" id="list">'+rows+'</div>'+(rest.length?'<div class="rfade"></div>':'');
 }
 /* top 3 in podium order 2 · 1 · 3; an empty place keeps its slot */
 function top3El(b){return '<div class="top3">'+[2,1,3].map(r=>{const e=b.find(x=>x.rank===r);return e?heroCard(e):ghostCard(r)}).join('')+'</div>'}
@@ -731,6 +739,8 @@ function openConfirm(e){
          :'<div class="bts"><button class="no" data-act="cfm-no">'+esc(t('cancel'))+'</button><button class="yes" data-act="cfm-yes">'+esc(t('confirm'))+'</button></div>')+'</div>';
   host.appendChild(d);
 }
+function showTip(){S.tip=true; const h=$('#l2 .phead'); if(h&&!$('#rtip')) h.insertAdjacentHTML('beforeend','<div class="rtip" id="rtip">*'+esc(t('rule',{t:THRESHOLD}))+'</div>'); clearTimeout(showTip._t); showTip._t=setTimeout(hideTip,4000);}
+function hideTip(){S.tip=false; clearTimeout(showTip._t); const r=$('#rtip'); if(r) r.remove();}
 function closeConfirm(){const c=$('#cfm'); if(c) c.remove(); S.pending=null;}
 
 function boardLabel(){return S.period+'·'+S.metric}
@@ -827,12 +837,14 @@ function countUp(total){
 $('#dev').addEventListener('click',ev=>{
   const el=ev.target.closest('[data-act]');
   if(S.menu && !ev.target.closest('#menu') && !(el&&el.dataset.act==='crm')){ S.menu=false; render(); if(!el) return; }
+  if(S.tip && !(el&&el.dataset.act==='rule-tip')){ hideTip(); }
   if(!el) return;
   const a=el.dataset.act, v=el.dataset.v;
   switch(a){
     case 'crm': S.menu=!S.menu; render(); break;
     case 'menu-other': S.menu=false; render(); toast(t('soon')); break;
     case 'menu-lb': openL2(); break;
+    case 'rule-tip': if(S.tip) hideTip(); else showTip(); break;
     case 'l2-close': S.l2=false; S.loading=false; S.error=false; render(); break;
     case 'period': case 'status': case 'metric': {
       const key=a; if(S[key]===v) return; if(S.loading && S.loadGroup===key) return;
