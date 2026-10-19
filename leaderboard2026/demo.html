@@ -157,7 +157,7 @@ div.hcimg{cursor:default}
 .hmeta{display:flex;align-items:flex-start;gap:3px;margin-top:-5px;padding:0 3px;position:relative;z-index:2;min-width:0}
 .rnum{font-size:35px;font-weight:600;line-height:30px;height:30px;flex-shrink:0;-webkit-text-stroke:1.2px rgba(30,20,10,.75);paint-order:stroke fill;letter-spacing:-.02em}
 .rn1{color:#D6A24F}.rn2{color:#C9C9C9}.rn3{color:#CF6A45}
-.hpid{font-size:11px;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;padding-top:8px;min-width:0}
+.hpid{font-size:11px;color:#fff;white-space:nowrap;overflow:hidden;padding-top:8px;min-width:0}
 .hval{font-size:13.5px;font-weight:800;color:#fff;text-align:right;padding:0 3px;white-space:nowrap;overflow:hidden;margin-top:1px;line-height:18px}
 .hrp{position:relative;margin:6px auto 0;width:60px;height:20px;border-radius:999px;background:#34C759;display:grid;place-items:center;flex-shrink:0}
 .hrp::before{content:'';position:absolute;inset:-8px -6px}
@@ -422,14 +422,18 @@ body.focus .ver{right:6px;bottom:6px;font-size:9.5px;padding:3px 8px;background:
   <div class="stage" id="stage">
     <div class="stage-note">Click the purple CRM icon on the game screen to start · the list scrolls (mouse wheel or drag) · press F for full screen</div>
     <button class="fsbtn" id="fsbtn">⛶ Full screen</button>
-    <div class="ver" title="Demo version and build date">Demo v4.2 · 2026-10-14</div>
+    <div class="ver" title="Demo version and build date">Demo v4.6 · 2026-10-19</div>
     <div class="devwrap" id="devwrap"><div class="dev" id="dev"></div></div>
   </div>
 
   <div class="side">
     <details class="box vbox">
-      <summary>VERSION <span class="vnow">v4.2 · 2026-10-14</span> ▾</summary>
+      <summary>VERSION <span class="vnow">v4.6 · 2026-10-19</span> ▾</summary>
       <ul>
+        <li><b>v4.6</b> 2026-10-19 · English copy updated: "already in this game" popup reads "You are already in this game."; the ⓘ tip joins its two parts with " • ".</li>
+        <li><b>v4.5</b> 2026-10-16 · A tap that closes the ⓘ tip only closes the tip (it no longer also presses what's underneath). Boards can be switched while one is still loading; the latest choice wins.</li>
+        <li><b>v4.4</b> 2026-10-15 · Tapping the dark area around the switch-game popup now cancels it. Replay load error (CRM) shows the error code in brackets at the end of the sentence, as in the copy key.</li>
+        <li><b>v4.3</b> 2026-10-15 · The ⓘ tip no longer closes by itself (closes on a second ⓘ tap or any tap). Long top-3 playIDs shrink to fit instead of being cut off. E7 now records whether a row's thumbnail or name was tapped. Reviewer notes updated (same-game popup says CLOSE).</li>
         <li><b>v4.2</b> 2026-10-14 · Threshold rule moved from the board into an ⓘ next to the title; tapping it shows a tip under the title (closes on any tap or after 4 s).</li>
         <li><b>v4.1</b> 2026-10-13 · Replay: top-right ✕ closes at any time; landscape replay layout matched to Figma (REPLAYING centred, balance “-”).</li>
         <li><b>v4.0</b> 2026-10-12 · Full-screen replay mode (no CRM header, disabled controls, REPLAYING mark); “already in this game” popup with CLOSE; long amounts scroll as a marquee.</li>
@@ -472,11 +476,11 @@ body.focus .ver{right:6px;bottom:6px;font-size:9.5px;padding:3px 8px;background:
       <ol class="flows">
         <li>CRM icon → Leaderboard (lands on Daily · Last period · Winnings)</li>
         <li>Switch Daily/Weekly, use the ‹ › period arrows, and switch Winnings/Multiplier (bottom toggle in portrait, left rail in landscape). The other selections stay, and the list jumps to the top.</li>
-        <li>Landscape: only the rows column on the right scrolls; the rule line and top 3 stay put.</li>
+        <li>Landscape: only the rows column on the right scrolls; the top 3 stay put.</li>
         <li>Scroll down and tap a replay. It opens full screen with no header; the ✕ at the top-right closes it at any time and returns you to the same scroll position.</li>
         <li>Press SPIN, watch it through to the result, then Watch again. Buy Bonus, bet ± and auto-spin are greyed out.</li>
-        <li>Tap a top-3 image or a row's game name to get the switch-game confirmation. Delisted games (grey ↗) can't be tapped; a grey ▶ means no replay. Tick “Top-3 edge cases” to see both on the cards.</li>
-        <li>Tap the game you're already playing (Golden Wish at the start) to see the “already in this game” popup; CONFIRM just closes it.</li>
+        <li>Tap a top-3 image, or a row's thumbnail or game name, to get the switch-game confirmation. Delisted games (grey ↗) can't be tapped; a grey ▶ means no replay. Tick “Top-3 edge cases” to see both on the cards.</li>
+        <li>Tap the game you're already playing (Golden Wish at the start) to see the “already in this game” popup; CLOSE just closes it.</li>
         <li>Turn on the failure options and VND/Thai, and switch to landscape or a short screen.</li>
       </ol>
     </div>
@@ -511,8 +515,8 @@ function periods(){
 /* ───────── text (spec §09 keys; items marked * are demo proposals) ───────── */
 const TX={
  en:{menu:'Leaderboard',title:'LEADERBOARD',daily:'DAILY',weekly:'WEEKLY',last:'LAST PERIOD',live:'THIS PERIOD',win:'WINNINGS',multi:'MULTIPLIER',
-     rule:'Only wins of {t}x or above enter the board · Times shown in UTC+8',period:'{s} – {e} (UTC+8)',empty:'No qualifying wins this period yet',error:'Failed to load',retry:'Retry',
-     rp:'REPLAY',rperr:'Replay failed to load. Please try again. ({c})',rperrShort:'Replay failed to load. Please try again',close:'Close',treasure:'Daily Chest',backpack:'Backpack',soon:'Not part of this demo',cfmB:'Do you want to leave this game, and move to {g}?',cancel:'CANCEL',confirm:'CONFIRM',cfmSame:'You logged into this game already.',emptySub:"It's your chance to claim a spot!"},
+     rule:'Only wins of {t}x or above enter the board • Times shown in UTC+8',period:'{s} – {e} (UTC+8)',empty:'No qualifying wins this period yet',error:'Failed to load',retry:'Retry',
+     rp:'REPLAY',rperr:'Replay failed to load. Please try again. ({c})',rperrShort:'Replay failed to load. Please try again',close:'Close',treasure:'Daily Chest',backpack:'Backpack',soon:'Not part of this demo',cfmB:'Do you want to leave this game, and move to {g}?',cancel:'CANCEL',confirm:'CONFIRM',cfmSame:'You are already in this game.',emptySub:"It's your chance to claim a spot!"},
  zh:{menu:'排行榜',title:'排行榜',daily:'日榜',weekly:'週榜',last:'上一期',live:'進行中',win:'贏分',multi:'倍數',
      rule:'達 {t} 倍以上才會進榜・時間為 UTC+8',period:'{s} – {e}（UTC+8）',empty:'本期還沒有成績達標',error:'載入失敗',retry:'重試',
      rp:'回放',rperr:'回放載入失敗，請稍後再試（{c}）',rperrShort:'回放載入失敗，請稍後再試',close:'關閉',treasure:'每日寶箱',backpack:'背包',soon:'不在本次示範範圍',cfmB:'確定要離開目前遊戲，前往 {g} 嗎？',cancel:'取消',confirm:'確定',cfmSame:'你已經在這款遊戲中了。',emptySub:'快來搶下一個名次吧！'},
@@ -642,6 +646,11 @@ function l2HTML(){return '<div class="l2" id="l2" style="'+l2Style()+'"><div cla
 function rerenderL2(){const l2=$('#l2'); if(l2) l2.outerHTML=l2HTML();}
 /* amounts that don't fit their box scroll like a carousel instead of being cut off */
 function applyMarquee(){
+  /* top-3 playID: shrink the text until it fits (never cut off) */
+  document.querySelectorAll('#l2 .hpid').forEach(el=>{
+    el.style.fontSize=''; let fs=parseFloat(getComputedStyle(el).fontSize);
+    while(el.scrollWidth>el.clientWidth+0.5 && fs>6){ fs-=0.5; el.style.fontSize=fs+'px'; }
+  });
   document.querySelectorAll('#l2 .hval, #l2 .rval').forEach(el=>{
     if(!el.firstElementChild||!el.firstElementChild.classList.contains('mq')){const txt=el.textContent; el.innerHTML='<span class="mq">'+esc(txt)+'</span>';}
     const sp=el.firstElementChild, over=sp.scrollWidth-el.clientWidth+parseFloat(getComputedStyle(el).paddingLeft||0)+parseFloat(getComputedStyle(el).paddingRight||0);
@@ -731,16 +740,16 @@ function row(e){
    shows the target game's art and name so players know where they're going */
 function openConfirm(e){
   const host=$('#l2 .content'); if(!host) return; closeConfirm(); S.pending=e;
-  const d=document.createElement('div'); d.className='cfm'; d.id='cfm';
-  /* same game the player is already in: info only, one CONFIRM that just closes the popup */
+  const d=document.createElement('div'); d.className='cfm'; d.id='cfm'; d.dataset.act='cfm-no'; /* tapping the dark area = cancel */
+  /* same game the player is already in: info only, one CLOSE that just closes the popup */
   const same=e.game===S.game;
   d.innerHTML='<div class="cb'+(same?' same':'')+'" data-act="noop"><div class="cth">'+gimg(e)+'</div><div class="ctn">'+esc(e.game)+'</div><p>'+esc(same?t('cfmSame'):t('cfmB',{g:e.game}))+'</p>'+
     (same?'<div class="bts"><button class="yes" data-act="cfm-no">'+esc(t('close').toUpperCase())+'</button></div>'
          :'<div class="bts"><button class="no" data-act="cfm-no">'+esc(t('cancel'))+'</button><button class="yes" data-act="cfm-yes">'+esc(t('confirm'))+'</button></div>')+'</div>';
   host.appendChild(d);
 }
-function showTip(){S.tip=true; const h=$('#l2 .phead'); if(h&&!$('#rtip')) h.insertAdjacentHTML('beforeend','<div class="rtip" id="rtip">*'+esc(t('rule',{t:THRESHOLD}))+'</div>'); clearTimeout(showTip._t); showTip._t=setTimeout(hideTip,4000);}
-function hideTip(){S.tip=false; clearTimeout(showTip._t); const r=$('#rtip'); if(r) r.remove();}
+function showTip(){S.tip=true; const h=$('#l2 .phead'); if(h&&!$('#rtip')) h.insertAdjacentHTML('beforeend','<div class="rtip" id="rtip">*'+esc(t('rule',{t:THRESHOLD}))+'</div>'); }
+function hideTip(){S.tip=false; const r=$('#rtip'); if(r) r.remove();}
 function closeConfirm(){const c=$('#cfm'); if(c) c.remove(); S.pending=null;}
 
 function boardLabel(){return S.period+'·'+S.metric}
@@ -775,7 +784,7 @@ function renderReplay(){
   const PLUG='<svg class="plug" viewBox="0 0 64 64" fill="none" stroke="#fff" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><path d="M24 40l-8 8M40 24l8-8M20 30l14 14M30 20l14 14M27 47c-4 4-11 4-14 0s-4-10 0-14l6-6 14 14zM37 17c4-4 11-4 14 0s4 10 0 14l-6 6-14-14z"/><path d="M28 30l-4 4M34 36l-4 4"/></svg>';
   let ov='';
   if(R.phase==='loading') ov='<div class="ov dark"><div class="spin"></div></div>';
-  else if(R.phase==='crmerr') ov='<div class="ov dark">'+PLUG+'<p>'+esc(t('rperrShort'))+'</p><div class="code">61499436</div><div class="bts"><button class="pill solid" data-act="rp-close">'+esc(t('close').toUpperCase())+'</button></div></div>';
+  else if(R.phase==='crmerr') ov='<div class="ov dark">'+PLUG+'<p>'+esc(t('rperr',{c:'61499436'}))+'</p><div class="bts"><button class="pill solid" data-act="rp-close">'+esc(t('close').toUpperCase())+'</button></div></div>';
   else if(R.phase==='gameerr') ov='<div class="ov blur">'+PLUG+'<p>Data error, please try again later</p><div class="code">38216389</div></div>';
   else if(R.phase==='result') ov='<div class="ov res"><div class="wbox"><div class="bw">'+(e.multi>=500?'MEGA WIN':'BIG WIN')+'</div><div class="wx">'+mult(e.multi)+'</div><div class="wa" id="gwa">'+money(R.count||0)+'</div></div>'+
      '<div class="bts"><button class="pill" data-act="rp-again">↻ WATCH AGAIN</button></div></div>';
@@ -837,7 +846,7 @@ function countUp(total){
 $('#dev').addEventListener('click',ev=>{
   const el=ev.target.closest('[data-act]');
   if(S.menu && !ev.target.closest('#menu') && !(el&&el.dataset.act==='crm')){ S.menu=false; render(); if(!el) return; }
-  if(S.tip && !(el&&el.dataset.act==='rule-tip')){ hideTip(); }
+  if(S.tip && !(el&&el.dataset.act==='rule-tip')){ hideTip(); return; } /* the tap only closes the tip */
   if(!el) return;
   const a=el.dataset.act, v=el.dataset.v;
   switch(a){
@@ -847,7 +856,8 @@ $('#dev').addEventListener('click',ev=>{
     case 'rule-tip': if(S.tip) hideTip(); else showTip(); break;
     case 'l2-close': S.l2=false; S.loading=false; S.error=false; render(); break;
     case 'period': case 'status': case 'metric': {
-      const key=a; if(S[key]===v) return; if(S.loading && S.loadGroup===key) return;
+      const key=a; if(S[key]===v) return; /* switching while loading is allowed: the latest choice wins */
+      if(S.pending) closeConfirm(); /* tab or arrow tapped while the popup is open: popup closes and the board switches */
       const before=boardLabel(), beforeStatus=S.status; S[key]=v;
       if(key==='status') logE('E3','Switch status tab',{to:v==='last'?'last period':'this period',board:boardLabel()});
       else logE('E2','Switch board',{from:before,to:boardLabel(),status:beforeStatus});
@@ -855,11 +865,11 @@ $('#dev').addEventListener('click',ev=>{
     case 'retry': logE('—','Retry tapped',{board:boardLabel()}); loadBoard(null); break;
     case 'jump': {
       const e=S.current.find(x=>x.rank==+el.dataset.r); if(!e||e.delisted) return;
-      openConfirm(e); break; }
+      openConfirm(e); S.pendingFrom=e.rank<=3?'top3 image':(el.classList.contains('gimg')?'row image':'row name'); break; }
     case 'cfm-no': closeConfirm(); break;
     case 'cfm-yes': {
       const e=S.pending; if(!e) return; closeConfirm();
-      logE('E7','Jump to game from board',{sourceGame:S.game,targetGame:e.game,rank:e.rank,from:e.rank<=3?'top3 image':'row name'});
+      logE('E7','Jump to game from board',{sourceGame:S.game,targetGame:e.game,rank:e.rank,from:S.pendingFrom||'row name'});
       S.game=e.game; S.l2=false; render(); toast('Opening '+e.game+'… (same session token)'); break; }
     case 'replay': {
       const e=S.current.find(x=>x.rank==+el.dataset.r); if(!e||!e.replay) return;
