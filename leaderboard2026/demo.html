@@ -42,7 +42,15 @@ button{font:inherit;color:inherit;background:none;border:none;cursor:pointer}
 
 /* ───────── DEVICE ───────── */
 .devwrap{transform-origin:center center}
-.dev{position:relative;overflow:hidden;border-radius:22px;box-shadow:0 0 0 8px #1b1b1b,0 16px 34px rgba(0,0,0,.25);background:#000;user-select:none;-webkit-user-select:none}
+.dframe{border-radius:22px;overflow:hidden;box-shadow:0 0 0 8px #1b1b1b,0 16px 34px rgba(0,0,0,.25);background:#000}
+.obar{position:relative;height:30px;background:#F1F3F4;border-bottom:1px solid #D7DADD;box-sizing:border-box;display:flex;align-items:center;gap:6px;padding:0 10px;font-family:-apple-system,"Segoe UI","Noto Sans",sans-serif;user-select:none;-webkit-user-select:none}
+.obar .url{flex:1;min-width:0;height:20px;border-radius:10px;background:#fff;color:#5F6368;font-size:10px;display:flex;align-items:center;gap:4px;padding:0 9px;white-space:nowrap;overflow:hidden}
+.obar .url svg{flex:0 0 auto;width:9px;height:9px}
+.obar .tcount{flex:0 0 auto;width:18px;height:18px;border:1.6px solid #3C4043;border-radius:4px;font-size:9.5px;font-weight:800;color:#3C4043;display:grid;place-items:center;background:none;padding:0;cursor:pointer}
+.obar .bdots{flex:0 0 auto;color:#3C4043;font-size:14px;line-height:1;padding:0 2px}
+.obar .prog{position:absolute;left:0;bottom:-1px;height:2px;background:#1A73E8;width:10%;animation:prog .75s ease-out forwards}
+.dframe.nobezel{border-radius:0;box-shadow:none}
+.dev{position:relative;overflow:hidden;background:#000;user-select:none;-webkit-user-select:none}
 .dev *{font-variant-numeric:tabular-nums}
 
 /* live game behind (placeholder) */
@@ -327,6 +335,23 @@ button.gimg{padding:0;font-family:inherit}
 .rpm .rpx{position:absolute;top:10px;right:10px;width:34px;height:34px;border-radius:50%;background:rgba(0,0,0,.55);border:1.5px solid rgba(255,255,255,.7);display:grid;place-items:center;z-index:9}
 .rpm .rpx svg{width:14px;height:14px}
 .dev.land .rpm .rpx{top:8px;right:8px}
+/* replay opens in a new browser tab (simulated): browser bar + page, tab switcher */
+.btab{position:absolute;inset:0;z-index:8;background:#fff}
+@keyframes prog{to{width:85%}}
+.btab .pg{position:absolute;left:0;right:0;top:0;bottom:0;overflow:hidden;background:#000}
+.btab .pg.blank{background:#fff}
+.btab .rpm{inset:auto;left:0;top:0;transform-origin:0 0}
+.tsw{position:absolute;inset:0;z-index:9;background:#3C4043;font-family:-apple-system,"Segoe UI","Noto Sans",sans-serif;padding:14px 12px;display:flex;flex-direction:column;gap:10px}
+.tsw .th2{color:#E8EAED;font-size:11px;font-weight:700;text-align:center}
+.tsw .cards{display:grid;grid-template-columns:1fr 1fr;gap:10px;align-content:start}
+.dev.land .tsw .cards{grid-template-columns:1fr 1fr;max-width:420px;margin:0 auto;width:100%}
+.tsw .tc{border-radius:10px;overflow:hidden;background:#fff;text-align:left;padding:0;border:2px solid transparent;display:block;width:100%}
+.tsw .tc.cur{border-color:#8AB4F8}
+.tsw .tch{display:flex;align-items:center;gap:6px;padding:6px 6px 6px 9px;font-size:10px;font-weight:700;color:#202124}
+.tsw .tch span{flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tsw .tcx{flex:0 0 auto;width:18px;height:18px;border-radius:50%;display:grid;place-items:center;background:none;color:#5F6368;font-size:12px;font-weight:700}
+.tsw .tcb{height:120px;display:grid;place-items:center;font-size:10px;font-weight:800;letter-spacing:.06em;color:#fff}
+.dev.land .tsw .tcb{height:90px}
 /* L3 replay (old, unused) */
 .l3{position:absolute;inset:0;z-index:8;display:flex;flex-direction:column;background:#0f0f13}
 .rstrip{flex-shrink:0;background:var(--rim);border-bottom:2px solid var(--rim-line);display:flex;align-items:center;gap:8px;padding:0 0 0 10px;height:62px}
@@ -423,13 +448,14 @@ body.focus .ver{right:6px;bottom:6px;font-size:9.5px;padding:3px 8px;background:
     <div class="stage-note">Click the purple CRM icon on the game screen to start · the list scrolls (mouse wheel or drag) · press F for full screen</div>
     <button class="fsbtn" id="fsbtn">⛶ Full screen</button>
     <div class="ver" title="Demo version and build date">Demo v4.6 · 2026-10-19</div>
-    <div class="devwrap" id="devwrap"><div class="dev" id="dev"></div></div>
+    <div class="devwrap" id="devwrap"><div class="dframe" id="dframe"><div class="obar" id="obar"></div><div class="dev" id="dev"></div></div></div>
   </div>
 
   <div class="side">
     <details class="box vbox">
-      <summary>VERSION <span class="vnow">v4.6 · 2026-10-19</span> ▾</summary>
+      <summary>VERSION <span class="vnow">v4.7 · 2026-10-19</span> ▾</summary>
       <ul>
+        <li><b>v4.7</b> 2026-10-19 · A browser bar is shown above the page (game tab and replay tab). Replay opens in a new browser tab (simulated) instead of a full-screen layer: no CRM ✕, loading or load-error screen; the player closes the tab to return. E5 is now recorded by the game side.</li>
         <li><b>v4.6</b> 2026-10-19 · English copy updated: "already in this game" popup reads "You are already in this game."; the ⓘ tip joins its two parts with " • ".</li>
         <li><b>v4.5</b> 2026-10-16 · A tap that closes the ⓘ tip only closes the tip (it no longer also presses what's underneath). Boards can be switched while one is still loading; the latest choice wins.</li>
         <li><b>v4.4</b> 2026-10-15 · Tapping the dark area around the switch-game popup now cancels it. Replay load error (CRM) shows the error code in brackets at the end of the sentence, as in the copy key.</li>
@@ -466,7 +492,7 @@ body.focus .ver{right:6px;bottom:6px;font-size:9.5px;padding:3px 8px;background:
       <div class="ctl"><span>Next board load</span>
         <select id="s-lbfail"><option value="ok">Succeeds</option><option value="fail">Fails once</option></select></div>
       <div class="ctl"><span>Next replay</span>
-        <select id="s-rp"><option value="ok">Loads normally</option><option value="crm">Fails to load (CRM error)</option><option value="game">Round unreadable (game error)</option></select></div>
+        <select id="s-rp"><option value="ok">Loads normally</option><option value="game">Round unreadable (game error)</option></select></div>
       <button class="reset" id="s-reset">Reset demo</button>
       <div class="tiny">Replay timing is compressed for the demo. The real replay plays at the game's normal speed with no skipping (spec §06 四).</div>
     </div>
@@ -477,7 +503,7 @@ body.focus .ver{right:6px;bottom:6px;font-size:9.5px;padding:3px 8px;background:
         <li>CRM icon → Leaderboard (lands on Daily · Last period · Winnings)</li>
         <li>Switch Daily/Weekly, use the ‹ › period arrows, and switch Winnings/Multiplier (bottom toggle in portrait, left rail in landscape). The other selections stay, and the list jumps to the top.</li>
         <li>Landscape: only the rows column on the right scrolls; the top 3 stay put.</li>
-        <li>Scroll down and tap a replay. It opens full screen with no header; the ✕ at the top-right closes it at any time and returns you to the same scroll position.</li>
+        <li>Scroll down and tap a replay. It opens in a new browser tab (the bar on top switches to "replay link" and the tab count to 2). To come back, tap the tab button (2) and close the replay tab, or tap the game tab. The board tab stays exactly as you left it.</li>
         <li>Press SPIN, watch it through to the result, then Watch again. Buy Bonus, bet ± and auto-spin are greyed out.</li>
         <li>Tap a top-3 image, or a row's thumbnail or game name, to get the switch-game confirmation. Delisted games (grey ↗) can't be tapped; a grey ▶ means no replay. Tick “Top-3 edge cases” to see both on the cards.</li>
         <li>Tap the game you're already playing (Golden Wish at the start) to see the “already in this game” popup; CLOSE just closes it.</li>
@@ -586,8 +612,9 @@ $('#log-clear').onclick=()=>{$('#log').innerHTML='<div class="tiny">Log cleared.
 function toast(msg){const el=$('#toast');const dev=$('#dev').getBoundingClientRect();el.style.left=(dev.left+dev.width/2)+'px';el.style.top=(dev.bottom-70)+'px';el.style.bottom='auto';el.textContent=msg;el.classList.add('show');clearTimeout(toast._t);toast._t=setTimeout(()=>el.classList.remove('show'),1800)}
 
 /* ───────── device ───────── */
+const BAR=30; /* browser bar above the page (simulated) */
 function dims(){
-  if(S.dev==='fit'){const st=$('#stage').getBoundingClientRect();return [Math.round(st.width),Math.round(st.height)]}
+  if(S.dev==='fit'){const st=$('#stage').getBoundingClientRect();return [Math.round(st.width),Math.round(st.height)-BAR]}
   return S.dev.split('x').map(Number);
 }
 function isLand(){const [w,h]=dims();return w>h}
@@ -595,9 +622,9 @@ function sizeDevice(){
   const [w,h]=dims(), dev=$('#dev'), fit=S.dev==='fit';
   dev.style.width=w+'px'; dev.style.height=h+'px';
   dev.classList.toggle('land',w>h);
-  dev.classList.toggle('nobezel',fit);
+  dev.classList.toggle('nobezel',fit); $('#dframe').classList.toggle('nobezel',fit);
   const st=$('#stage').getBoundingClientRect(), focus=document.body.classList.contains('focus');
-  const sc=fit?1:Math.min(focus?3:1,(st.width-(focus?24:50))/(w+16),(st.height-(focus?24:60))/(h+16));
+  const sc=fit?1:Math.min(focus?3:1,(st.width-(focus?24:50))/(w+16),(st.height-(focus?24:60))/(h+BAR+16));
   $('#devwrap').style.transform='scale('+sc+')';
 }
 function setFocus(on){
@@ -611,8 +638,12 @@ function setFocus(on){
 }
 
 /* ───────── render: whole device ───────── */
+function renderBar(){
+  const R=S.rp, LOCK='<svg viewBox="0 0 10 10"><rect x="1.5" y="4.5" width="7" height="5" rx="1" fill="#5F6368"/><path d="M3 4.5V3a2 2 0 014 0v1.5" fill="none" stroke="#5F6368" stroke-width="1.2"/></svg>';
+  $('#obar').innerHTML='<div class="url">'+LOCK+(R?'replay link':'game link')+'</div><button class="tcount" data-act="tab-sw" aria-label="Tabs">'+(R?2:1)+'</button><span class="bdots">⋮</span>'+(R&&R.phase==='loading'?'<div class="prog"></div>':'');
+}
 function render(){
-  const dev=$('#dev');
+  const dev=$('#dev'); renderBar();
   dev.innerHTML=gameBg()+crmIcon()+(S.menu?menuHTML():'')+(S.l2?l2HTML():'')+'<div id="l3host"></div>';
   if(S.rp) renderReplay();
 }
@@ -772,28 +803,40 @@ const thumb=(e,cls)=>{const c=HUES[e.hue];return '<div class="th" style="--a:'+c
 
 /* ───────── L3 replay ───────── */
 function openReplay(e,from){
-  S.rp={e,from,phase:'loading',fg:0,fgTotal:6,acc:0,mode:S.rpmode};
+  S.rp={e,from,phase:'loading',fg:0,fgTotal:6,acc:0,mode:S.rpmode,sw:false};
   logE('E4','Replay tap',{rank:e.rank,from,game:e.game,multiplier:mult(e.multi),win:money(e.win)});
   if(S.rpmode!=='ok'){ S.rpmode='ok'; $('#s-rp').value='ok'; }
   renderReplay();
-  later(()=>{ S.rp.phase=S.rp.mode==='crm'?'crmerr':(S.rp.mode==='game'?'gameerr':'ready'); renderReplay(); },750);
+  later(()=>{ S.rp.phase=S.rp.mode==='game'?'gameerr':'ready'; renderReplay(); },750);
 }
-function closeReplay(){clearTimers();S.rp=null;$('#l3host').innerHTML=''}
+function closeReplay(){clearTimers();S.rp=null;$('#l3host').innerHTML='';renderBar()}
 function renderReplay(){
   const R=S.rp; if(!R) return; const e=R.e;
   const PLUG='<svg class="plug" viewBox="0 0 64 64" fill="none" stroke="#fff" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><path d="M24 40l-8 8M40 24l8-8M20 30l14 14M30 20l14 14M27 47c-4 4-11 4-14 0s-4-10 0-14l6-6 14 14zM37 17c4-4 11-4 14 0s4 10 0 14l-6 6-14-14z"/><path d="M28 30l-4 4M34 36l-4 4"/></svg>';
   let ov='';
-  if(R.phase==='loading') ov='<div class="ov dark"><div class="spin"></div></div>';
-  else if(R.phase==='crmerr') ov='<div class="ov dark">'+PLUG+'<p>'+esc(t('rperr',{c:'61499436'}))+'</p><div class="bts"><button class="pill solid" data-act="rp-close">'+esc(t('close').toUpperCase())+'</button></div></div>';
-  else if(R.phase==='gameerr') ov='<div class="ov blur">'+PLUG+'<p>Data error, please try again later</p><div class="code">38216389</div></div>';
+  if(R.phase==='gameerr') ov='<div class="ov blur">'+PLUG+'<p>Data error, please try again later</p><div class="code">38216389</div></div>';
   else if(R.phase==='result') ov='<div class="ov res"><div class="wbox"><div class="bw">'+(e.multi>=500?'MEGA WIN':'BIG WIN')+'</div><div class="wx">'+mult(e.multi)+'</div><div class="wa" id="gwa">'+money(R.count||0)+'</div></div>'+
      '<div class="bts"><button class="pill" data-act="rp-again">↻ WATCH AGAIN</button></div></div>';
-  const game=(R.phase==='loading'||R.phase==='crmerr')?'':gameInner(R);
-  /* close (top-right): available in every state — loading, playing, result, errors */
-  const X='<button class="rpx" data-act="rp-close" aria-label="Close"><svg viewBox="0 0 14 14"><path d="M2 2l10 10M12 2L2 12" stroke="#fff" stroke-width="2.4" stroke-linecap="round"/></svg></button>';
-  $('#l3host').innerHTML='<div class="rpm" id="rpm">'+game+ov+X+'</div>';
+  /* the replay is a separate browser tab: browser bar on top, the game's replay page below. No CRM layer, no CRM ✕. */
+  renderBar();
+  const page=R.phase==='loading'?'<div class="pg blank"></div>':'<div class="pg"><div class="rpm" id="rpm">'+gameInner(R)+ov+'</div></div>';
+  let sw='';
+  if(R.sw){
+    const c=HUES[e.hue];
+    sw='<div class="tsw"><div class="th2">2 tabs</div><div class="cards">'+
+      '<button class="tc" data-act="tab-back"><div class="tch"><span>'+esc(S.game)+'</span></div><div class="tcb" style="background:linear-gradient(160deg,#5b3a8a,#2a1a44)">GAME + LEADERBOARD</div></button>'+
+      '<div class="tc cur" data-act="tab-stay" role="button"><div class="tch"><span>Replay · '+esc(e.game)+'</span><button class="tcx" data-act="tab-close" aria-label="Close tab">✕</button></div><div class="tcb" style="background:linear-gradient(160deg,'+c[0]+','+c[1]+')">REPLAY</div></div>'+
+      '</div></div>';
+  }
+  $('#l3host').innerHTML='<div class="btab">'+page+sw+'</div>';
+  fitGame();
 }
-function fitGame(){}
+function fitGame(){
+  /* the replay page keeps the full-screen game layout, scaled to fit under the browser bar */
+  const pg=document.querySelector('.btab .pg'), rp=$('#rpm'), dev=$('#dev'); if(!pg||!rp) return;
+  const W=dev.clientWidth, H=dev.clientHeight, sc=pg.clientHeight/H;
+  rp.style.width=W+'px'; rp.style.height=H+'px'; rp.style.transform='translateX('+((W-W*sc)/2)+'px) scale('+sc+')';
+}
 function symbolsR(seed,hl){return symbols(seed,hl).replace(/class="hl"/g,'class="hit"')}
 function symbols(seed,hl){const r=rng(seed),S2=['A','K','Q','J','10','7','★','◆','✦'];let g='';for(let i=0;i<15;i++){const s=S2[Math.floor(r()*S2.length)];g+='<i class="'+(hl&&hl.includes(i)?'hl':'')+'">'+s+'</i>'}return g}
 /* the game's own screen in replay mode: balance hidden, bet shown, buy bonus / bet / auto disabled, SPIN active */
@@ -816,7 +859,7 @@ function gameInner(R){
 }
 function startSpin(){
   const R=S.rp; if(!R||R.phase!=='ready') return;
-  logE('E5','SPIN pressed (message from game)',{roundId:R.e.id,from:R.from});
+  logE('E5','SPIN pressed (recorded by the game side)',{roundId:R.e.id});
   const isFG=R.e.type!=='base', total=R.e.win;
   const r=rng(hash(R.e.id+'seg')); let parts=[];
   if(isFG){ parts=[0.06]; let w=[];for(let i=0;i<R.fgTotal;i++)w.push(0.3+r()); const s=w.reduce((a,b)=>a+b,0); w.forEach(x=>parts.push(0.94*x/s)); }
@@ -874,12 +917,15 @@ $('#dev').addEventListener('click',ev=>{
     case 'replay': {
       const e=S.current.find(x=>x.rank==+el.dataset.r); if(!e||!e.replay) return;
       openReplay(e,e.rank<=3?'top3':'row'); break; }
-    case 'rp-close': closeReplay(); break;
+    case 'tab-stay': if(ev.target.closest('[data-act="tab-close"]')) break; S.rp.sw=false; renderReplay(); break;
+    case 'tab-close': case 'tab-back': closeReplay(); break;
     case 'rp-spin': startSpin(); break;
     case 'rp-menu': toast(t('soon')); break;
     case 'rp-again': { const R=S.rp; clearTimers(); R.phase='ready'; R.acc=0; R.fg=0; renderReplay(); break; }
   }
 });
+
+$('#obar').addEventListener('click',ev=>{ if(ev.target.closest('[data-act="tab-sw"]') && S.rp && S.rp.phase!=='loading'){ S.rp.sw=true; renderReplay(); } });
 
 /* settings */
 function relayout(){ sizeDevice(); render(); }
