@@ -274,8 +274,8 @@
   <div class="topstrip">
     <a class="topstrip-name" href="#home">排行榜與大獎回放 規格書</a>
     <span class="topstrip-sep">·</span>
-    <span class="topstrip-author">Milu · Shaun</span>
-    <span class="topstrip-date">整合版草稿 · 2026-10-19</span>
+    <span class="topstrip-author">企劃</span>
+    <span class="topstrip-date">2026-10-19</span>
   </div>
   <nav class="tabbar" role="tablist"><a class="tab tab-home" href="#home" data-tab="home">⌂ 首頁</a><a class="tab" href="#overview" data-tab="overview">總覽</a><a class="tab" href="#rules" data-tab="rules">名詞與規則</a><a class="tab" href="#board" data-tab="board">榜單畫面(UI)</a><a class="tab" href="#replay" data-tab="replay">回放</a><a class="tab" href="#config" data-tab="config">設定與事件</a><a class="tab" href="#copy" data-tab="copy">文案</a><a class="tab" href="#history" data-tab="history">修改紀錄</a></nav>
 </header>
@@ -284,14 +284,14 @@
     <main class="lmain">
 
     <div class="cover">
-      <div class="cover-tag">CRM · 排行榜與大獎回放 · 整合版草稿</div>
+      <div class="cover-tag">CRM · 排行榜與大獎回放</div>
       <h1>排行榜與大獎回放</h1>
       <p class="cover-purpose">排行榜與大獎回放的規格書。讓玩家可查看玩家之間的最大贏分和最大倍數，可由日榜和周榜去進行排序。玩家也可查詢上一期和進行中(這一期)的排行榜。此外，玩家也可以回放排行榜上的贏分，體驗大獎連線快感。</p>
       <div class="meta">
         <div><span>類型</span>CRM 玩家端功能</div>
-        <div><span>版本</span>整合版草稿（基於 DEV V1.2）</div>
+        <div><span>版本</span>V1.3（基於 DEV V1.2）</div>
         <div><span>日期</span>2026-10-19</div>
-        <div><span>作者</span>Milu（開發版）· Shaun（畫面與互動）</div>
+        <div><span>作者</span>企劃</div>
         <div><span>平台</span>Force / Combo Gaming</div>
       </div>
       <div class="srclegend">各節標題下的小標註明來源：<div class="src">沿用開發版</div><div class="src">沿用開發版 · 已依畫面規格調整</div><div class="src">畫面規格</div></div>
@@ -329,7 +329,7 @@
       </div>
       <div class="lcard" data-go="history">
         <a class="lcard-h" href="#history"><span class="ln">07</span>修改紀錄</a>
-        <p class="ldesc">各版本的修改摘要，以及開發版舊章節在本整合版的對照。</p>
+        <p class="ldesc">各版本的修改摘要。</p>
         <ul><li><a href="#changelog">修改紀錄</a></li></ul>
       </div>
       </div>
@@ -770,7 +770,7 @@
     <section class="section" id="rp-entry">
       <div class="section-head"><span class="section-num">01</span><h2>開啟方式</h2></div>
       
-<div class="src">沿用開發版 · 已依畫面規格調整</div><div class="note "><b>做法（V1.1 定案、V1.2 補網址來源；整合版改為瀏覽器新分頁）</b>：點 ▶ 後以<b>瀏覽器新分頁</b>開啟回放網址，畫面與一般遊戲相同。回放網址由遊戲端提供、<b>由後端隨榜單資料每筆回傳</b>（後端於此時已驗證該筆與請求者同專線同幣別），呼叫時帶上<b>與玩家當前工作階段相同的 token</b>。</div>
+<div class="src">沿用開發版 · 已依畫面規格調整</div><div class="note "><b>做法（V1.1 定案、V1.2 補網址來源；改為瀏覽器新分頁）</b>：點 ▶ 後以<b>瀏覽器新分頁</b>開啟回放網址，畫面與一般遊戲相同。回放網址由遊戲端提供、<b>由後端隨榜單資料每筆回傳</b>（後端於此時已驗證該筆與請求者同專線同幣別），呼叫時帶上<b>與玩家當前工作階段相同的 token</b>。</div>
 <div class="table-wrap"><table class="fields gt"><thead><tr><th>項目</th><th>規則</th></tr></thead><tbody><tr><td>入口</td><td>榜單上前三名卡片與列表的 <b>▶ 回放按鈕</b>。<b>按鈕只看一件事：後端有沒有隨榜單回傳該筆的回放網址</b>。沒有網址的筆，按鈕改為<b>灰色、不可點</b>，位置保留。</td></tr><tr><td>網址來源</td><td>後端回傳榜單時<b>每筆直接附上已驗證的回放網址</b>；前端不另外呼叫、不自己組網址。</td></tr><tr><td>開啟方式</td><td>以<b>瀏覽器新分頁</b>開啟回放網址；載入、盤面演出與錯誤畫面全部在該網址內完成。CRM 不在回放分頁上加任何畫面。</td></tr><tr><td>token</td><td>沿用玩家當前工作階段的同一組 token，<b>不另外要求登入</b>。</td></tr><tr><td>原分頁</td><td>遊戲與榜單留在原分頁，維持原狀、不鎖定。</td></tr><tr><td>關閉</td><td>玩家<b>自行關閉回放分頁</b>，回到原分頁的榜單。<b>榜單的榜型、期間與捲動位置全部維持原狀</b>，不重新載入。</td></tr><tr><td>重看</td><td>結算後的 WATCH AGAIN，由回放網址內自行提供，<b>次數不限</b>。</td></tr><tr><td>範圍限制</td><td>只能回放<b>自己專線、自己幣別</b>的局。防線在<b>後端簽發回放網址</b>這一步：只對同專線同幣別的筆簽發；收到跨專線／跨幣別的簽發請求一律拒絕並記 E12。</td></tr><tr><td>遊戲已下架</td><td><b>下架本身不改變任何事</b>——按鈕仍然只看後端有沒有回傳回放網址：回得出網址就照常可點、照常可播；回不出就顯示灰色 ▶。</td></tr><tr><td>不快轉</td><td>CRM <b>不介入盤面演出邏輯</b>、不控制播放；不提供快轉、跳過或倍速——會破壞「完整看獲獎流程」的目的。</td></tr></tbody></table></div>
 
     </section>
@@ -787,7 +787,7 @@
       <div class="section-head"><span class="section-num">03</span><h2>回放標示（遊戲端負責）</h2></div>
       
 <div class="src">沿用開發版 · 已依畫面規格調整</div><div class="table-wrap"><table class="fields gt"><thead><tr><th>項目</th><th>規則</th></tr></thead><tbody><tr><td>誰做</td><td><b>遊戲端</b>，做在回放網址的畫面內。</td></tr><tr><td>內容</td><td>顯示這是回放畫面的標示，<b>以英文呈現</b>（不做多語系）。Figma 用字為「REPLAYING」。</td></tr><tr><td>位置</td><td><b>放在顯眼的地方</b>，讓玩家一眼看得到。</td></tr><tr><td>持續時間</td><td><b>從進入到離開全程顯示</b>，包含盤面轉動與特色玩法演出期間。不可只在開頭出現後淡出——玩家中途才看過來時就看不到了。</td></tr><tr><td>不動餘額</td><td>回放<b>不扣款、不派獎、不產生任何注單</b>，也不顯示玩家自己的餘額（直式整格不顯示；橫式保留欄位、數值顯示「-」）。</td></tr><tr><td>不顯示餘額變化</td><td>回放畫面<b>不呈現押注前後的資產變化</b>。（提案 V1.6 波2.5 曾列此項，本規格書取消——顯示金額增減正是最容易被誤會成自己中獎的元素。）</td></tr></tbody></table></div>
-<div class="note warn"><b>已知風險（Milu 已知悉並決定不處理）</b>：原設計另有一行白話免責說明（「這是其他玩家的紀錄重播，不會影響你的餘額」），<b>本版決定不做</b>。風險是：標示為英文，泰、越、緬、孟等語系的玩家不一定讀得懂，可能誤以為自己中了大獎而產生客訴——而這類客訴很難處理，因為玩家<b>確實看到自己按了 SPIN 然後開出大獎</b>。若上線後確實出現此類客訴，補一行走 CRM 語系表的說明即可解決，屬小幅改版。</div>
+<div class="note warn"><b>已知風險（企劃已知悉並決定不處理）</b>：原設計另有一行白話免責說明（「這是其他玩家的紀錄重播，不會影響你的餘額」），<b>本版決定不做</b>。風險是：標示為英文，泰、越、緬、孟等語系的玩家不一定讀得懂，可能誤以為自己中了大獎而產生客訴——而這類客訴很難處理，因為玩家<b>確實看到自己按了 SPIN 然後開出大獎</b>。若上線後確實出現此類客訴，補一行走 CRM 語系表的說明即可解決，屬小幅改版。</div>
 
     </section>
     <section class="section" id="rp-play">
@@ -959,10 +959,8 @@
       <div class="section-head"><span class="section-num">01</span><h2>修改紀錄</h2></div>
       
 <p>每次內容調整在本表最上方新增一列，並於被修改的章節標題旁加註「更新 YYYY-MM-DD」。<b>歷史條目一律不動</b>，即使內容已被後續版本推翻。</p>
-<div class="table-wrap"><table class="fields gt chglog"><thead><tr><th>修改日期</th><th>版號</th><th>修改章節</th><th>摘要</th></tr></thead><tbody><tr class="hl-row"><td>2026-10-19</td><td>整合版草稿</td><td>全文</td><td>併入 Shaun 的畫面規格並重新分頁（總覽／名詞與規則／榜單畫面／回放／設定與事件／文案）：①榜單與回放的畫面描述改以 Figma 線框與欄位表為準；②回放改為以<b>瀏覽器新分頁</b>開啟，拿掉 CRM 資訊列；載入與錯誤畫面由遊戲端負責，玩家關閉分頁回到榜單；E5 改由遊戲端記錄；③進入其他遊戲改為點遊戲圖片或名稱 → 確認視窗 → 確定，E7 改在確定時記錄；④門檻說明收進標題旁的 ⓘ；⑤沒有回放網址時改為灰色 ▶；⑥文案改寫 10 條（其中 6 條只把英文改為大寫）、新增 6 條（含合併 ⓘ 提示為 <code>lb_rule_tip</code>，刪除原兩條）、刪除不再使用的 6 條；⑦美術資產表依新版面更新。開發版的歷史條目照原文保留，所引章節號為舊編號，對照見下表。</td></tr><tr><td>2026-09-14</td><td>DEV V1.2</td><td>§01～§10</td><td>依〈內部衝突盤點〉22 項裁決全面修訂（阻擋開發 3／阻擋驗收 11／文件品質 8，D-064）：①<b>回放 url 隨榜單每筆回傳</b>，沒有 url 的筆不畫 replay 按鈕，「可重播旗標」併入 url；跨專線／跨幣別由後端於簽發 url 時拒絕；②<b>E5 改為「已按 SPIN」</b>（遊戲端於按下時向父頁面送訊息）、<b>E6 刪除留空號</b>，不再記播完與中離階段；③結算失敗重試<b>以結算時間切分</b>快照與清空、進行中榜帶榜期欄位；④<b>Free Game 於觸發局結算當下即以整段完整結果計分</b>（後端硬性前提）、結算時間與識別碼皆取觸發局；⑤buy bonus 整段合併、E9 局型 buy bonus 優先；⑥<b>門檻改為單一 threshold、四張榜共用</b>；⑦top_n 固定 20、hero_count 固定 3，v1 不可調；⑧<b>看哪張榜只顯示那個值</b>（英雄卡與表格列皆只顯示一個數字）；⑨L3 資訊列拿掉押注與發生時間、倍數與贏分兩者都顯示；⑩進行中頁籤 lb_period 的 end 填預定結算時間；進行中榜不自動更新；⑪已下架遊戲一律只看有沒有 url；播放中斷線由遊戲端在 iframe 內顯示、浮層不自動關；⑫board_enabled 關閉再開啟：清空不補結算；參數名改 <code>board_enabled[線路代碼][幣別]</code>；⑬不可重播表格列一律短橫線，lb_05 改 1 態；⑭文件品質：§06 七 Q3→Q4、§04 七預設理由改寫、「遮罩帳號」→「遮罩 playID」、V1.1 修改章節補 §01、Story 4／21 改寫；⑮§10 Q2 改問「哪些局給得出回放 url」、Q3 併入三件事（url 防偽造、已按 SPIN 訊息、觸發局識別碼重演整段）。</td></tr><tr><td>2026-09-14</td><td>DEV V1.1</td><td>§01～§10<br><span class="sub-line">（V1.2 勘誤：原漏列 §01）</span></td><td>依待確認事項的回覆全面修訂：①榜的分界由「站台」正名為<b>專線</b>（底下只有一個站台的線路），新增專線／共線定義與 PB10／AWS101 對照，<b>共線一律不開</b>；②玩家身分改用 <b>playID 遮罩</b>；③進榜門檻定為 <b>50 倍</b>、由 Server 端調整、不需發版；④快照<b>只保留上一期</b>；⑤開關改為逐「專線 × 幣別」、<b>預設為否</b>；⑥回放改為<b>浮層內 iframe 載入遊戲端回放網址</b>並帶同一組 token，新增分工線章節；⑦<b>回放標示改由遊戲端做在回放畫面內、英文呈現</b>，<b>免責說明不做</b>（風險已記載）；⑧已下架遊戲的 replay <b>仍可播放</b>；⑨錯誤拆為「iframe 載入失敗（CRM）」與「讀不到該局（遊戲端，沿用既有訊息＋錯誤代碼）」；⑩新增 §06 七「從榜單進入該款遊戲」；⑪§09 移除 5 條移交遊戲端的文案、新增 lb_rp_title，共 22 條；⑫§10 結案 6 項、重編為 Q1～Q7 並新增後續待辦。</td></tr><tr><td>2026-09-11</td><td>DEV V1.0</td><td>全文</td><td>首次發行。依 2026-09-08～09-11 與 Milu 的設計討論結果撰寫，含四張榜定義、站台 × 幣別分界、單局最大值計分、倍數進榜門檻、雙頁籤結算、英雄卡版型、回放浮層與播放流程。</td></tr></tbody></table></div>
+<div class="table-wrap"><table class="fields gt chglog"><thead><tr><th>修改日期</th><th>版號</th><th>修改章節</th><th>摘要</th></tr></thead><tbody><tr class="hl-row"><td>2026-10-19</td><td>V1.3</td><td>全文</td><td>併入企劃的畫面規格並重新分頁（總覽／名詞與規則／榜單畫面／回放／設定與事件／文案）：①榜單與回放的畫面描述改以 Figma 線框與欄位表為準；②回放改為以<b>瀏覽器新分頁</b>開啟，拿掉 CRM 資訊列；載入與錯誤畫面由遊戲端負責，玩家關閉分頁回到榜單；E5 改由遊戲端記錄；③進入其他遊戲改為點遊戲圖片或名稱 → 確認視窗 → 確定，E7 改在確定時記錄；④門檻說明收進標題旁的 ⓘ；⑤沒有回放網址時改為灰色 ▶；⑥文案改寫 10 條（其中 6 條只把英文改為大寫）、新增 6 條（含合併 ⓘ 提示為 <code>lb_rule_tip</code>，刪除原兩條）、刪除不再使用的 6 條；⑦美術資產表依新版面更新。開發版的歷史條目照原文保留，所引章節號為舊編號。</td></tr><tr><td>2026-09-14</td><td>DEV V1.2</td><td>§01～§10</td><td>依〈內部衝突盤點〉22 項裁決全面修訂（阻擋開發 3／阻擋驗收 11／文件品質 8，D-064）：①<b>回放 url 隨榜單每筆回傳</b>，沒有 url 的筆不畫 replay 按鈕，「可重播旗標」併入 url；跨專線／跨幣別由後端於簽發 url 時拒絕；②<b>E5 改為「已按 SPIN」</b>（遊戲端於按下時向父頁面送訊息）、<b>E6 刪除留空號</b>，不再記播完與中離階段；③結算失敗重試<b>以結算時間切分</b>快照與清空、進行中榜帶榜期欄位；④<b>Free Game 於觸發局結算當下即以整段完整結果計分</b>（後端硬性前提）、結算時間與識別碼皆取觸發局；⑤buy bonus 整段合併、E9 局型 buy bonus 優先；⑥<b>門檻改為單一 threshold、四張榜共用</b>；⑦top_n 固定 20、hero_count 固定 3，v1 不可調；⑧<b>看哪張榜只顯示那個值</b>（英雄卡與表格列皆只顯示一個數字）；⑨L3 資訊列拿掉押注與發生時間、倍數與贏分兩者都顯示；⑩進行中頁籤 lb_period 的 end 填預定結算時間；進行中榜不自動更新；⑪已下架遊戲一律只看有沒有 url；播放中斷線由遊戲端在 iframe 內顯示、浮層不自動關；⑫board_enabled 關閉再開啟：清空不補結算；參數名改 <code>board_enabled[線路代碼][幣別]</code>；⑬不可重播表格列一律短橫線，lb_05 改 1 態；⑭文件品質：§06 七 Q3→Q4、§04 七預設理由改寫、「遮罩帳號」→「遮罩 playID」、V1.1 修改章節補 §01、Story 4／21 改寫；⑮§10 Q2 改問「哪些局給得出回放 url」、Q3 併入三件事（url 防偽造、已按 SPIN 訊息、觸發局識別碼重演整段）。</td></tr><tr><td>2026-09-14</td><td>DEV V1.1</td><td>§01～§10<br><span class="sub-line">（V1.2 勘誤：原漏列 §01）</span></td><td>依待確認事項的回覆全面修訂：①榜的分界由「站台」正名為<b>專線</b>（底下只有一個站台的線路），新增專線／共線定義與 PB10／AWS101 對照，<b>共線一律不開</b>；②玩家身分改用 <b>playID 遮罩</b>；③進榜門檻定為 <b>50 倍</b>、由 Server 端調整、不需發版；④快照<b>只保留上一期</b>；⑤開關改為逐「專線 × 幣別」、<b>預設為否</b>；⑥回放改為<b>浮層內 iframe 載入遊戲端回放網址</b>並帶同一組 token，新增分工線章節；⑦<b>回放標示改由遊戲端做在回放畫面內、英文呈現</b>，<b>免責說明不做</b>（風險已記載）；⑧已下架遊戲的 replay <b>仍可播放</b>；⑨錯誤拆為「iframe 載入失敗（CRM）」與「讀不到該局（遊戲端，沿用既有訊息＋錯誤代碼）」；⑩新增 §06 七「從榜單進入該款遊戲」；⑪§09 移除 5 條移交遊戲端的文案、新增 lb_rp_title，共 22 條；⑫§10 結案 6 項、重編為 Q1～Q7 並新增後續待辦。</td></tr><tr><td>2026-09-11</td><td>DEV V1.0</td><td>全文</td><td>首次發行。依 2026-09-08～09-11 與企劃的設計討論結果撰寫，含四張榜定義、站台 × 幣別分界、單局最大值計分、倍數進榜門檻、雙頁籤結算、英雄卡版型、回放浮層與播放流程。</td></tr></tbody></table></div>
 
-<h3 class="mini-h">章節對照</h3>
-<div class="table-wrap"><table class="fields gt"><thead><tr><th>開發版 V1.2 章節</th><th>本整合版位置</th></tr></thead><tbody><tr><td>§00 修改紀錄</td><td><a class="xref" href="#changelog">修改紀錄</a></td></tr><tr><td>§01 目的與 Story</td><td><a class="xref" href="#purpose">總覽 01、02</a></td></tr><tr><td>§01 與提案 V1.6 差異</td><td><a class="xref" href="#proposal">總覽 03</a></td></tr><tr><td>§02 名詞定義</td><td><a class="xref" href="#glossary">規則 01</a></td></tr><tr><td>§03 運作流程（一、二）</td><td><a class="xref" href="#sysflow">規則 02</a></td></tr><tr><td>§03 三 玩家動線</td><td><a class="xref" href="#flow">榜單畫面 01</a></td></tr><tr><td>§04 榜單機制</td><td><a class="xref" href="#mechanic">規則 03</a></td></tr><tr><td>§05 玩家端 UI</td><td><a class="xref" href="#screens">榜單畫面 02–04</a></td></tr><tr><td>§06 一～六 回放</td><td><a class="xref" href="#rp-entry">回放 01–07</a></td></tr><tr><td>§07 設定檔</td><td><a class="xref" href="#cfg">設定 01</a></td></tr><tr><td>§08 事件記錄</td><td><a class="xref" href="#logs">設定 02</a></td></tr><tr><td>§09 多國語系</td><td><a class="xref" href="#i18n">文案</a></td></tr><tr><td>§06 七 進入該款遊戲</td><td>已移除，交由開發決定</td></tr><tr><td>§06 八 回放美術資產</td><td>已移除（回放美術由遊戲端負責）</td></tr><tr><td>§10 待確認事項</td><td>已移出規格</td></tr></tbody></table></div>
     </section>
     </main>
   </div>
