@@ -182,6 +182,17 @@
   fieldset.story p{ margin:0; font-size:19px; line-height:1.6; font-weight:700; color:var(--ink); max-width:none; }
   @media (max-width: 640px){ fieldset.story{ padding:14px 18px 18px; } fieldset.story legend{ margin-left:12px; } fieldset.story p{ font-size:16px; } }
 
+
+  /* ── i18n copy table ── */
+  table.i18n td:nth-child(2){ white-space:normal; font-weight:400; color:var(--ink-soft); }
+  table.i18n td:nth-child(3){ font-family:'IBM Plex Mono',monospace; font-size:12px; color:var(--accent-ink); min-width:170px; }
+  table.i18n td:nth-child(4){ color:var(--ink); font-weight:600; min-width:110px; }
+  table.i18n td:nth-child(5){ color:var(--ink); min-width:150px; }
+  .ph{ font-family:'IBM Plex Mono',monospace; font-size:12px; color:var(--callout); }
+  .notes{ margin:10px 0 0; padding-left:18px; font-size:13.5px; color:var(--ink-soft); }
+  .notes li{ margin:4px 0; }
+
+
   .tag-open{ display:inline-block; font-family:'IBM Plex Mono',monospace; font-size:11px; font-weight:700;
     letter-spacing:.06em; text-transform:uppercase; padding:2px 9px 2px 7px; border-radius:4px;
     background:var(--flag-open); color:#fff; vertical-align:middle; margin:0 4px; white-space:nowrap; border-bottom:none; }
@@ -236,6 +247,8 @@
     <a href="#sub-default"><span class="n">02.1</span>預設畫面</a>
     <a href="#sub-individual"><span class="n">02.2</span>單一線路調整</a>
     <a href="#sub-bulk"><span class="n">02.3</span>全部線路調整</a>
+    <div class="rail-group">文案</div>
+    <a href="#sec-i18n"><span class="n">03</span>文案對照</a>
   </nav>
 
   <main class="main">
@@ -426,6 +439,46 @@
           </div>
         </div>
       </details>
+    </section>
+
+    <!-- 03 -->
+    <section class="section" id="sec-i18n">
+      <div class="section-head"><span class="section-num">03</span><h2>文案對照</h2></div>
+      <p class="section-dek">本功能所有畫面文字的中英對照。文案檔為 <span class="mono">src/translate/pages.json</span>，key 前綴沿用本模組既有的 <span class="mono">platformManagement_</span>。</p>
+
+      <h3 class="h3-sub" id="sub-i18n-new">新增文案</h3>
+      <div class="table-wrap">
+        <table class="fields fields-detail i18n">
+          <thead><tr><th>#</th><th>出現位置</th><th>i18n key</th><th>中文</th><th>英文</th></tr></thead>
+          <tbody>
+            <tr><td>1</td><td>右上按鈕組標題</td><td>platformManagement_<wbr>lineStatus</td><td>線路狀態</td><td>Line Status</td></tr>
+            <tr><td>2</td><td>右上按鈕</td><td>platformManagement_<wbr>allRunning</td><td>全部運作</td><td>All Running</td></tr>
+            <tr><td>3</td><td>右上按鈕</td><td>platformManagement_<wbr>allMaintenance</td><td>全部維護</td><td>All Maintenance</td></tr>
+            <tr><td>4</td><td>狀態開關／確認視窗目標狀態</td><td>platformManagement_<wbr>status_<wbr>running</td><td><span class="t-run">運作</span></td><td>Running</td></tr>
+            <tr><td>5</td><td>狀態開關／確認視窗目標狀態</td><td>platformManagement_<wbr>status_<wbr>maintenance</td><td><span class="t-mnt">維護</span></td><td>Maintenance</td></tr>
+            <tr><td>6</td><td>確認視窗標題</td><td>platformManagement_<wbr>status<wbr>ConfirmTitle</td><td>更換狀態確認</td><td>Confirm Status Change</td></tr>
+            <tr><td>7</td><td>確認視窗內文</td><td>platformManagement_<wbr>status<wbr>ConfirmMessage</td><td>你即將把 <b><span class="ph">{{target}}</span></b> 的狀態設定為 <span class="ph">{{status}}</span></td><td>You are about to set the status of <b><span class="ph">{{target}}</span></b> to <span class="ph">{{status}}</span>.</td></tr>
+            <tr><td>8</td><td>確認視窗內文主詞（全部調整時帶入 #7 的 target）</td><td>platformManagement_<wbr>allLines</td><td>全部線路</td><td>all lines</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <ul class="notes">
+        <li><span class="ph">{{target}}</span>：單一線路時帶入線路名稱（例 aws062）；全部調整時帶入 #8「全部線路」。</li>
+        <li><span class="ph">{{status}}</span>：帶入 #4 或 #5，畫面上放大加粗並上色（<span class="t-run">運作</span>藍、<span class="t-mnt">維護</span>紅）。</li>
+        <li>英文語序與中文不同，只要保留 <span class="ph">{{target}}</span>、<span class="ph">{{status}}</span> 兩個佔位即可。</li>
+      </ul>
+
+      <h3 class="h3-sub" id="sub-i18n-existing">沿用既有文案</h3>
+      <div class="table-wrap">
+        <table class="fields fields-detail i18n">
+          <thead><tr><th>#</th><th>出現位置</th><th>i18n key</th><th>中文</th><th>英文</th></tr></thead>
+          <tbody>
+            <tr><td>1</td><td>列表最後一欄標題</td><td>common_<wbr>status</td><td>狀態</td><td>Status</td></tr>
+            <tr><td>2</td><td>確認視窗按鈕</td><td>common_<wbr>cancel</td><td>取消</td><td>Cancel</td></tr>
+            <tr><td>3</td><td>確認視窗按鈕</td><td>common_<wbr>confirm</td><td>確認</td><td>Confirm</td></tr>
+          </tbody>
+        </table>
+      </div>
     </section>
 
   </main>
