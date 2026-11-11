@@ -1,0 +1,279 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>*,*::before,*::after{box-sizing:border-box}body{margin:0}[hidden]{display:none!important}</style>
+<title>CRM Layout Switch</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap">
+<style>
+/* Layout: blueprint-style tool — controls left, live viewport simulator right, explanatory charts below */
+:root{
+  --bg:#f3f5f8; --surface:#ffffff; --fg:#17202c; --muted:#5b6778; --line:#d5dbe4;
+  --wide:#2563c9; --wide-soft:#dbe6f8; --narrow:#c46a0a; --narrow-soft:#f8e7d2;
+  --hatch:#c9d0db; --blk:#d9dfe8; --blk-strong:#b9c3d1; --warn:#b42318; --warn-soft:#fde4e1;
+  --sans:"IBM Plex Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#10151d; --surface:#171e29; --fg:#e6ebf2; --muted:#93a0b3; --line:#2a3443;
+  --wide:#6b9cf0; --wide-soft:#1d2d4a; --narrow:#f0a04b; --narrow-soft:#3d2a14;
+  --hatch:#2c3646; --blk:#2a3443; --blk-strong:#3a4659; --warn:#f2867a; --warn-soft:#3f1d1a; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#10151d; --surface:#171e29; --fg:#e6ebf2; --muted:#93a0b3; --line:#2a3443;
+  --wide:#6b9cf0; --wide-soft:#1d2d4a; --narrow:#f0a04b; --narrow-soft:#3d2a14;
+  --hatch:#2c3646; --blk:#2a3443; --blk-strong:#3a4659; --warn:#f2867a; --warn-soft:#3f1d1a; color-scheme:dark}
+body{background:var(--bg);color:var(--fg);font-family:var(--sans);font-size:15px;line-height:1.5}
+.wrap{max-width:1180px;margin:0 auto;padding-block:28px 56px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));display:flex;flex-direction:column;gap:20px}
+h1{font-size:26px;margin:0;letter-spacing:-.01em;text-wrap:balance}
+h2{font-size:16px;margin:0 0 4px}
+p{margin:0}
+.lede{color:var(--muted);max-width:68ch}
+.mono{font-family:var(--mono);font-variant-numeric:tabular-nums}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:18px}
+.main{display:grid;grid-template-columns:290px minmax(0,1fr);gap:20px;align-items:start}
+@media (max-width:820px){.main{grid-template-columns:1fr}}
+.controls{display:flex;flex-direction:column;gap:16px}
+.label{font-size:12px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);font-weight:600}
+.presets{display:flex;flex-wrap:wrap;gap:6px}
+.presets button{font:inherit;font-size:13px;padding:5px 9px;border-radius:6px;border:1px solid var(--line);background:transparent;color:var(--fg);cursor:pointer}
+.presets button:hover{border-color:var(--muted)}
+.presets button[aria-pressed="true"]{background:var(--fg);color:var(--surface);border-color:var(--fg)}
+button:focus-visible,input:focus-visible{outline:2px solid var(--wide);outline-offset:2px}
+.field{display:flex;flex-direction:column;gap:6px}
+.field-row{display:flex;align-items:center;gap:10px}
+.field-row input[type=range]{flex:1;min-width:0;accent-color:var(--fg)}
+.field-row input[type=number]{width:76px;font:inherit;font-family:var(--mono);font-size:14px;padding:4px 6px;border:1px solid var(--line);border-radius:6px;background:var(--bg);color:var(--fg)}
+.rotate{font:inherit;font-size:13px;padding:6px 10px;border-radius:6px;border:1px solid var(--line);background:transparent;color:var(--fg);cursor:pointer;align-self:flex-start}
+.note{font-size:12.5px;color:var(--muted)}
+
+.sim{display:flex;flex-direction:column;gap:14px;min-width:0}
+.verdict{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap}
+.pill{font-weight:700;font-size:15px;padding:4px 12px;border-radius:999px}
+.pill.wide{background:var(--wide-soft);color:var(--wide)}
+.pill.narrow{background:var(--narrow-soft);color:var(--narrow)}
+.why{color:var(--muted);font-size:14px}
+.stage{position:relative;height:380px;border-radius:8px;background:var(--bg);overflow:hidden}
+@media (max-width:520px){.stage{height:300px}}
+.frame{position:absolute;border:2px solid var(--fg);border-radius:6px;background:repeating-linear-gradient(45deg,var(--hatch) 0 1.5px,transparent 1.5px 7px);transition:all .25s ease}
+.margin-box{position:absolute;border:1px dashed var(--muted)}
+.canvas{position:absolute;background:var(--surface);overflow:hidden;transition:all .25s ease}
+.canvas.wide{outline:2px solid var(--wide)}
+.canvas.narrow{outline:2px solid var(--narrow)}
+.blk{position:absolute;background:var(--blk);border-radius:2px}
+.blk.bar{background:var(--blk-strong);border-radius:0}
+.dim{position:absolute;font-family:var(--mono);font-size:11.5px;color:var(--muted);white-space:nowrap}
+.legend{display:flex;gap:16px;flex-wrap:wrap;font-size:12.5px;color:var(--muted)}
+.legend span{display:inline-flex;align-items:center;gap:6px}
+.sw{width:14px;height:10px;border-radius:2px;display:inline-block}
+.sw.hatch{background:repeating-linear-gradient(45deg,var(--hatch) 0 1.5px,transparent 1.5px 5px);border:1px solid var(--line)}
+.sw.dash{border:1px dashed var(--muted)}
+.sw.cv{background:var(--surface);border:2px solid var(--muted)}
+@media (prefers-reduced-motion:reduce){.frame,.canvas{transition:none}}
+
+.stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:1px;background:var(--line);border:1px solid var(--line);border-radius:8px;overflow:hidden}
+@media (max-width:640px){.stats{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.stat{background:var(--surface);padding:10px 12px;display:flex;flex-direction:column;gap:2px;min-width:0}
+.stat .k{font-size:12px;color:var(--muted)}
+.stat .v{font-family:var(--mono);font-size:17px;font-weight:500;font-variant-numeric:tabular-nums}
+.stat .v.bad{color:var(--warn)}
+
+.realsize{display:flex;gap:18px;align-items:center;flex-wrap:wrap;padding:12px 14px;border-radius:8px;border:1px solid var(--line)}
+.realsize .sample{font-weight:500}
+.tap{background:var(--fg);border-radius:3px;display:inline-block}
+.realsize .cap{font-size:12.5px;color:var(--muted);flex-basis:100%}
+
+.explain{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+@media (max-width:820px){.explain{grid-template-columns:1fr}}
+.explain .panel{display:flex;flex-direction:column;gap:10px;min-width:0}
+svg{display:block;width:100%;height:auto}
+svg text{font-family:var(--mono);font-size:11px;fill:var(--muted)}
+svg .t-wide{fill:var(--wide)} svg .t-narrow{fill:var(--narrow)} svg .t-fg{fill:var(--fg)}
+.callout{font-size:13.5px;color:var(--muted)}
+.callout b{color:var(--fg)}
+.warnbox{background:var(--warn-soft);color:var(--fg);border-radius:8px;padding:10px 14px;font-size:13.5px}
+.warnbox b{color:var(--warn)}
+.rules{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+@media (max-width:820px){.rules{grid-template-columns:1fr}}
+.rules div{font-size:13.5px;color:var(--muted)}
+.rules b{display:block;color:var(--fg);font-size:14px;margin-bottom:2px}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <header style="display:flex;flex-direction:column;gap:6px">
+    <h1>CRM Layout Switch</h1>
+    <p class="lede">Pick a device or drag the size. The page subtracts the 16px margin, compares usable width ÷ height to <b class="mono">1.125</b>, picks Wide (寬版) or Narrow (窄版), then scales that fixed canvas to fit. Hatched area is leftover space.</p>
+  </header>
+
+  <section class="main">
+    <div class="panel controls">
+      <div class="field">
+        <span class="label">Device presets</span>
+        <div class="presets" id="presets"></div>
+        <span class="note">Heights are approximate visible area after browser toolbars.</span>
+      </div>
+      <div class="field">
+        <label class="label" for="wR">Viewport width (px)</label>
+        <div class="field-row"><input type="range" id="wR" min="280" max="2800" step="1"><input type="number" id="wN" min="100" max="4000" aria-label="Width in px"></div>
+      </div>
+      <div class="field">
+        <label class="label" for="hR">Viewport height (px)</label>
+        <div class="field-row"><input type="range" id="hR" min="200" max="1600" step="1"><input type="number" id="hN" min="100" max="3000" aria-label="Height in px"></div>
+      </div>
+      <button class="rotate" id="rotate" type="button">Rotate ⟲ swap width/height</button>
+      <div class="field">
+        <span class="label">Fixed rules from dev</span>
+        <span class="note mono">Wide canvas 1830×980<br>Narrow canvas 990×1626<br>Margin 16px each side<br>Max scale 1.1× · no minimum<br>Wide if (W−32)÷(H−32) ≥ 1.125</span>
+      </div>
+    </div>
+
+    <div class="panel sim">
+      <div class="verdict"><span class="pill" id="pill"></span><span class="why mono" id="why"></span></div>
+      <div class="stage" id="stage">
+        <div class="frame" id="frame">
+          <div class="margin-box" id="mbox"></div>
+          <div class="canvas" id="canvas"></div>
+        </div>
+        <div class="dim" id="dimV"></div>
+        <div class="dim" id="dimC"></div>
+      </div>
+      <div class="legend">
+        <span><i class="sw cv"></i>Design canvas, scaled</span>
+        <span><i class="sw dash"></i>16px margin</span>
+        <span><i class="sw hatch"></i>Leftover space (nobody has designed this yet)</span>
+      </div>
+      <div class="stats">
+        <div class="stat"><span class="k">Scale applied</span><span class="v" id="sScale"></span></div>
+        <div class="stat"><span class="k">Canvas on screen</span><span class="v" id="sSize"></span></div>
+        <div class="stat"><span class="k">Leftover L/R · T/B</span><span class="v" id="sGap"></span></div>
+        <div class="stat"><span class="k">14px design text →</span><span class="v" id="sText"></span></div>
+      </div>
+      <div class="realsize">
+        <span class="sample" id="sample">Deposit history</span>
+        <span class="tap" id="tap" aria-hidden="true"></span>
+        <span class="cap" id="realcap"></span>
+      </div>
+    </div>
+  </section>
+
+  <section class="explain">
+    <div class="panel">
+      <h2>1 · Which side of the line are you on?</h2>
+      <p class="callout">Usable width ÷ height, as a single number. Left of 1.125 → Narrow, right → Wide.</p>
+      <svg id="line" viewBox="0 0 600 96" role="img" aria-label="Ratio number line"></svg>
+    </div>
+    <div class="panel">
+      <h2>2 · Why exactly 1.125?</h2>
+      <p class="callout">Both layouts are tested at the current size. Whichever ends up <b>bigger on screen wins</b>. 1.125 (= 1830 ÷ 1626) is where they tie.</p>
+      <svg id="chart" viewBox="0 0 600 250" role="img" aria-label="Scale of each layout by ratio"></svg>
+    </div>
+  </section>
+
+  <section class="panel" style="display:flex;flex-direction:column;gap:12px">
+    <h2>What this means for wireframes</h2>
+    <div class="rules">
+      <div><b>Narrow canvas ≈ phone × 2.6–3</b>On an iPhone SE the narrow canvas shrinks to ~0.32×. Draw body text at ~40–44px and tap targets at ~135px on the 990 canvas.</div>
+      <div><b>Leftover space needs a spec</b>Proportions are locked, so mismatched screens get empty bands (hatched). Define a background for them.</div>
+      <div><b>Height counts, not just width</b>Same width, different height can flip the layout. Try the "SE + keyboard" preset to see a phone jump to Wide.</div>
+    </div>
+  </section>
+</div>
+
+<script>
+const $=id=>document.getElementById(id);
+const T=1.125, M=16, MAX=1.1;
+const L={wide:{w:1830,h:980,name:"Wide 寬版"},narrow:{w:990,h:1626,name:"Narrow 窄版"}};
+const PRESETS=[
+  ["iPhone SE",375,548],["SE + keyboard",375,290],["iPhone 15",393,660],["Phone landscape",667,323],
+  ["iPad portrait",820,1106],["iPad landscape",1180,750],["Laptop",1440,789],["Desktop 1080p",1920,969],
+  ["Squeezed window",1000,900],["2K monitor",2560,1329]
+];
+const MOCK={
+  wide:[[0,0,100,7,1],[0,7,14,93,1],[17,11,25,18],[44,11,25,18],[71,11,26,18],[17,33,80,7],[17,43,80,6],[17,51,80,6],[17,59,80,6],[17,67,80,6],[17,75,80,6]],
+  narrow:[[0,0,100,6,1],[5,8,90,15],[5,26,43,12],[52,26,43,12],[5,41,90,6],[5,49,90,6],[5,57,90,6],[5,65,90,6],[5,73,90,6],[0,93,100,7,1]]
+};
+let W=375,H=548;
+
+function calc(W,H){
+  const uw=Math.max(W-2*M,1),uh=Math.max(H-2*M,1),r=uw/uh,mode=r>=T?"wide":"narrow",c=L[mode];
+  const raw=Math.min(uw/c.w,uh/c.h),s=Math.min(raw,MAX);
+  return{uw,uh,r,mode,c,raw,s,capped:raw>MAX,cw:c.w*s,ch:c.h*s,gx:Math.max(uw-c.w*s,0),gy:Math.max(uh-c.h*s,0)};
+}
+const f1=n=>(Math.round(n*10)/10).toString();
+const f2=n=>n.toFixed(2), f3=n=>n.toFixed(3);
+
+const pre=$("presets");
+PRESETS.forEach(([n,w,h])=>{const b=document.createElement("button");b.type="button";b.textContent=n;b.dataset.w=w;b.dataset.h=h;b.onclick=()=>{W=w;H=h;render()};pre.appendChild(b)});
+function bind(r,n,set){const h=e=>{const v=parseInt(e.target.value,10);if(!isNaN(v)&&v>0){set(v);render()}};r.addEventListener("input",h);n.addEventListener("change",h)}
+bind($("wR"),$("wN"),v=>W=v); bind($("hR"),$("hN"),v=>H=v);
+$("rotate").onclick=()=>{[W,H]=[H,W];render()};
+
+function drawStage(k){
+  const st=$("stage"),sw=st.clientWidth-40,sh=st.clientHeight-56;
+  const f=Math.min(sw/W,sh/H);
+  const fw=W*f,fh=H*f,fx=(st.clientWidth-fw)/2,fy=(st.clientHeight-fh)/2+4;
+  Object.assign($("frame").style,{width:fw+"px",height:fh+"px",left:fx+"px",top:fy+"px"});
+  Object.assign($("mbox").style,{left:M*f+"px",top:M*f+"px",width:k.uw*f+"px",height:k.uh*f+"px"});
+  const cv=$("canvas");cv.className="canvas "+k.mode;
+  Object.assign(cv.style,{left:(M+k.gx/2)*f-2+"px",top:(M+k.gy/2)*f-2+"px",width:k.cw*f+"px",height:k.ch*f+"px"});
+  if(cv.dataset.mode!==k.mode){cv.dataset.mode=k.mode;cv.innerHTML=MOCK[k.mode].map(([x,y,w,h,b])=>`<i class="blk${b?" bar":""}" style="left:${x}%;top:${y}%;width:${w}%;height:${h}%"></i>`).join("")}
+  const dv=$("dimV");dv.textContent=`viewport ${W}×${H}`;dv.style.left=fx+"px";dv.style.top=(fy-20)+"px";
+  const dc=$("dimC");dc.textContent=`canvas ${k.c.w}×${k.c.h} × ${f2(k.s)}`;dc.style.left=fx+"px";dc.style.top=(fy+fh+4)+"px";
+}
+
+function drawLine(k){
+  const x0=0.3,x1=2.6,L0=20,R0=580,sx=v=>L0+(Math.min(Math.max(v,x0),x1)-x0)/(x1-x0)*(R0-L0),y=46;
+  const tx=sx(T),cx=sx(k.r),col=k.mode==="wide"?"var(--wide)":"var(--narrow)";
+  let s=`<rect x="${L0}" y="${y-6}" width="${tx-L0}" height="12" fill="var(--narrow-soft)"/><rect x="${tx}" y="${y-6}" width="${R0-tx}" height="12" fill="var(--wide-soft)"/>`;
+  s+=`<text x="${(L0+tx)/2}" y="${y+4}" text-anchor="middle" class="t-narrow">NARROW 窄版</text><text x="${(tx+R0)/2}" y="${y+4}" text-anchor="middle" class="t-wide">WIDE 寬版</text>`;
+  s+=`<line x1="${tx}" x2="${tx}" y1="${y-14}" y2="${y+14}" stroke="var(--fg)" stroke-width="2"/><text x="${tx}" y="${y+28}" text-anchor="middle" class="t-fg">1.125</text>`;
+  [[0.609,"narrow canvas shape"],[1.867,"wide canvas shape"]].forEach(([v,l])=>{const x=sx(v);s+=`<line x1="${x}" x2="${x}" y1="${y+6}" y2="${y+12}" stroke="var(--muted)"/><text x="${x}" y="${y+28}" text-anchor="middle">${v} ${l}</text>`});
+  const out=k.r<x0||k.r>x1;
+  s+=`<path d="M${cx-7} ${y-24} L${cx+7} ${y-24} L${cx} ${y-12}Z" fill="${col}"/><text x="${Math.min(Math.max(cx,60),540)}" y="${y-29}" text-anchor="middle" class="t-fg">you: ${f3(k.r)}${out?" (off scale)":""}</text>`;
+  $("line").innerHTML=s;
+}
+
+function drawChart(k){
+  const uh=k.uh,x0=0.3,x1=2.6,L0=46,R0=585,T0=18,B0=210;
+  const fw=r=>Math.min(r*uh/1830,uh/980,MAX),fn=r=>Math.min(r*uh/990,uh/1626,MAX);
+  let ymax=Math.max(fw(x1),fn(x1))*1.18;
+  const sx=v=>L0+(v-x0)/(x1-x0)*(R0-L0),sy=v=>B0-v/ymax*(B0-T0);
+  const pts=fn2=>{let d="";for(let i=0;i<=160;i++){const r=x0+(x1-x0)*i/160;d+=(i?"L":"M")+sx(r).toFixed(1)+" "+sy(fn2(r)).toFixed(1)}return d};
+  let s="";
+  const step=ymax>1?0.25:ymax>0.5?0.1:0.05;
+  for(let v=0;v<=ymax+1e-9;v+=step){const y=sy(v);s+=`<line x1="${L0}" x2="${R0}" y1="${y}" y2="${y}" stroke="var(--line)"/><text x="${L0-6}" y="${y+4}" text-anchor="end">${v.toFixed(2)}×</text>`}
+  [0.5,1,1.5,2,2.5].forEach(v=>{s+=`<text x="${sx(v)}" y="${B0+16}" text-anchor="middle">${v}</text>`});
+  s+=`<text x="${(L0+R0)/2}" y="${B0+34}" text-anchor="middle">usable width ÷ height  (height fixed at ${Math.round(uh)}px)</text>`;
+  s+=`<path d="${pts(r=>Math.max(fw(r),fn(r)))}" fill="none" stroke="var(--fg)" stroke-opacity=".15" stroke-width="9" stroke-linejoin="round"/>`;
+  s+=`<path d="${pts(fn)}" fill="none" stroke="var(--narrow)" stroke-width="2"/><path d="${pts(fw)}" fill="none" stroke="var(--wide)" stroke-width="2"/>`;
+  const tx=sx(T);s+=`<line x1="${tx}" x2="${tx}" y1="${T0}" y2="${B0}" stroke="var(--fg)" stroke-dasharray="3 3"/><text x="${tx+4}" y="${T0+8}" class="t-fg">tie @ 1.125</text>`;
+  s+=`<text x="${sx(2.15)}" y="${sy(fw(2.15))-8}" class="t-wide" text-anchor="middle">Wide</text><text x="${sx(2.15)}" y="${sy(fn(2.15))+16}" class="t-narrow" text-anchor="middle">Narrow</text>`;
+  if(k.r>=x0&&k.r<=x1){const cx=sx(k.r),cy=sy(k.s),col=k.mode==="wide"?"var(--wide)":"var(--narrow)";s+=`<circle cx="${cx}" cy="${cy}" r="6" fill="${col}" stroke="var(--surface)" stroke-width="2"/><text x="${Math.min(cx+10,R0-60)}" y="${cy-10}" class="t-fg">you ${f2(k.s)}×</text>`}
+  s+=`<text x="${L0}" y="${T0-6}">scale</text>`;
+  $("chart").innerHTML=s;
+}
+
+function render(){
+  W=Math.max(100,Math.min(4000,W));H=Math.max(100,Math.min(3000,H));
+  $("wR").value=W;$("wN").value=W;$("hR").value=H;$("hN").value=H;
+  pre.querySelectorAll("button").forEach(b=>b.setAttribute("aria-pressed",+b.dataset.w===W&&+b.dataset.h===H));
+  const k=calc(W,H);
+  const pill=$("pill");pill.className="pill "+k.mode;pill.textContent=k.c.name;
+  $("why").textContent=`(${W}−32) ÷ (${H}−32) = ${f3(k.r)}  ${k.r>=T?"≥":"<"} 1.125`;
+  $("sScale").textContent=f2(k.s)+"×"+(k.capped?" (capped)":"");
+  $("sSize").textContent=Math.round(k.cw)+"×"+Math.round(k.ch);
+  $("sGap").textContent=Math.round(k.gx/2)+" · "+Math.round(k.gy/2);
+  const t=14*k.s,st=$("sText");st.textContent=f1(t)+"px";st.className="v"+(t<11?" bad":"");
+  $("sample").style.fontSize=t+"px";
+  const tp=44*k.s;Object.assign($("tap").style,{width:tp+"px",height:tp+"px"});
+  $("realcap").textContent=`↑ Real size on that device: 14px text becomes ${f1(t)}px, a 44px button becomes ${f1(tp)}px. To get 14px on screen, draw it at ${Math.round(14/k.s)}px on the ${k.c.w} canvas.`+(t<11?" Too small to read.":"");
+  drawStage(k);drawLine(k);drawChart(k);
+}
+new ResizeObserver(()=>render()).observe($("stage"));
+render();
+</script>
+</body>
+</html>
