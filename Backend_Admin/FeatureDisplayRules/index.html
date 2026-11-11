@@ -25,6 +25,7 @@
     --flag-wip:#6FA8E8; --flag-wip-soft:rgba(111,168,232,0.14);
     --shadow: rgba(0,0,0,0.35);
     --row-strong:#07090C;
+    --danger:#F06A6A;
     --font-body:'Noto Sans TC', 'PingFang TC', 'Microsoft JhengHei', system-ui, sans-serif;
     --font-display:'Noto Serif TC', 'Songti TC', Georgia, serif;
     --font-mono:'IBM Plex Mono', ui-monospace, Menlo, monospace;
@@ -45,6 +46,7 @@
     --flag-wip:#2F6FB5; --flag-wip-soft:#E4EEF9;
     --shadow: rgba(20,24,29,0.07);
     --row-strong:#ECEEF1;
+    --danger:#B71C1C;
   }
 
   *{box-sizing:border-box;}
@@ -147,6 +149,10 @@
   .story-label{ position:absolute; top:-10px; left:18px; font-family:var(--font-mono); font-size:11px; font-weight:700; letter-spacing:.12em; color:var(--accent-ink); background:var(--bg); border:1px solid var(--line-strong); border-radius:999px; padding:1px 12px; }
   .story p{ margin:0; max-width:none; font-size:16.5px; font-weight:700; line-height:1.9; color:var(--ink); }
   .story-k{ display:inline-block; font-size:12.5px; font-weight:700; color:var(--accent-ink); background:var(--accent-soft); border-radius:4px; padding:0 7px; margin-right:8px; vertical-align:2px; }
+  .deploy-note{ position:relative; border:1.5px solid var(--danger); border-radius:12px; background:color-mix(in srgb, var(--danger) 10%, var(--surface)); padding:22px 22px 16px; margin:24px 0 18px; }
+  :root[data-spec-theme="light"] .deploy-note{ background:color-mix(in srgb, var(--danger) 14%, var(--surface)); border-width:2px; }
+  .dn-title{ position:absolute; top:-11px; left:18px; font-size:12px; font-weight:700; letter-spacing:.06em; color:var(--danger); background:var(--bg); border:1.5px solid var(--danger); border-radius:999px; padding:1px 12px; }
+  .deploy-note p{ margin:0; max-width:none; font-size:14.5px; color:var(--ink); }
   .objective{ background:var(--surface); border:1px solid var(--line); border-radius:12px; padding:16px 20px; margin:6px 0 14px; }
   .objective p{ margin:0; font-size:16px; color:var(--ink); max-width:none; }
   .goals{ display:grid; grid-template-columns:repeat(3, minmax(0, 1fr)); gap:14px; margin:0 0 18px; }
@@ -275,7 +281,7 @@
 <header class="masthead">
   <div class="gutter topstrip">
     <a href="#home" class="topstrip-name">複合條件開放活動 規格書</a>
-    <span class="ver">V1</span>
+    <span class="ver">V1.1</span>
     <span class="topstrip-sep">·</span>
     <span class="topstrip-author">Shaun Lim</span>
     <button type="button" class="mode" id="modeToggle" aria-label="切換淺色 / 深色模式">
@@ -496,6 +502,10 @@
       <p><span class="story-k">身為</span>後台營運人員，<br>
       <span class="story-k">我想要</span>建立抽寶箱活動時，除了線路，也能指定適用的幣別與游戲，<br>
       <span class="story-k">以便</span>活動只開放給線路、幣別、游戲都符合的玩家，避免不支援的幣別或游戲參加到活動。</p>
+    </div>
+    <div class="deploy-note" role="note">
+      <div class="dn-title">⚠️ 部署注意</div>
+      <p>既有活動沒有幣別和遊戲設定，force 上線後會立即失效。請先部署 backstage，由營運補齊上線中活動的幣別與遊戲並審核通過，再部署 force。</p>
     </div>
     <nav class="subnav" aria-label="本頁小節">
       <a href="#camp-compare"><span class="n">01</span>現行 vs 調整後</a>
@@ -792,6 +802,7 @@
       <table class="fields log">
         <thead><tr><th>版本</th><th>日期</th><th>修改內容</th><th>作者</th></tr></thead>
         <tbody>
+          <tr><td>V1.1</td><td>2026-11-11</td><td>新增 03 建立新活動「⚠️ 部署注意」提醒：先部署 backstage，由營運補齊上線中活動的幣別與遊戲並審核通過，再部署 force。</td><td>Shaun Lim</td></tr>
           <tr><td>V1</td><td>2026-11-06</td><td>初版：新增模板貨幣列預設為空；建立新活動新增「適用幣別」「適用游戲」條件；新增功能開關管理。</td><td>Shaun Lim</td></tr>
         </tbody>
       </table>
@@ -805,7 +816,7 @@
 </main>
 
 <footer class="footer gutter">
-  <span>複合條件開放活動 規格書</span><span>V1</span><span>辦公室裡誰最常被打？ 卡</span><span>2026-11-05</span>
+  <span>複合條件開放活動 規格書</span><span>V1.1</span><span>辦公室裡誰最常被打？ 卡</span><span>2026-11-05</span>
 </footer>
 
 <div class="lightbox" id="lightbox" hidden role="dialog" aria-modal="true" aria-label="放大圖片">
