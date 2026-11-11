@@ -377,7 +377,7 @@
     <section class="section" id="scope">
       <div class="section-head"><span class="section-num">02</span><h2>v1 做什麼 · 不做什麼</h2></div>
       
-<div class="src">沿用開發版 · 已依畫面規格調整</div><div class="table-wrap"><table class="fields gt"><thead><tr><th>項目</th><th>v1</th><th>說明</th></tr></thead><tbody><tr><td>四張榜（日／週 × 倍數／贏分）</td><td><span class="chip on"><span class="chip-dot"></span>做</span></td><td>每張榜含「進行中」與「上一期已結算」兩個頁籤。</td></tr><tr><td>專線 × 幣別分界</td><td><span class="chip on"><span class="chip-dot"></span>做</span></td><td>不跨專線、不跨幣別，回放也不跨。</td></tr><tr><td>只開專線、共線不開</td><td><span class="chip on"><span class="chip-dot"></span>做</span></td><td>專線＝底下只有一個站台的線路（如 PB10）；共線（如 AWS101，含 10 個站）一律不開榜。開關預設為否，需逐一明確開啟。</td></tr><tr><td>大獎回放（站內）</td><td><span class="chip on"><span class="chip-dot"></span>做</span></td><td>以瀏覽器新分頁開啟遊戲端回放網址，玩家手動按 spin。</td></tr><tr><td>從榜上進入該款遊戲</td><td><span class="chip on"><span class="chip-dot"></span>做</span></td><td>導流用；點遊戲圖片或名稱先跳確認視窗，確定後帶同一組 token 呼叫專線遊戲網址。</td></tr><tr><td>發放獎勵</td><td><span class="chip locked"><span class="chip-dot"></span>不做</span></td><td>只預留結算快照的資料欄位與 UI 版位。提案 V1.6 已定的「週榜前三發 FS 卡、T+1 人工審核」屬 v2。</td></tr><tr><td>玩家個人區塊（自己的名次／個人最佳）</td><td><span class="chip locked"><span class="chip-dot"></span>不做</span></td><td>2026-09-09 拍板本版不做。</td></tr><tr><td>回放的免責說明文字</td><td><span class="chip locked"><span class="chip-dot"></span>不做</span></td><td>只靠遊戲端的英文回放標示。已知風險見 <a class="xref" href="#rp-mark">回放 03</a>。</td></tr><tr><td>站外分享（縮網址、社群媒體）</td><td><span class="chip locked"><span class="chip-dot"></span>不做</span></td><td>v2 採<b>與站內同一套 log 重播</b>，非預錄影片；v1 先不開對外入口。</td></tr><tr><td>營運後台</td><td><span class="chip locked"><span class="chip-dot"></span>不做</span></td><td>門檻與開關由 Server 端調整，<b>不需發版</b>（見 <a class="xref" href="#cfg">設定 01</a>）。</td></tr><tr><td>跨專線曝光</td><td><span class="chip locked"><span class="chip-dot"></span>不做</span></td><td>榜單與回放一律不顯示其他專線的資料。</td></tr></tbody></table></div>
+<div class="src">沿用開發版 · 已依畫面規格調整</div><div class="table-wrap"><table class="fields gt"><thead><tr><th>項目</th><th>v1</th><th>說明</th></tr></thead><tbody><tr><td>四張榜（日／週 × 倍數／贏分）</td><td><span class="chip on"><span class="chip-dot"></span>做</span></td><td>每張榜含「進行中」與「上一期已結算」兩個頁籤。</td></tr><tr><td>專線 × 幣別分界</td><td><span class="chip on"><span class="chip-dot"></span>做</span></td><td>不跨專線、不跨幣別，回放也不跨。</td></tr><tr><td>只開專線、共線不開</td><td><span class="chip on"><span class="chip-dot"></span>做</span></td><td>專線＝底下只有一個站台的線路（如 PB10）；共線（如 AWS101，含 10 個站）一律不開榜。開關預設為否，需逐一明確開啟。</td></tr><tr><td>大獎回放（站內）</td><td><span class="chip on"><span class="chip-dot"></span>做</span></td><td>以瀏覽器新分頁開啟遊戲端回放網址，玩家手動按 spin。</td></tr><tr><td>從榜上進入該款遊戲</td><td><span class="chip on"><span class="chip-dot"></span>做</span></td><td>導流用；點遊戲圖片或名稱先跳確認彈窗，確定後帶同一組 token 呼叫專線遊戲網址。</td></tr><tr><td>發放獎勵</td><td><span class="chip locked"><span class="chip-dot"></span>不做</span></td><td>只預留結算快照的資料欄位與 UI 版位。提案 V1.6 已定的「週榜前三發 FS 卡、T+1 人工審核」屬 v2。</td></tr><tr><td>玩家個人區塊（自己的名次／個人最佳）</td><td><span class="chip locked"><span class="chip-dot"></span>不做</span></td><td>2026-09-09 拍板本版不做。</td></tr><tr><td>回放的免責說明文字</td><td><span class="chip locked"><span class="chip-dot"></span>不做</span></td><td>只靠遊戲端的英文回放標示。已知風險見 <a class="xref" href="#rp-mark">回放 03</a>。</td></tr><tr><td>站外分享（縮網址、社群媒體）</td><td><span class="chip locked"><span class="chip-dot"></span>不做</span></td><td>v2 採<b>與站內同一套 log 重播</b>，非預錄影片；v1 先不開對外入口。</td></tr><tr><td>營運後台</td><td><span class="chip locked"><span class="chip-dot"></span>不做</span></td><td>門檻與開關由 Server 端調整，<b>不需發版</b>（見 <a class="xref" href="#cfg">設定 01</a>）。</td></tr><tr><td>跨專線曝光</td><td><span class="chip locked"><span class="chip-dot"></span>不做</span></td><td>榜單與回放一律不顯示其他專線的資料。</td></tr></tbody></table></div>
 
     </section>
     <section class="section" id="proposal">
@@ -508,7 +508,7 @@
     </main>
   </div>
   <div class="page" id="board" data-tab="board">
-    <nav class="rail" data-for="board"><a href="#flow" class=""><span class="n">01</span>使用流程</a><a href="#screens" class=""><span class="n">02</span>畫面拆解</a><a href="#s-menu" class="lv2"><span class="n">02.1</span>浮動選單入口</a><a href="#s-header" class="lv2"><span class="n">02.2</span>固定區</a><a href="#s-zones" class="lv2"><span class="n">02.3</span>固定區、捲動區與切換</a><a href="#s-top3" class="lv2"><span class="n">02.4</span>前三名卡片</a><a href="#s-rows" class="lv2"><span class="n">02.5</span>第 4–20 名列表</a><a href="#s-confirm" class="lv2"><span class="n">02.6</span>切換遊戲確認視窗</a><a href="#states" class=""><span class="n">03</span>狀態一覽</a><a href="#st-board" class="lv2"><span class="n">03.1</span>榜單狀態畫面</a><a href="#st-elements" class="lv2"><span class="n">03.2</span>元件狀態一覽</a><a href="#art-board" class=""><span class="n">04</span>美術資產</a></nav>
+    <nav class="rail" data-for="board"><a href="#flow" class=""><span class="n">01</span>使用流程</a><a href="#screens" class=""><span class="n">02</span>畫面拆解</a><a href="#s-menu" class="lv2"><span class="n">02.1</span>浮動選單入口</a><a href="#s-header" class="lv2"><span class="n">02.2</span>固定區</a><a href="#s-zones" class="lv2"><span class="n">02.3</span>固定區、捲動區與切換</a><a href="#s-top3" class="lv2"><span class="n">02.4</span>前三名卡片</a><a href="#s-rows" class="lv2"><span class="n">02.5</span>第 4–20 名列表</a><a href="#s-confirm" class="lv2"><span class="n">02.6</span>切換遊戲確認彈窗</a><a href="#states" class=""><span class="n">03</span>狀態一覽</a><a href="#st-board" class="lv2"><span class="n">03.1</span>榜單狀態畫面</a><a href="#st-elements" class="lv2"><span class="n">03.2</span>元件狀態一覽</a><a href="#art-board" class=""><span class="n">04</span>美術資產</a></nav>
     <main class="main">
 
     <section class="section" id="flow">
@@ -522,7 +522,7 @@
 <div class="st"><img alt="回放播放中" src="images/r_playing.png"/><div class="cap"><b>⑤</b> 依紀錄重演，含 Free Game 逐局</div></div><span class="ar">→</span>
 <div class="st"><img alt="回放結算" src="images/r_result.png"/><div class="cap"><b>⑥</b> 大獎結算；可按 WATCH AGAIN 重看，或關閉分頁回到榜單原位置</div></div>
 <span class="ar">⋯</span>
-<div class="st branch"><img alt="切換遊戲確認" src="images/p_cfm_plain.png"/><div class="cap"><b>③′</b> 點遊戲圖片或名稱，跳出確認視窗</div></div><span class="ar">→</span>
+<div class="st branch"><img alt="切換遊戲確認" src="images/p_cfm_plain.png"/><div class="cap"><b>③′</b> 點遊戲圖片或名稱，跳出確認彈窗</div></div><span class="ar">→</span>
 <div class="st"><img alt="進入該款遊戲" src="images/p_jump.png"/><div class="cap"><b>③″</b> 按「確定」進入該款遊戲</div></div>
 </div><div class="table-wrap">
 <table class="fields fields-detail">
@@ -533,7 +533,7 @@
 <tr><td>④</td><td>點某一筆的 ▶ 回放按鈕</td><td>以新分頁開啟回放，原分頁的遊戲與榜單維持原狀</td><td><code>E4</code> 點回放</td></tr>
 <tr><td>⑤</td><td>按 SPIN</td><td>遊戲端依紀錄重演整局，不跳過、不加速</td><td><code>E5</code> 已按 SPIN（遊戲端記錄）</td></tr>
 <tr><td>⑥</td><td>關閉回放分頁（任何時候都可以）</td><td>回到榜單，榜型、期間、捲動位置都維持原狀，不重新讀取</td><td>-</td></tr>
-<tr><td>③′</td><td>點前三名的遊戲圖片，或列表的縮圖、遊戲名稱</td><td>跳出切換遊戲確認視窗，顯示目標遊戲的圖片與名稱</td><td>-</td></tr>
+<tr><td>③′</td><td>點前三名的遊戲圖片，或列表的縮圖、遊戲名稱</td><td>跳出切換遊戲確認彈窗，顯示目標遊戲的圖片與名稱</td><td>-</td></tr>
 <tr><td>③″</td><td>按「確定」／「取消」</td><td>確定：榜單關閉，以同一組 token 進入該款遊戲。取消：回到榜單原狀</td><td><code>E7</code> 從榜單進入遊戲（只在確定時）</td></tr>
 <tr><td>③‴</td><td>點的是目前所在的遊戲</td><td>改跳「已在該遊戲」提示，只有「關閉」；按下後回到榜單原狀，不切換遊戲</td><td>不記錄</td></tr>
 </tbody>
@@ -542,7 +542,7 @@
       <h3 class="mini-h">畫面層級</h3>
       <div class="table-wrap"><table class="fields gt"><thead><tr><th>層級</th><th>畫面</th><th>怎麼進來</th><th>怎麼離開</th></tr></thead><tbody>
         <tr><td>L1</td><td>浮動 icon 選單</td><td>遊戲中點浮動 icon</td><td>點浮動 icon（✕）或選單以外的區域</td></tr>
-        <tr><td>L2</td><td>榜單</td><td>選單中點「排行榜」</td><td>點 ✕ 回遊戲；點遊戲圖片或名稱 → 確認視窗 → 確定，進入該款遊戲</td></tr>
+        <tr><td>L2</td><td>榜單</td><td>選單中點「排行榜」</td><td>點 ✕ 回遊戲；點遊戲圖片或名稱 → 確認彈窗 → 確定，進入該款遊戲</td></tr>
         <tr><td>新分頁</td><td>回放（見 <a class="xref" href="#rp-entry">回放</a>）</td><td>榜單上點 ▶</td><td>關閉回放分頁，回到原分頁的 L2；L2 維持原本的榜型、期間與捲動位置</td></tr>
       </tbody></table></div>
       <div class="note warn"><b>層級規則</b>：回放以瀏覽器新分頁開啟，<b>不關閉 L2</b>；原分頁的 L2 維持原狀、不鎖定。</div>
@@ -626,7 +626,7 @@
 <thead><tr><th>#</th><th>欄位</th><th>直式 / 橫式</th><th>狀態</th><th>說明</th></tr></thead>
 <tbody>
 <tr><td><span class="num">1</span></td><td>前三名卡片</td><td>相同</td><td><span class="chip on"><span class="chip-dot"></span>有資料</span><span class="chip"><span class="chip-dot"></span>空位</span></td><td>排序 2 · 1 · 3。不足 3 名時空著的名次仍保留卡片（見 03.1）。</td></tr>
-<tr><td><span class="num">2</span></td><td>遊戲圖片</td><td>相同</td><td><span class="chip on"><span class="chip-dot"></span>可點</span><span class="chip locked"><span class="chip-dot"></span>已下架</span></td><td>沿用各遊戲既有縮圖，讀不到時用預設圖。點擊跳出切換遊戲確認視窗（02.6）。已下架的遊戲圖片照常顯示，但不可點。</td></tr>
+<tr><td><span class="num">2</span></td><td>遊戲圖片</td><td>相同</td><td><span class="chip on"><span class="chip-dot"></span>可點</span><span class="chip locked"><span class="chip-dot"></span>已下架</span></td><td>沿用各遊戲既有縮圖，讀不到時用預設圖。點擊跳出切換遊戲確認彈窗（02.6）。已下架的遊戲圖片照常顯示，但不可點。</td></tr>
 <tr><td><span class="num">3</span></td><td>↗ 進入遊戲標示<span class="vtag">V1.4</span></td><td>相同</td><td><span class="chip on"><span class="chip-dot"></span>可點</span><span class="chip locked"><span class="chip-dot"></span>不可點</span></td><td>顯示 ↗，提示圖片可以點。已下架時改為不可點；空位不顯示。與圖片共用同一個點擊範圍。</td></tr>
 <tr><td><span class="num">4</span></td><td>BUY BONUS</td><td>相同</td><td><span class="chip"><span class="chip-dot"></span>有 BUY</span><span class="chip"><span class="chip-dot"></span>無</span></td><td>該筆由 buy bonus 開出時才顯示，只做標示、不影響計分與排序。</td></tr>
 <tr><td><span class="num">5</span></td><td>名次標示<span class="vtag">V1.4</span></td><td>相同</td><td>-</td><td>顯示名次的排序。</td></tr>
@@ -647,8 +647,8 @@
 <thead><tr><th>#</th><th>欄位</th><th>直式 / 橫式</th><th>狀態</th><th>說明</th></tr></thead>
 <tbody>
 <tr><td><span class="num">1</span></td><td>名次<span class="vtag">V1.4</span></td><td>相同</td><td>-</td><td>顯示名次。第 4 到 20 名，沒有成績的名次顯示空位列（見 03.1）；第 20 名之後不顯示，也不提供「載入更多」。列高固定，內容多寡不改變列高；整區不得產生橫向捲軸。</td></tr>
-<tr><td><span class="num">2</span></td><td>遊戲縮圖</td><td>相同</td><td><span class="chip on"><span class="chip-dot"></span>可點</span><span class="chip locked"><span class="chip-dot"></span>已下架</span></td><td>點擊跳出切換遊戲確認視窗，與遊戲名稱相同，和前三名的遊戲圖片一致。已下架不可點。</td></tr>
-<tr><td><span class="num">3</span></td><td>遊戲名稱 ↗</td><td>相同</td><td><span class="chip on"><span class="chip-dot"></span>可點</span><span class="chip locked"><span class="chip-dot"></span>已下架</span></td><td>點擊跳出確認視窗，並顯示 ↗ 提示可以點。過長時單行截斷「…」，不換行；欄寬不夠時<b>優先截斷遊戲名稱</b>，不截斷數字。已下架：名稱與 ↗ 不可點。</td></tr>
+<tr><td><span class="num">2</span></td><td>遊戲縮圖</td><td>相同</td><td><span class="chip on"><span class="chip-dot"></span>可點</span><span class="chip locked"><span class="chip-dot"></span>已下架</span></td><td>點擊跳出切換遊戲確認彈窗，與遊戲名稱相同，和前三名的遊戲圖片一致。已下架不可點。</td></tr>
+<tr><td><span class="num">3</span></td><td>遊戲名稱 ↗</td><td>相同</td><td><span class="chip on"><span class="chip-dot"></span>可點</span><span class="chip locked"><span class="chip-dot"></span>已下架</span></td><td>點擊跳出確認彈窗，並顯示 ↗ 提示可以點。過長時單行截斷「…」，不換行；欄寬不夠時<b>優先截斷遊戲名稱</b>，不截斷數字。已下架：名稱與 ↗ 不可點。</td></tr>
 <tr><td><span class="num">4</span></td><td>遮罩 playID 與 BUY BONUS</td><td>相同</td><td><span class="chip"><span class="chip-dot"></span>有 BUY</span><span class="chip"><span class="chip-dot"></span>無</span></td><td>顯示遮罩 playID；該筆由 buy bonus 開出時另顯示 BUY BONUS 標籤。</td></tr>
 <tr><td><span class="num">5</span></td><td>數值</td><td>相同</td><td><span class="chip"><span class="chip-dot"></span>贏分榜</span><span class="chip"><span class="chip-dot"></span>倍數榜</span></td><td>同前三名卡片；過長時同樣改為跑馬燈。</td></tr>
 <tr><td><span class="num">6</span></td><td>回放按鈕</td><td>相同</td><td>-</td><td>內含 ▶。</td></tr>
@@ -658,12 +658,12 @@
 </div>
 </div>
 </details><details class="sub-details" id="s-confirm" open="">
-<summary class="sub-head"><span class="sub-num">02.6</span>切換遊戲確認視窗</summary>
+<summary class="sub-head"><span class="sub-num">02.6</span>切換遊戲確認彈窗</summary>
 <div class="sub-details-body">
 <div aria-label="收合本節" class="collapse-rail" title="收合本節"></div>
 <div class="pair">
-<figure><img alt="確認視窗 直式" src="images/p_cfm.png"/><figcaption>直式 · 前往其他遊戲</figcaption></figure>
-<figure><img alt="確認視窗 橫式" src="images/l_cfm.png"/><figcaption>橫式 · 前往其他遊戲</figcaption></figure>
+<figure><img alt="確認彈窗 直式" src="images/p_cfm.png"/><figcaption>直式 · 前往其他遊戲</figcaption></figure>
+<figure><img alt="確認彈窗 橫式" src="images/l_cfm.png"/><figcaption>橫式 · 前往其他遊戲</figcaption></figure>
 </div>
 <div class="pair">
 <figure><img alt="已在該遊戲 直式" src="images/p_cfm_same.png"/><figcaption>直式 · 點的是目前所在的遊戲</figcaption></figure>
@@ -673,14 +673,14 @@
 <table class="fields fields-detail">
 <thead><tr><th>#</th><th>欄位</th><th>直式 / 橫式</th><th>狀態</th><th>說明</th></tr></thead>
 <tbody>
-<tr><td><span class="num">1</span></td><td>遮罩<span class="vtag">V1.4</span></td><td>相同</td><td>-</td><td><b>點遮罩視同取消</b>（關閉視窗，回到榜單原狀）。</td></tr>
+<tr><td><span class="num">1</span></td><td>遮罩<span class="vtag">V1.4</span></td><td>相同</td><td>-</td><td><b>點遮罩視同取消</b>（關閉彈窗，回到榜單原狀）。</td></tr>
 <tr><td><span class="num">2</span></td><td>目標遊戲圖片</td><td>相同</td><td>-</td><td>與榜上同一張縮圖，讓玩家確認要去哪一款；前三名卡片本身沒有遊戲名稱，這裡是第一次看到名稱的地方。</td></tr>
 <tr><td><span class="num">3</span></td><td>遊戲名稱</td><td>相同</td><td>-</td><td>過長單行截斷。</td></tr>
 <tr><td><span class="num">4</span></td><td>確認文字</td><td>相同</td><td>-</td><td>「確定要離開目前遊戲，前往 {game} 嗎？」</td></tr>
-<tr><td><span class="num">5</span></td><td>取消</td><td>相同</td><td>-</td><td>關閉視窗，回到榜單原狀（榜型、期間、捲動位置不變）。</td></tr>
-<tr><td><span class="num">6</span></td><td>確定</td><td>相同</td><td>-</td><td>關閉視窗，進入該款遊戲。</td></tr>
-<tr><td><span class="num">7</span></td><td>已在該遊戲提示</td><td>相同</td><td>-</td><td>點的遊戲就是玩家目前所在的遊戲時，改顯示這個視窗：「You are already in this game.」，只有「關閉」一個按鈕。</td></tr>
-<tr><td><span class="num">8</span></td><td>關閉（已在該遊戲）</td><td>相同</td><td>-</td><td>關閉視窗，回到榜單原狀（榜型、期間、捲動位置不變），不切換遊戲。文案沿用 <code>lb_close</code>。</td></tr>
+<tr><td><span class="num">5</span></td><td>取消</td><td>相同</td><td>-</td><td>關閉彈窗，回到榜單原狀（榜型、期間、捲動位置不變）。</td></tr>
+<tr><td><span class="num">6</span></td><td>確定</td><td>相同</td><td>-</td><td>關閉彈窗，進入該款遊戲。</td></tr>
+<tr><td><span class="num">7</span></td><td>已在該遊戲提示</td><td>相同</td><td>-</td><td>點的遊戲就是玩家目前所在的遊戲時，改顯示這個彈窗：「You are already in this game.」，只有「關閉」一個按鈕。</td></tr>
+<tr><td><span class="num">8</span></td><td>關閉（已在該遊戲）</td><td>相同</td><td>-</td><td>關閉彈窗，回到榜單原狀（榜型、期間、捲動位置不變），不切換遊戲。文案沿用 <code>lb_close</code>。</td></tr>
 </tbody>
 </table>
 </div>
@@ -744,14 +744,14 @@
 <tr><td>期間名稱</td><td><span class="chip"><span class="chip-dot"></span>上一期 · 實際起訖</span><span class="chip"><span class="chip-dot"></span>進行中 · 起點與預定結算</span></td></tr>
 <tr><td>贏分 / 倍數切換</td><td><span class="chip on"><span class="chip-dot"></span>選中</span><span class="chip"><span class="chip-dot"></span>未選</span></td></tr>
 <tr><td>數值</td><td><span class="chip"><span class="chip-dot"></span>贏分：₱ 360,500.00</span><span class="chip"><span class="chip-dot"></span>倍數：862.35x</span><span class="chip"><span class="chip-dot"></span>空位：「-」</span><span class="chip"><span class="chip-dot"></span>回放結算（遊戲端）：倍數與贏分</span></td></tr>
-<tr><td>遊戲圖片 / 縮圖</td><td><span class="chip on"><span class="chip-dot"></span>可點（開確認視窗）</span><span class="chip locked"><span class="chip-dot"></span>已下架（照常顯示、不可點）</span><span class="chip"><span class="chip-dot"></span>空位</span></td></tr>
+<tr><td>遊戲圖片 / 縮圖</td><td><span class="chip on"><span class="chip-dot"></span>可點（開確認彈窗）</span><span class="chip locked"><span class="chip-dot"></span>已下架（照常顯示、不可點）</span><span class="chip"><span class="chip-dot"></span>空位</span></td></tr>
 <tr><td>↗ 標示</td><td><span class="chip on"><span class="chip-dot"></span>可點</span><span class="chip locked"><span class="chip-dot"></span>不可點（已下架）</span><span class="chip"><span class="chip-dot"></span>不顯示（空位）</span></td></tr>
 <tr><td>遊戲名稱（列表）</td><td><span class="chip on"><span class="chip-dot"></span>可點</span><span class="chip locked"><span class="chip-dot"></span>已下架（不可點）</span></td></tr>
 <tr><td>回放按鈕</td><td><span class="chip on"><span class="chip-dot"></span>可點</span><span class="chip locked"><span class="chip-dot"></span>無網址（不可點）</span><span class="chip"><span class="chip-dot"></span>空位（不可點）</span></td></tr>
 <tr><td>BUY BONUS 標籤</td><td><span class="chip on"><span class="chip-dot"></span>顯示</span><span class="chip"><span class="chip-dot"></span>不顯示</span></td></tr>
 <tr><td>前三名卡片</td><td><span class="chip"><span class="chip-dot"></span>有資料</span><span class="chip"><span class="chip-dot"></span>空位卡</span><span class="chip"><span class="chip-dot"></span>0 筆 → 空榜</span></td></tr>
 <tr><td>列表（第 4–20 名）</td><td><span class="chip"><span class="chip-dot"></span>有資料</span><span class="chip"><span class="chip-dot"></span>空位列</span></td></tr>
-<tr><td>切換遊戲確認視窗</td><td><span class="chip on"><span class="chip-dot"></span>開啟</span><span class="chip"><span class="chip-dot"></span>取消 → 回榜單</span><span class="chip"><span class="chip-dot"></span>確定 → 進入遊戲（E7）</span><span class="chip"><span class="chip-dot"></span>已在該遊戲 → 只有關閉，回榜單</span></td></tr>
+<tr><td>切換遊戲確認彈窗</td><td><span class="chip on"><span class="chip-dot"></span>開啟</span><span class="chip"><span class="chip-dot"></span>取消 → 回榜單</span><span class="chip"><span class="chip-dot"></span>確定 → 進入遊戲（E7）</span><span class="chip"><span class="chip-dot"></span>已在該遊戲 → 只有關閉，回榜單</span></td></tr>
 <tr><td>回放 SPIN（遊戲端）</td><td><span class="chip on"><span class="chip-dot"></span>待按</span><span class="chip locked"><span class="chip-dot"></span>播放中</span><span class="chip"><span class="chip-dot"></span>結算 · 可重看</span></td></tr>
 <tr><td>WATCH AGAIN（遊戲端）</td><td><span class="chip on"><span class="chip-dot"></span>結算後顯示</span><span class="chip"><span class="chip-dot"></span>點擊 → 回到待按 SPIN</span></td></tr>
 <tr><td>回放模式的遊戲控制</td><td><span class="chip on"><span class="chip-dot"></span>SPIN 可點</span><span class="chip locked"><span class="chip-dot"></span>Buy Bonus、押注 ±、籌碼、自動：停用</span><span class="chip"><span class="chip-dot"></span>餘額：直式不顯示、橫式顯示「-」</span></td></tr>
@@ -786,7 +786,7 @@
 <div class="src">沿用開發版 · 已依畫面規格調整</div><p>這條線要先講清楚，否則兩邊都以為對方會做。</p>
 <div class="table-wrap"><table class="fields gt"><thead><tr><th>誰做</th><th>負責範圍</th></tr></thead><tbody><tr><td><b>CRM（本功能）</b><br><code>🎮 前端</code></td><td>① 榜單上的 ▶ 回放按鈕（沒有回放網址時不可點）<br> ② 點 ▶ 時以新分頁開啟後端回傳的回放網址、帶 token<br> ③ 事件記錄（E4 點 replay）</td></tr><tr><td><b>遊戲端</b><br><code>🛠 遊戲端</code></td><td>① 回放網址本身，含載入中畫面<br> ② 盤面重演（含 Free Game 逐局、連鎖、乘數變化與音效）<br> ③ SPIN 按鈕、結算畫面、WATCH AGAIN<br> ④ 回放模式下的遊戲控制：隱藏餘額、押注只顯示不可調，Buy Bonus、± 、籌碼、自動停用<br> ⑤ <b>回放標示</b>（見 <a class="xref" href="#rp-mark">回放 03</a>）<br> ⑥ 回放頁<b>載入失敗</b>、<b>讀不到該局資料</b>、<b>播放中斷線</b>時的錯誤訊息與錯誤代碼（都在回放網址內顯示）<br> ⑦ 玩家按下 SPIN 時<b>記錄 E5</b>（只有這一個時點，不記其他播放階段）</td></tr><tr><td><b>後端</b><br><code>🛠 後端</code></td><td>提供榜單資料時，<b>每筆一併帶出該局識別碼與已驗證的回放網址</b>（給不出網址的筆留空）；簽發網址前比對請求者與該局的專線、幣別，不符一律拒絕並記 E12。</td></tr></tbody></table></div>
 <div class="note "><b>「有沒有回放網址」就是可重播的唯一判斷，不是猜的。</b> 後端在回傳榜單時必須每筆明確給出回放網址（或留空），前端據此決定回放按鈕可不可點。<b>不可由前端試著呼叫、失敗再隱藏</b>——那會讓玩家點了之後才發現不能看。日後某款遊戲補齊了紀錄，後端開始給得出網址，前端不需改版。</div>
-<div class="note warn"><b>開發版原由 CRM 在浮層頂部做「該局資訊列」</b>（遊戲名稱、遮罩 playID、倍數、贏分、BUY BONUS 標籤）。本版改為在新分頁播放、<b>拿掉資訊列</b>，玩家看不到是誰、哪一局的大獎，唯一的回放提示只剩英文 REPLAYING。</div>
+<div class="note warn"><b>開發版原由 CRM 在回放畫面頂部做「該局資訊列」</b>（遊戲名稱、遮罩 playID、倍數、贏分、BUY BONUS 標籤）。本版改為在新分頁播放、<b>拿掉資訊列</b>，玩家看不到是誰、哪一局的大獎，唯一的回放提示只剩英文 REPLAYING。</div>
 
     </section>
     <section class="section" id="rp-mark">
@@ -911,7 +911,7 @@
         <summary class="sub-head"><span class="sub-num">02.1</span>前端事件</summary>
         <div class="sub-details-body">
           <div class="collapse-rail" title="收合本節" aria-label="收合本節"></div>
-<div class="src">沿用開發版 · 已依畫面規格調整</div><div class="table-wrap"><table class="fields gt events"><thead><tr><th>事件</th><th>職能</th><th>記錄內容與用途</th></tr></thead><tbody><tr><td>E1 · 開啟榜單</td><td><code>🎮 前端</code></td><td>玩家從 L1 選單進入 L2。記錄：來源遊戲、專線、幣別、時間。<b>用途</b>：算榜單開啟率，判斷入口位置有沒有效。</td></tr><tr><td>E2 · 切換榜型</td><td><code>🎮 前端</code></td><td>切換日／週或贏分／倍數。記錄：切換前後的榜型。<b>用途</b>：看玩家實際偏好哪張榜，決定日後預設值要不要改。</td></tr><tr><td>E3 · 切換期間</td><td><code>🎮 前端</code></td><td>以 ‹ › 切換「上一期」與「進行中」。記錄：切換後的頁籤。<b>用途</b>：驗證「預設看上一期」是不是對的選擇。</td></tr><tr><td>E4 · 點 replay</td><td><code>🎮 前端</code></td><td>記錄：該筆的名次、來自前三名卡片或列表、遊戲、倍數、贏分。<b>用途</b>：算回放點擊率，並比較前三名卡片與列表的效果差異。</td></tr><tr><td>E5 · 已按 SPIN</td><td><code>🛠 遊戲端</code></td><td>遊戲端在玩家於回放分頁按下 SPIN 時記錄。記錄：該局識別碼。<b>用途</b>：算「點了 replay 之後真的按下 SPIN」的比例——只進回放沒按 SPIN 代表玩家看不懂要做什麼。播完與中離階段<b>不記</b>（v1 不要求遊戲端記錄其他階段）。</td></tr><tr><td>E6 · （已刪除，留空號）</td><td><code>—</code></td><td>V1.2 刪除原「回放中離」事件，編號保留不重排，以免 E7～E12 在其他章節的引用失效。</td></tr><tr><td>E7 · 從榜單進入遊戲</td><td><code>🎮 前端</code></td><td>玩家在切換遊戲確認視窗按「確定」跳轉（點遊戲圖片或名稱都會先跳確認；點的是目前所在的遊戲時不記錄）。記錄：來源遊戲、目標遊戲、該筆名次、從哪裡點的（三選一：<code>top3 image</code> 前三名遊戲圖片／<code>row image</code> 列表縮圖／<code>row name</code> 列表遊戲名稱）。<b>用途</b>：這是<b>導流效果的唯一證據</b>，也是「用排行榜推廣其他遊戲」成不成立的判準。</td></tr><tr><td>E8 · 榜單載入失敗</td><td><code>🎮 前端</code></td><td>榜單資料載入失敗（開啟榜單、切換榜型或期間、按重試時都算）。記錄：失敗原因、<b>錯誤代碼</b>、當時選的榜型。<b>用途</b>：監控穩定度；客服接到反應時可依代碼追查。</td></tr></tbody></table></div>
+<div class="src">沿用開發版 · 已依畫面規格調整</div><div class="table-wrap"><table class="fields gt events"><thead><tr><th>事件</th><th>職能</th><th>記錄內容與用途</th></tr></thead><tbody><tr><td>E1 · 開啟榜單</td><td><code>🎮 前端</code></td><td>玩家從 L1 選單進入 L2。記錄：來源遊戲、專線、幣別、時間。<b>用途</b>：算榜單開啟率，判斷入口位置有沒有效。</td></tr><tr><td>E2 · 切換榜型</td><td><code>🎮 前端</code></td><td>切換日／週或贏分／倍數。記錄：切換前後的榜型。<b>用途</b>：看玩家實際偏好哪張榜，決定日後預設值要不要改。</td></tr><tr><td>E3 · 切換期間</td><td><code>🎮 前端</code></td><td>以 ‹ › 切換「上一期」與「進行中」。記錄：切換後的頁籤。<b>用途</b>：驗證「預設看上一期」是不是對的選擇。</td></tr><tr><td>E4 · 點 replay</td><td><code>🎮 前端</code></td><td>記錄：該筆的名次、來自前三名卡片或列表、遊戲、倍數、贏分。<b>用途</b>：算回放點擊率，並比較前三名卡片與列表的效果差異。</td></tr><tr><td>E5 · 已按 SPIN</td><td><code>🛠 遊戲端</code></td><td>遊戲端在玩家於回放分頁按下 SPIN 時記錄。記錄：該局識別碼。<b>用途</b>：算「點了 replay 之後真的按下 SPIN」的比例——只進回放沒按 SPIN 代表玩家看不懂要做什麼。播完與中離階段<b>不記</b>（v1 不要求遊戲端記錄其他階段）。</td></tr><tr><td>E6 · （已刪除，留空號）</td><td><code>—</code></td><td>V1.2 刪除原「回放中離」事件，編號保留不重排，以免 E7～E12 在其他章節的引用失效。</td></tr><tr><td>E7 · 從榜單進入遊戲</td><td><code>🎮 前端</code></td><td>玩家在切換遊戲確認彈窗按「確定」跳轉（點遊戲圖片或名稱都會先跳確認；點的是目前所在的遊戲時不記錄）。記錄：來源遊戲、目標遊戲、該筆名次、從哪裡點的（三選一：<code>top3 image</code> 前三名遊戲圖片／<code>row image</code> 列表縮圖／<code>row name</code> 列表遊戲名稱）。<b>用途</b>：這是<b>導流效果的唯一證據</b>，也是「用排行榜推廣其他遊戲」成不成立的判準。</td></tr><tr><td>E8 · 榜單載入失敗</td><td><code>🎮 前端</code></td><td>榜單資料載入失敗（開啟榜單、切換榜型或期間、按重試時都算）。記錄：失敗原因、<b>錯誤代碼</b>、當時選的榜型。<b>用途</b>：監控穩定度；客服接到反應時可依代碼追查。</td></tr></tbody></table></div>
 
         </div>
       </details>
@@ -965,7 +965,7 @@
       <div class="section-head"><span class="section-num">01</span><h2>修改紀錄</h2></div>
       
 <p>每次內容調整在本表最上方新增一列，並於被修改的項目旁加註版號標籤（例：<span class="vtag">V1.4</span>）。<b>歷史條目一律不動</b>，即使內容已被後續版本推翻。</p>
-<div class="table-wrap"><table class="fields gt chglog"><thead><tr><th>修改日期</th><th>版號</th><th>修改章節</th><th>摘要</th></tr></thead><tbody><tr class="hl-row"><td>2026-11-10</td><td>V1.4</td><td>全文</td><td>依定稿 UI 調整：①規格不再寫固定外觀（顏色、形狀、位置），只寫元件有沒有、怎麼動；②標題改為排行榜 icon 加「排行榜」，日週頁籤與期間列位置依新版面更新；③切換遊戲視窗的遮罩不再描述蓋住哪些區塊；④空位卡顯示空位圖、不顯示 ↗；⑤新增第 4–20 名空位列，不足 20 名時補到第 20 名；⑥lb_02 改名為「名次標示」；⑦新增說明：所有畫面皆為線框示意，以美術團隊定稿 UI 為準；⑧本版變動處加註 V1.4 標籤。</td></tr><tr><td>2026-10-19</td><td>V1.3</td><td>全文</td><td>併入企劃的畫面規格並重新分頁（總覽／名詞與規則／榜單畫面／回放／設定與事件／文案）：①榜單與回放的畫面描述改以 Figma 線框與欄位表為準；②回放改為以<b>瀏覽器新分頁</b>開啟，拿掉 CRM 資訊列；載入與錯誤畫面由遊戲端負責，玩家關閉分頁回到榜單；E5 改由遊戲端記錄；③進入其他遊戲改為點遊戲圖片或名稱 → 確認視窗 → 確定，E7 改在確定時記錄；④門檻說明收進標題旁的 ⓘ；⑤沒有回放網址時 ▶ 改為不可點；⑥文案改寫 10 條（其中 6 條只把英文改為大寫）、新增 6 條（含合併 ⓘ 提示為 <code>lb_rule_tip</code>，刪除原兩條）、刪除不再使用的 6 條；⑦美術資產表依新版面更新。開發版的歷史條目照原文保留，所引章節號為舊編號。</td></tr><tr><td>2026-09-14</td><td>DEV V1.2</td><td>§01～§10</td><td>依〈內部衝突盤點〉22 項裁決全面修訂（阻擋開發 3／阻擋驗收 11／文件品質 8，D-064）：①<b>回放 url 隨榜單每筆回傳</b>，沒有 url 的筆不畫 replay 按鈕，「可重播旗標」併入 url；跨專線／跨幣別由後端於簽發 url 時拒絕；②<b>E5 改為「已按 SPIN」</b>（遊戲端於按下時向父頁面送訊息）、<b>E6 刪除留空號</b>，不再記播完與中離階段；③結算失敗重試<b>以結算時間切分</b>快照與清空、進行中榜帶榜期欄位；④<b>Free Game 於觸發局結算當下即以整段完整結果計分</b>（後端硬性前提）、結算時間與識別碼皆取觸發局；⑤buy bonus 整段合併、E9 局型 buy bonus 優先；⑥<b>門檻改為單一 threshold、四張榜共用</b>；⑦top_n 固定 20、hero_count 固定 3，v1 不可調；⑧<b>看哪張榜只顯示那個值</b>（英雄卡與表格列皆只顯示一個數字）；⑨L3 資訊列拿掉押注與發生時間、倍數與贏分兩者都顯示；⑩進行中頁籤 lb_period 的 end 填預定結算時間；進行中榜不自動更新；⑪已下架遊戲一律只看有沒有 url；播放中斷線由遊戲端在 iframe 內顯示、浮層不自動關；⑫board_enabled 關閉再開啟：清空不補結算；參數名改 <code>board_enabled[線路代碼][幣別]</code>；⑬不可重播表格列一律短橫線，lb_05 改 1 態；⑭文件品質：§06 七 Q3→Q4、§04 七預設理由改寫、「遮罩帳號」→「遮罩 playID」、V1.1 修改章節補 §01、Story 4／21 改寫；⑮§10 Q2 改問「哪些局給得出回放 url」、Q3 併入三件事（url 防偽造、已按 SPIN 訊息、觸發局識別碼重演整段）。</td></tr><tr><td>2026-09-14</td><td>DEV V1.1</td><td>§01～§10<br><span class="sub-line">（V1.2 勘誤：原漏列 §01）</span></td><td>依待確認事項的回覆全面修訂：①榜的分界由「站台」正名為<b>專線</b>（底下只有一個站台的線路），新增專線／共線定義與 PB10／AWS101 對照，<b>共線一律不開</b>；②玩家身分改用 <b>playID 遮罩</b>；③進榜門檻定為 <b>50 倍</b>、由 Server 端調整、不需發版；④快照<b>只保留上一期</b>；⑤開關改為逐「專線 × 幣別」、<b>預設為否</b>；⑥回放改為<b>浮層內 iframe 載入遊戲端回放網址</b>並帶同一組 token，新增分工線章節；⑦<b>回放標示改由遊戲端做在回放畫面內、英文呈現</b>，<b>免責說明不做</b>（風險已記載）；⑧已下架遊戲的 replay <b>仍可播放</b>；⑨錯誤拆為「iframe 載入失敗（CRM）」與「讀不到該局（遊戲端，沿用既有訊息＋錯誤代碼）」；⑩新增 §06 七「從榜單進入該款遊戲」；⑪§09 移除 5 條移交遊戲端的文案、新增 lb_rp_title，共 22 條；⑫§10 結案 6 項、重編為 Q1～Q7 並新增後續待辦。</td></tr><tr><td>2026-09-11</td><td>DEV V1.0</td><td>全文</td><td>首次發行。依 2026-09-08～09-11 與企劃的設計討論結果撰寫，含四張榜定義、站台 × 幣別分界、單局最大值計分、倍數進榜門檻、雙頁籤結算、英雄卡版型、回放浮層與播放流程。</td></tr></tbody></table></div>
+<div class="table-wrap"><table class="fields gt chglog"><thead><tr><th>修改日期</th><th>版號</th><th>修改章節</th><th>摘要</th></tr></thead><tbody><tr class="hl-row"><td>2026-11-10</td><td>V1.4</td><td>全文</td><td>依定稿 UI 調整：①規格不再寫固定外觀（顏色、形狀、位置），只寫元件有沒有、怎麼動；②標題改為排行榜 icon 加「排行榜」，日週頁籤與期間列位置依新版面更新；③切換遊戲彈窗的遮罩不再描述蓋住哪些區塊；④空位卡顯示空位圖、不顯示 ↗；⑤新增第 4–20 名空位列，不足 20 名時補到第 20 名；⑥lb_02 改名為「名次標示」；⑦新增說明：所有畫面皆為線框示意，以美術團隊定稿 UI 為準；⑧本版變動處加註 V1.4 標籤。</td></tr><tr><td>2026-10-19</td><td>V1.3</td><td>全文</td><td>併入企劃的畫面規格並重新分頁（總覽／名詞與規則／榜單畫面／回放／設定與事件／文案）：①榜單與回放的畫面描述改以 Figma 線框與欄位表為準；②回放改為以<b>瀏覽器新分頁</b>開啟，拿掉 CRM 資訊列；載入與錯誤畫面由遊戲端負責，玩家關閉分頁回到榜單；E5 改由遊戲端記錄；③進入其他遊戲改為點遊戲圖片或名稱 → 確認視窗 → 確定，E7 改在確定時記錄；④門檻說明收進標題旁的 ⓘ；⑤沒有回放網址時 ▶ 改為不可點；⑥文案改寫 10 條（其中 6 條只把英文改為大寫）、新增 6 條（含合併 ⓘ 提示為 <code>lb_rule_tip</code>，刪除原兩條）、刪除不再使用的 6 條；⑦美術資產表依新版面更新。開發版的歷史條目照原文保留，所引章節號為舊編號。</td></tr><tr><td>2026-09-14</td><td>DEV V1.2</td><td>§01～§10</td><td>依〈內部衝突盤點〉22 項裁決全面修訂（阻擋開發 3／阻擋驗收 11／文件品質 8，D-064）：①<b>回放 url 隨榜單每筆回傳</b>，沒有 url 的筆不畫 replay 按鈕，「可重播旗標」併入 url；跨專線／跨幣別由後端於簽發 url 時拒絕；②<b>E5 改為「已按 SPIN」</b>（遊戲端於按下時向父頁面送訊息）、<b>E6 刪除留空號</b>，不再記播完與中離階段；③結算失敗重試<b>以結算時間切分</b>快照與清空、進行中榜帶榜期欄位；④<b>Free Game 於觸發局結算當下即以整段完整結果計分</b>（後端硬性前提）、結算時間與識別碼皆取觸發局；⑤buy bonus 整段合併、E9 局型 buy bonus 優先；⑥<b>門檻改為單一 threshold、四張榜共用</b>；⑦top_n 固定 20、hero_count 固定 3，v1 不可調；⑧<b>看哪張榜只顯示那個值</b>（英雄卡與表格列皆只顯示一個數字）；⑨L3 資訊列拿掉押注與發生時間、倍數與贏分兩者都顯示；⑩進行中頁籤 lb_period 的 end 填預定結算時間；進行中榜不自動更新；⑪已下架遊戲一律只看有沒有 url；播放中斷線由遊戲端在 iframe 內顯示、浮層不自動關；⑫board_enabled 關閉再開啟：清空不補結算；參數名改 <code>board_enabled[線路代碼][幣別]</code>；⑬不可重播表格列一律短橫線，lb_05 改 1 態；⑭文件品質：§06 七 Q3→Q4、§04 七預設理由改寫、「遮罩帳號」→「遮罩 playID」、V1.1 修改章節補 §01、Story 4／21 改寫；⑮§10 Q2 改問「哪些局給得出回放 url」、Q3 併入三件事（url 防偽造、已按 SPIN 訊息、觸發局識別碼重演整段）。</td></tr><tr><td>2026-09-14</td><td>DEV V1.1</td><td>§01～§10<br><span class="sub-line">（V1.2 勘誤：原漏列 §01）</span></td><td>依待確認事項的回覆全面修訂：①榜的分界由「站台」正名為<b>專線</b>（底下只有一個站台的線路），新增專線／共線定義與 PB10／AWS101 對照，<b>共線一律不開</b>；②玩家身分改用 <b>playID 遮罩</b>；③進榜門檻定為 <b>50 倍</b>、由 Server 端調整、不需發版；④快照<b>只保留上一期</b>；⑤開關改為逐「專線 × 幣別」、<b>預設為否</b>；⑥回放改為<b>浮層內 iframe 載入遊戲端回放網址</b>並帶同一組 token，新增分工線章節；⑦<b>回放標示改由遊戲端做在回放畫面內、英文呈現</b>，<b>免責說明不做</b>（風險已記載）；⑧已下架遊戲的 replay <b>仍可播放</b>；⑨錯誤拆為「iframe 載入失敗（CRM）」與「讀不到該局（遊戲端，沿用既有訊息＋錯誤代碼）」；⑩新增 §06 七「從榜單進入該款遊戲」；⑪§09 移除 5 條移交遊戲端的文案、新增 lb_rp_title，共 22 條；⑫§10 結案 6 項、重編為 Q1～Q7 並新增後續待辦。</td></tr><tr><td>2026-09-11</td><td>DEV V1.0</td><td>全文</td><td>首次發行。依 2026-09-08～09-11 與企劃的設計討論結果撰寫，含四張榜定義、站台 × 幣別分界、單局最大值計分、倍數進榜門檻、雙頁籤結算、英雄卡版型、回放浮層與播放流程。</td></tr></tbody></table></div>
 
     </section>
     </main>
